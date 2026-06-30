@@ -25,12 +25,12 @@ jobs:
       - name: Install Chrome for Remotion
         run: npx remotion browser ensure
 
-      - name: Render video
-        run: npx remotion render MyComp out/video.mp4
+      - name: Render OmniFlow Premium Ad
+        run: npx remotion render OmniFlowPremiumAd out/omniflow-ad.mp4 --codec=h264
 
       - name: Upload rendered video
         uses: actions/upload-artifact@v4
         with:
-          name: rendered-video-${{ github.sha }}
-          path: out/video.mp4
+          name: omniflow-ad-${{ github.sha }}
+          path: out/omniflow-ad.mp4
           retention-days: 30
