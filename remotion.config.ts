@@ -5,12 +5,25 @@
  * All configuration options: https://remotion.dev/docs/config
  */
 
+import { existsSync } from "node:fs";
 import { Config } from "@remotion/cli/config";
 import { enableTailwind } from '@remotion/tailwind-v4';
 
 Config.setVideoImageFormat("jpeg");
 Config.setOverwriteOutput(true);
 Config.overrideWebpackConfig(enableTailwind);
-Config.setBrowserExecutable("/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell");
-Config.setChromiumOpenGlRenderer("angle");
-Config.setChromiumDisableWebSecurity(false);
+
+// Local font files (public/fonts/) are loaded once per browser tab via
+// @remotion/fonts. Under high render concurrency this can race past the
+// default delayRender() timeout, so concurrency is capped and the timeout
+// is raised here to keep renders reliable.
+Config.setConcurrency(1);
+Config.setDelayRenderTimeoutInMilliseconds(120000);
+
+// Pre-installed Chromium in this sandbox environment (not present on other
+// machines/CI, where `npx remotion browser ensure` manages its own browser).
+const sandboxBrowser =
+  "/opt/pw-browsers/chromium_headless_shell-1194/chrome-linux/headless_shell";
+if (existsSync(sandboxBrowser)) {
+  Config.setBrowserExecutable(sandboxBrowser);
+}
