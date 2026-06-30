@@ -28,9 +28,19 @@ jobs:
       - name: Render OmniFlow Premium Ad
         run: npx remotion render OmniFlowPremiumAd out/omniflow-ad.mp4 --codec=h264
 
-      - name: Upload rendered video
+      - name: Upload OmniFlow Ad
         uses: actions/upload-artifact@v4
         with:
           name: omniflow-ad-${{ github.sha }}
           path: out/omniflow-ad.mp4
+          retention-days: 30
+
+      - name: Render Hero Desktop
+        run: npx remotion render HeroDesktop out/hero-desktop.mp4 --codec=h264
+
+      - name: Upload Hero Desktop
+        uses: actions/upload-artifact@v4
+        with:
+          name: hero-desktop-${{ github.sha }}
+          path: out/hero-desktop.mp4
           retention-days: 30
