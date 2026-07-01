@@ -3,6 +3,7 @@ import { Composition } from "remotion";
 import { MyComposition } from "./Composition";
 import { OmniFlowPremiumAd } from "./omniflow/OmniFlowPremiumAd";
 import { HeroDesktop, TOTAL_FRAMES } from "./hero/HeroDesktop";
+import { TikTokPreview, PREVIEW_FRAMES } from "./tiktok/TikTokPreview";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -30,6 +31,14 @@ export const RemotionRoot: React.FC = () => {
         fps={30}
         width={1920}
         height={1080}
+      />
+      <Composition
+        id="TikTokPreview"
+        component={TikTokPreview}
+        durationInFrames={PREVIEW_FRAMES}
+        fps={30}
+        width={1080}
+        height={1920}
       />
     </>
   );
