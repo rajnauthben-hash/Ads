@@ -5,6 +5,7 @@ import { OmniFlowPremiumAd } from "./omniflow/OmniFlowPremiumAd";
 import { OmniFlowInvisibleAd } from "./omniflow/OmniFlowInvisibleAd";
 import { HeroDesktop, TOTAL_FRAMES } from "./hero/HeroDesktop";
 import { HeroMobile } from "./hero/HeroMobile";
+import { OmniFlowDigitalAd } from "./compositions/OmniFlowAd";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -48,6 +49,16 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="OmniFlowInvisibleAd"
         component={OmniFlowInvisibleAd}
+        durationInFrames={540}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+
+      {/* OmniFlow Digital — Cinematic Premium Ad — 18s */}
+      <Composition
+        id="OmniFlowDigitalAd"
+        component={OmniFlowDigitalAd}
         durationInFrames={540}
         fps={30}
         width={1080}
