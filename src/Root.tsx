@@ -2,6 +2,7 @@ import "./index.css";
 import { Composition } from "remotion";
 import { MyComposition } from "./Composition";
 import { OmniFlowPremiumAd } from "./omniflow/OmniFlowPremiumAd";
+import { OmniFlowInvisibleAd } from "./omniflow/OmniFlowInvisibleAd";
 import { HeroDesktop, TOTAL_FRAMES } from "./hero/HeroDesktop";
 import { HeroMobile } from "./hero/HeroMobile";
 
@@ -38,6 +39,16 @@ export const RemotionRoot: React.FC = () => {
         id="HeroMobile"
         component={HeroMobile}
         durationInFrames={TOTAL_FRAMES}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+
+      {/* OmniFlow Digital — "From Invisible to Unmissable" — 18s ad */}
+      <Composition
+        id="OmniFlowInvisibleAd"
+        component={OmniFlowInvisibleAd}
+        durationInFrames={540}
         fps={30}
         width={1080}
         height={1920}
