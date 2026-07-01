@@ -3,71 +3,40 @@ import { HeroDesktop } from "./HeroDesktop";
 
 export { TOTAL_FRAMES } from "./HeroDesktop";
 
-// Desktop scene dimensions (fixed)
 const DESKTOP_W = 1920;
 const DESKTOP_H = 1080;
 
-// Fraction of each side reserved as safe margin.
-// 2.5% covers mobile browser chrome (address bar / nav bar) at the
-// smallest target size (360×800) while leaving visible margin on all sides.
-const SAFE_MARGIN_FRAC = 0.025;
+// Horizontal center of the key content cluster in the desktop scene.
+// Structural elements span x≈915 (store left) to x≈1420 (panel right);
+// centering at 1168 gives ≈90px canvas margin on each side at 1080×1920.
+const CONTENT_CENTER_X = 1168;
 
 export const HeroMobile: React.FC = () => {
   const { width, height } = useVideoConfig();
 
-  const marginX = Math.round(width  * SAFE_MARGIN_FRAC);
-  const marginY = Math.round(height * SAFE_MARGIN_FRAC);
+  // Scale to fill the full portrait height — the scene occupies 100% of the
+  // vertical space. The desktop scene is wider than the portrait canvas, so
+  // it is cropped left and right, revealing only the content-rich center zone.
+  const scale = height / DESKTOP_H;
 
-  const availW = width  - marginX * 2;
-  const availH = height - marginY * 2;
-
-  // Scale the entire desktop scene to fit the available area, preserving
-  // the original 16:9 aspect ratio. Width is always the limiting axis when
-  // fitting landscape (16:9) into portrait (9:16+), but we use Math.min to
-  // be safe across all viewport ratios.
-  const scale = Math.min(availW / DESKTOP_W, availH / DESKTOP_H);
-
-  const scaledW = Math.round(DESKTOP_W * scale);
-  const scaledH = Math.round(DESKTOP_H * scale);
-
-  // Center the scaled scene in the mobile canvas
-  const offsetX = Math.round((width  - scaledW) / 2);
-  const offsetY = Math.round((height - scaledH) / 2);
+  // Center the content cluster horizontally in the portrait canvas.
+  const offsetX = Math.round(width / 2 - CONTENT_CENTER_X * scale);
+  // offsetY is always 0: scale = height/DESKTOP_H means scaledH = height exactly.
 
   return (
-    <AbsoluteFill style={{ background: "#020B14" }}>
-      {/*
-        Outer wrapper: clips any sub-pixel overflow from the scale transform
-        and defines the visible region of the scene.
-      */}
+    <AbsoluteFill style={{ background: "#020B14", overflow: "hidden" }}>
       <div
         style={{
           position: "absolute",
           left: offsetX,
-          top: offsetY,
-          width: scaledW,
-          height: scaledH,
-          overflow: "hidden",
+          top: 0,
+          width: DESKTOP_W,
+          height: DESKTOP_H,
+          transform: `scale(${scale})`,
+          transformOrigin: "top left",
         }}
       >
-        {/*
-          Inner wrapper: 1920×1080 in layout space so HeroDesktop's
-          AbsoluteFill fills the correct canvas. CSS transform scales the
-          entire painted layer down to scaledW×scaledH visually — no
-          individual element positions change, all animation timing is
-          preserved via the shared Remotion frame context.
-        */}
-        <div
-          style={{
-            position: "absolute",
-            width: DESKTOP_W,
-            height: DESKTOP_H,
-            transform: `scale(${scale})`,
-            transformOrigin: "top left",
-          }}
-        >
-          <HeroDesktop />
-        </div>
+        <HeroDesktop />
       </div>
     </AbsoluteFill>
   );
