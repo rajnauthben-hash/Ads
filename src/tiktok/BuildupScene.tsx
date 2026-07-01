@@ -51,7 +51,7 @@ function shakeOffset(frame: number, amp: number): { x: number; y: number } {
 }
 
 export const BuildupScene: React.FC = () => {
-  const frame = useCurrentFrame(); // local: 0-59
+  const frame = useCurrentFrame(); // local: 0-89
 
   // ── Centre ignition — spring burst on frame 0 ────────────────────
   const igniteSc = spring({ frame, fps: 30, config: SPRING.bouncy, durationInFrames: 25 });
@@ -61,19 +61,19 @@ export const BuildupScene: React.FC = () => {
 
   // ── Glow layers ───────────────────────────────────────────────────
   // Outermost halo fades in and expands
-  const haloOpacity = interpolate(frame, [0, 20, 55], [0, 0.55, 0.38], {
+  const haloOpacity = interpolate(frame, [0, 20, 80], [0, 0.55, 0.38], {
     extrapolateLeft: "clamp", extrapolateRight: "clamp",
   });
-  const haloScale = spring({ frame, fps: 30, config: { damping: 12, mass: 1.2, stiffness: 80 }, durationInFrames: 50 });
+  const haloScale = spring({ frame, fps: 30, config: { damping: 12, mass: 1.2, stiffness: 80 }, durationInFrames: 75 });
 
   // ── Camera shake ramps up across buildup ─────────────────────────
-  const shakeAmp = interpolate(frame, [0, 45, 59], [0, 4, 7], {
+  const shakeAmp = interpolate(frame, [0, 68, 89], [0, 4, 7], {
     extrapolateLeft: "clamp", extrapolateRight: "clamp",
   });
   const { x: sx, y: sy } = shakeOffset(frame, shakeAmp);
 
   // ── Vignette builds from edges as tension grows ───────────────────
-  const vigOpacity = interpolate(frame, [0, 30, 59], [0, 0.35, 0.65], {
+  const vigOpacity = interpolate(frame, [0, 45, 89], [0, 0.35, 0.65], {
     extrapolateLeft: "clamp", extrapolateRight: "clamp",
   });
 
@@ -132,7 +132,7 @@ export const BuildupScene: React.FC = () => {
           const localF = frame - p.delay;
           if (localF < 0) return null;
 
-          const travelFrames = 59 - p.delay;
+          const travelFrames = 89 - p.delay;
           const progress = interpolate(
             localF,
             [0, Math.max(1, travelFrames)],

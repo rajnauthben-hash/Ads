@@ -29,26 +29,26 @@ export const SPRING = {
 // ── Frame boundaries (tune here to re-pace) ──────────────────────────
 export const F = {
   HOOK_START:    0,
-  HOOK_END:      60,
-  BUILDUP_START: 60,
-  BUILDUP_END:   120,
-  FLASH_START:   120,
-  FLASH_END:     135,
-  REVEAL_START:  135,
-  REVEAL_END:    300,
-  PROOF_START:   300,
-  PROOF_END:     390,
-  LOCKUP_START:  390,
+  HOOK_END:      90,
+  BUILDUP_START: 90,
+  BUILDUP_END:   180,
+  FLASH_START:   180,
+  FLASH_END:     195,
+  REVEAL_START:  195,
+  REVEAL_END:    330,
+  PROOF_START:   330,
+  PROOF_END:     405,
+  LOCKUP_START:  405,
   LOCKUP_END:    450,
 } as const;
 
 // Hook sub-timing (relative to sequence-local frame 0)
 export const HOOK = {
-  BAR_IN_DONE:      8,   // search bar fully faded in
-  TYPE_START:       8,   // typewriter begins
-  TYPE_RATE:        1.4, // characters per frame
-  GLITCH_START:     44,  // bar starts glitching
-  RESULTS_CUT:      49,  // hard cut to 0 RESULTS
+  BAR_IN_DONE:  14,   // search bar fully faded in
+  TYPE_START:   14,   // typewriter begins
+  TYPE_RATE:    0.65, // characters per frame — slower, more deliberate
+  GLITCH_START: 64,   // bar starts glitching
+  RESULTS_CUT:  76,   // hard cut to 0 RESULTS
 } as const;
 
 // ── Copy — swap here to retune messaging ─────────────────────────────
