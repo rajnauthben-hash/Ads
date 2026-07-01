@@ -1,0 +1,46 @@
+name: Render Remotion Video
+
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chrome for Remotion
+        run: npx remotion browser ensure
+
+      - name: Render OmniFlow Premium Ad
+        run: npx remotion render OmniFlowPremiumAd out/omniflow-ad.mp4 --codec=h264
+
+      - name: Upload OmniFlow Ad
+        uses: actions/upload-artifact@v4
+        with:
+          name: omniflow-ad-${{ github.sha }}
+          path: out/omniflow-ad.mp4
+          retention-days: 30
+
+      - name: Render Hero Desktop
+        run: npx remotion render HeroDesktop out/hero-desktop.mp4 --codec=h264
+
+      - name: Upload Hero Desktop
+        uses: actions/upload-artifact@v4
+        with:
+          name: hero-desktop-${{ github.sha }}
+          path: out/hero-desktop.mp4
+          retention-days: 30
