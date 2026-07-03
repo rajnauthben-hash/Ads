@@ -5,78 +5,227 @@ import { CinematicText } from "../components/CinematicText";
 import { LogoLockup } from "../../components/LogoLockup";
 import { T, FONT, EO } from "../theme";
 
-// Ghost artifacts from the journey, orbiting slowly behind the lockup.
-const OrbitingEcho: React.FC<{
-  radius: number; speed: number; phase: number; children: React.ReactNode;
-}> = ({ radius, speed, phase, children }) => {
+// Background UI from the reference final frame — real copy, dimmed so the
+// CTA stack stays the hero.
+const BG_OPACITY = 0.34;
+
+const useDrift = (delay: number, from: number) => {
   const frame = useCurrentFrame();
-  const a = phase + frame * speed;
-  const x = Math.cos(a) * radius;
-  const y = Math.sin(a) * radius * 0.34;
-  const behind = Math.sin(a) < 0; // top of ellipse = farther away
+  const f = Math.max(0, frame - delay);
+  return {
+    op: interpolate(f, [0, 20], [0, BG_OPACITY], { extrapolateRight: "clamp" }),
+    ty: interpolate(f, [0, 30], [from, 0], { extrapolateRight: "clamp", easing: Easing.bezier(...EO) }),
+    bob: Math.sin(frame * 0.024 + delay) * 4,
+  };
+};
+
+// Final website mockup — "Built for Trust. Designed to Convert."
+const FinalSiteMockup: React.FC<{ delay: number }> = ({ delay }) => {
+  const { op, ty, bob } = useDrift(delay, 26);
+  const W = 560;
+
   return (
     <div
       style={{
-        position: "absolute",
-        left: `calc(50% + ${x}px)`,
-        top: `calc(50% + ${y}px)`,
-        translate: "-50% -50%",
-        opacity: behind ? 0.16 : 0.3,
-        scale: behind ? "0.82" : "1",
-        filter: "blur(1px)",
-        zIndex: behind ? 0 : 2,
+        opacity: op,
+        translate: `0px ${ty + bob}px`,
+        width: W,
+        borderRadius: 16,
+        border: "1px solid rgba(148,197,255,0.3)",
+        background: "#070E22",
+        overflow: "hidden",
+        fontFamily: FONT,
+        boxShadow: "0 26px 60px rgba(0,0,0,0.55)",
       }}
     >
-      {children}
+      {/* Chrome */}
+      <div
+        style={{
+          height: 34,
+          background: "rgba(4,8,20,0.98)",
+          borderBottom: "1px solid rgba(255,255,255,0.07)",
+          display: "flex",
+          alignItems: "center",
+          padding: "0 12px",
+          gap: 6,
+        }}
+      >
+        {[0, 1, 2].map((i) => (
+          <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: "rgba(255,255,255,0.14)" }} />
+        ))}
+        <div
+          style={{
+            flex: 1,
+            marginLeft: 10,
+            height: 19,
+            background: "rgba(255,255,255,0.04)",
+            borderRadius: 6,
+            display: "flex",
+            alignItems: "center",
+            paddingLeft: 9,
+            fontSize: 10.5,
+            color: "rgba(255,255,255,0.55)",
+          }}
+        >
+          https://www.yourbusiness.com
+        </div>
+      </div>
+      {/* Nav */}
+      <div
+        style={{
+          padding: "11px 18px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          borderBottom: "1px solid rgba(255,255,255,0.05)",
+        }}
+      >
+        <div style={{ fontSize: 12.5, fontWeight: 700, letterSpacing: "0.06em", color: "rgba(255,255,255,0.9)" }}>
+          YOUR BUSINESS
+        </div>
+        <div style={{ display: "flex", gap: 11 }}>
+          {["HOME", "ABOUT", "SERVICES", "GALLERY", "CONTACT"].map((n, i) => (
+            <div
+              key={n}
+              style={{
+                fontSize: 9,
+                fontWeight: 500,
+                letterSpacing: "0.05em",
+                color: i === 0 ? T.cyan : "rgba(255,255,255,0.5)",
+              }}
+            >
+              {n}
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* Hero */}
+      <div
+        style={{
+          padding: "18px 18px 20px",
+          background: "linear-gradient(155deg, rgba(10,22,56,1) 0%, rgba(7,14,34,1) 100%)",
+        }}
+      >
+        <div style={{ fontSize: 21, fontWeight: 800, lineHeight: 1.2, letterSpacing: "-0.01em", color: "rgba(255,255,255,0.96)", marginBottom: 8 }}>
+          Built for Trust.<br />
+          Designed to Convert.
+        </div>
+        <div style={{ fontSize: 11.5, lineHeight: 1.45, color: "rgba(148,163,184,0.9)", marginBottom: 13 }}>
+          Modern websites that represent<br />
+          your business the right way.
+        </div>
+        <div
+          style={{
+            display: "inline-block",
+            padding: "8px 15px",
+            borderRadius: 7,
+            border: `1px solid ${T.cyan}`,
+            fontSize: 10,
+            fontWeight: 700,
+            letterSpacing: "0.06em",
+            color: T.cyan,
+          }}
+        >
+          GET STARTED
+        </div>
+      </div>
     </div>
   );
 };
 
-const MiniSite: React.FC = () => (
-  <div
-    style={{
-      width: 150,
-      height: 96,
-      borderRadius: 10,
-      border: "1px solid rgba(120,210,255,0.4)",
-      background: "rgba(10,20,40,0.5)",
-      padding: 10,
-    }}
-  >
-    <div style={{ width: "58%", height: 6, borderRadius: 2, background: "rgba(226,240,255,0.6)", marginBottom: 5 }} />
-    <div style={{ width: "40%", height: 4, borderRadius: 2, background: "rgba(148,197,255,0.4)", marginBottom: 8 }} />
-    <div style={{ width: 42, height: 13, borderRadius: 4, background: "rgba(34,211,238,0.75)" }} />
-  </div>
-);
+// Google business card — with Save action (final-frame variant)
+const FinalBizCard: React.FC<{ delay: number }> = ({ delay }) => {
+  const { op, ty, bob } = useDrift(delay, 22);
 
-const MiniPin: React.FC = () => (
-  <svg width={46} height={56} viewBox="0 0 124 150">
-    <path
-      d="M62 6 C34 6 14 27 14 52 C14 86 62 142 62 142 C62 142 110 86 110 52 C110 27 90 6 62 6 Z"
-      fill="rgba(34,211,238,0.8)"
-    />
-    <circle cx={62} cy={52} r={21} fill="#04121E" />
-  </svg>
-);
+  return (
+    <div
+      style={{
+        opacity: op,
+        translate: `0px ${ty + bob}px`,
+        width: 330,
+        borderRadius: 15,
+        border: "1px solid rgba(34,211,238,0.4)",
+        background: "rgba(10,26,40,0.95)",
+        padding: "16px 18px 13px",
+        fontFamily: FONT,
+        boxShadow: "0 0 34px rgba(34,211,238,0.14), 0 22px 52px rgba(0,0,0,0.5)",
+      }}
+    >
+      <div style={{ fontSize: 19, fontWeight: 800, color: T.white, marginBottom: 5 }}>Your Business</div>
+      <div style={{ fontSize: 14, marginBottom: 4 }}>
+        <span style={{ color: T.white, fontWeight: 600 }}>4.9 </span>
+        <span style={{ color: "#F5B942" }}>★★★★★</span>
+        <span style={{ color: T.muted }}> (128)</span>
+      </div>
+      <div style={{ fontSize: 13.5, marginBottom: 11 }}>
+        <span style={{ color: "#34D399", fontWeight: 600 }}>Open</span>
+        <span style={{ color: T.muted }}> · Closes 8 PM</span>
+      </div>
+      <div style={{ display: "flex", gap: 7, borderTop: "1px solid rgba(148,197,255,0.14)", paddingTop: 10 }}>
+        {["Call", "Directions", "Website", "Save"].map((a) => (
+          <div
+            key={a}
+            style={{
+              flex: 1,
+              textAlign: "center",
+              padding: "6px 0",
+              borderRadius: 16,
+              background: "rgba(34,211,238,0.1)",
+              border: "1px solid rgba(34,211,238,0.28)",
+              fontSize: 11.5,
+              fontWeight: 600,
+              color: T.cyan,
+              whiteSpace: "nowrap",
+            }}
+          >
+            {a}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
-const MiniPhone: React.FC = () => (
-  <div
-    style={{
-      width: 54,
-      height: 106,
-      borderRadius: 12,
-      border: "1px solid rgba(120,210,255,0.45)",
-      background: "rgba(10,20,40,0.5)",
-      padding: 6,
-    }}
-  >
-    <div style={{ width: "80%", height: 4, borderRadius: 2, background: "rgba(226,240,255,0.5)", marginBottom: 4 }} />
-    <div style={{ width: "55%", height: 4, borderRadius: 2, background: "rgba(148,197,255,0.35)", marginBottom: 7 }} />
-    <div style={{ width: 24, height: 9, borderRadius: 3, background: "rgba(34,211,238,0.7)" }} />
-  </div>
-);
+// Side stat cards — Local Visibility 98% / Customer Activity 247
+const SideStat: React.FC<{
+  delay: number; title: string; value: string; sub: string;
+}> = ({ delay, title, value, sub }) => {
+  const { op, ty, bob } = useDrift(delay, 20);
 
-// SCENE 6 — pull-back reveal: brand above the portal, journey orbiting behind.
+  return (
+    <div
+      style={{
+        opacity: op,
+        translate: `0px ${ty + bob}px`,
+        width: 252,
+        borderRadius: 15,
+        border: "1px solid rgba(148,197,255,0.24)",
+        background: T.panel,
+        padding: "15px 18px",
+        fontFamily: FONT,
+        boxShadow: "0 20px 48px rgba(0,0,0,0.5)",
+      }}
+    >
+      <div style={{ fontSize: 14.5, fontWeight: 600, color: "rgba(226,240,255,0.85)", marginBottom: 6 }}>{title}</div>
+      <div
+        style={{
+          fontSize: 37,
+          fontWeight: 800,
+          color: T.cyan,
+          letterSpacing: "-0.02em",
+          lineHeight: 1,
+          marginBottom: 6,
+          textShadow: "0 0 20px rgba(34,211,238,0.4)",
+        }}
+      >
+        {value}
+      </div>
+      <div style={{ fontSize: 12.5, lineHeight: 1.4, color: T.muted }}>{sub}</div>
+    </div>
+  );
+};
+
+// SCENE — final beat: pull-back reveal, brand over the portal, CTA.
 export const FinalCTAScene: React.FC<{ dur: number }> = ({ dur }) => {
   const frame = useCurrentFrame();
 
@@ -91,13 +240,26 @@ export const FinalCTAScene: React.FC<{ dur: number }> = ({ dur }) => {
         <EnergyRing delay={0} beam intensity={1} y={1545} scale={1.12} />
       </Parallax>
 
-      {/* Orbiting echoes of the journey */}
-      <Parallax depth={0.5} phase={3}>
-        <AbsoluteFill style={{ translate: "0px -215px" }}>
-          <OrbitingEcho radius={385} speed={0.0075} phase={0.6}><MiniSite /></OrbitingEcho>
-          <OrbitingEcho radius={420} speed={0.006}  phase={2.7}><MiniPin /></OrbitingEcho>
-          <OrbitingEcho radius={355} speed={0.009}  phase={4.6}><MiniPhone /></OrbitingEcho>
-        </AbsoluteFill>
+      {/* Background UI from the reference — dimmed, parallax layers */}
+      <Parallax depth={0.35} phase={3}>
+        <div style={{ position: "absolute", top: 96, left: "50%", translate: "-50% 0" }}>
+          <FinalSiteMockup delay={6} />
+        </div>
+      </Parallax>
+      <Parallax depth={0.5} phase={5}>
+        <div style={{ position: "absolute", top: 1190, left: "50%", translate: "calc(-50% - 350px) 0" }}>
+          <SideStat delay={16} title="Local Visibility" value="98%" sub="Your business is visible to nearby customers" />
+        </div>
+      </Parallax>
+      <Parallax depth={0.5} phase={7}>
+        <div style={{ position: "absolute", top: 1190, left: "50%", translate: "calc(-50% + 350px) 0" }}>
+          <SideStat delay={22} title="Customer Activity" value="247" sub="Interactions this week" />
+        </div>
+      </Parallax>
+      <Parallax depth={0.45} phase={9}>
+        <div style={{ position: "absolute", top: 1252, left: "50%", translate: "-50% 0" }}>
+          <FinalBizCard delay={28} />
+        </div>
       </Parallax>
 
       {/* Lockup + copy + CTA — verbatim from the original final frame */}

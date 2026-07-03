@@ -112,7 +112,7 @@ export const TransformationScene: React.FC<{ dur: number }> = ({ dur }) => {
             translate: "-50% 0",
           }}
         >
-          <DualStateWebsite repairProgress={repair} delay={0} width={730} />
+          <DualStateWebsite repairProgress={repair} delay={0} width={730} withText />
         </div>
       </Parallax>
 

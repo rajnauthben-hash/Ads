@@ -5,18 +5,23 @@
 // Times are the ORIGINAL video's beats; "target" is where the text
 // lands in the OmniFlowCinematic timeline (frames @ 30fps).
 //
-// Not transferred (background UI props of the original posters, not ad
-// copy — the cinematic replaces these mockups with abstract skeletons):
-//   • browser nav items "HOME ABOUT SERVICES CONTACT", "YOUR BUSINESS",
-//     URLs "http(s)://www.yourbusiness.com", "GET STARTED",
-//     "VIEW OUR WORK", "WELCOME", in-site hero copy ("We craft digital
-//     experiences that drive real growth." etc.), feature tiles
-//     ("Fast Loading / Mobile Friendly / Built to Convert" + captions)
-//   • dashboard micro-stats (Website Visits 4,892 +84%, Profile Views
-//     1,754 +92%, Customer Actions 673 +110%, Top Performing Channels,
-//     92% Engagement Rate, Avg. Time on Site 02:48, Bounce Rate 28%,
-//     Review Rating 4.9, Ranking Keywords 156, Apr axis labels)
-//   • "Traffic Over Time", "Customer Activity", "+28%" chart chrome
+// Correction pass: mockup/prop text is now ALSO transferred verbatim —
+//   • ghost + repaired site: http://www.yourbusiness.com, YOUR BUSINESS,
+//     HOME / ABOUT / SERVICES / CONTACT
+//   • premium site: https URL, nav (+WORK), GET STARTED, WELCOME,
+//     "We craft digital experiences that drive real growth.", hero
+//     paragraph, VIEW OUR WORK, feature tiles with captions
+//   • cost beat: Traffic Over Time, Customer Activity, listing card reuse
+//   • actions beat: +28% stat pill
+//   • growth beat: full PERFORMANCE OVERVIEW dashboard (Apr 1 – Apr 30,
+//     2025; Overall Growth +127% vs Mar 1 – Mar 31, 2025; Website Visits
+//     4,892 +84%; Profile Views 1,754 +92%; Customer Actions 673 +110%;
+//     Top Performing Channels 1,982/1,245/892/623; Engagement Rate 92%
+//     +18%; Avg. Time on Site 02:48 +22%; Bounce Rate 28% -16%; Review
+//     Rating 4.9 ★★★★★; Ranking Keywords 156 +37%)
+//   • final frame: site mockup (nav +GALLERY, "Built for Trust. Designed
+//     to Convert.", paragraph, GET STARTED), listing card + Save button,
+//     Local Visibility 98%, Customer Activity 247
 // ————————————————————————————————————————————————————————————————
 
 export interface TextLayer {

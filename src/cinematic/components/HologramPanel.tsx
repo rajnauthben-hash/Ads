@@ -95,16 +95,37 @@ export const HologramPanel: React.FC<{
               letterSpacing: "0.02em",
             }}
           >
-            www.yourbusiness.com
+            http://www.yourbusiness.com
           </div>
         </div>
 
-        {/* Nav skeleton */}
+        {/* Nav — real labels, ghost styled */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 20px" }}>
-          <div style={{ width: 110, height: 9, borderRadius: 3, background: bone(0.5) }} />
-          <div style={{ display: "flex", gap: 12 }}>
-            {[36, 40, 34].map((w, i) => (
-              <div key={i} style={{ width: w, height: 6, borderRadius: 2, background: bone(0.3) }} />
+          <div
+            style={{
+              fontFamily: FONT,
+              fontSize: 16,
+              fontWeight: 700,
+              letterSpacing: "0.06em",
+              color: bone(0.62),
+            }}
+          >
+            YOUR BUSINESS
+          </div>
+          <div style={{ display: "flex", gap: 14 }}>
+            {["HOME", "ABOUT", "SERVICES", "CONTACT"].map((n) => (
+              <div
+                key={n}
+                style={{
+                  fontFamily: FONT,
+                  fontSize: 11.5,
+                  fontWeight: 500,
+                  letterSpacing: "0.05em",
+                  color: bone(0.42),
+                }}
+              >
+                {n}
+              </div>
             ))}
           </div>
         </div>

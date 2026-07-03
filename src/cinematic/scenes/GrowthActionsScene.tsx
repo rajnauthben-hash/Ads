@@ -145,6 +145,11 @@ export const GrowthActionsScene: React.FC<{ dur: number }> = ({ dur }) => {
         </div>
       </Parallax>
 
+      {/* +28% stat pill riding the arc (verbatim from the reference) */}
+      <Parallax depth={0.5} phase={6}>
+        <StatPill delay={64} x={352} y={-372} />
+      </Parallax>
+
       {/* Action tiles — 2×2 in depth */}
       <Parallax depth={0.7} phase={3}>
         <AbsoluteFill style={{ translate: "0px -105px" }}>
@@ -187,6 +192,42 @@ export const GrowthActionsScene: React.FC<{ dur: number }> = ({ dur }) => {
       </AbsoluteFill>
 
     </AbsoluteFill>
+  );
+};
+
+const StatPill: React.FC<{ delay: number; x: number; y: number }> = ({ delay, x, y }) => {
+  const frame = useCurrentFrame();
+  const f = Math.max(0, frame - delay);
+  const op = interpolate(f, [0, 14], [0, 1], { extrapolateRight: "clamp" });
+  const sc = interpolate(f, [0, 22], [0.8, 1], {
+    extrapolateRight: "clamp",
+    easing: Easing.bezier(...EO),
+  });
+  const bob = Math.sin(frame * 0.032 + 2) * 5;
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: `calc(50% + ${x}px)`,
+        top: `calc(50% + ${y + bob}px)`,
+        translate: "-50% -50%",
+        opacity: op,
+        scale: sc.toString(),
+        padding: "10px 20px",
+        borderRadius: 30,
+        border: "1px solid rgba(34,211,238,0.4)",
+        background: "rgba(34,211,238,0.1)",
+        boxShadow: "0 0 26px rgba(34,211,238,0.2)",
+        fontFamily: FONT,
+        fontSize: 26,
+        fontWeight: 800,
+        color: T.cyan,
+        letterSpacing: "-0.01em",
+      }}
+    >
+      +28%
+    </div>
   );
 };
 

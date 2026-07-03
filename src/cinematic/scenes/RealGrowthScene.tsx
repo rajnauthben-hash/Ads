@@ -4,140 +4,306 @@ import { CinematicText } from "../components/CinematicText";
 import { FooterCaps } from "./GrowthActionsScene";
 import { T, FONT, EO } from "../theme";
 
-// SCENE — beat 8: "Real growth. Real impact." with the original's
-// headline stat (Overall Growth +127%) over a drawing chart.
+// SCENE — beat 8: "Real growth. Real impact." Full PERFORMANCE OVERVIEW
+// dashboard with all figures verbatim from the reference ad.
 
-const ChartPanel: React.FC<{ delay: number }> = ({ delay }) => {
+const PANEL_W = 850;
+
+const useReveal = (delay: number) => {
   const frame = useCurrentFrame();
   const f = Math.max(0, frame - delay);
-  const op = interpolate(f, [0, 20], [0, 1], { extrapolateRight: "clamp" });
-  const ty = interpolate(f, [0, 30], [60, 0], {
-    extrapolateRight: "clamp",
-    easing: Easing.bezier(...EO),
-  });
+  return {
+    f,
+    op: interpolate(f, [0, 14], [0, 1], { extrapolateRight: "clamp" }),
+    ty: interpolate(f, [0, 22], [16, 0], { extrapolateRight: "clamp", easing: Easing.bezier(...EO) }),
+  };
+};
 
-  const W = 760;
-  const H = 430;
-
-  // Chart line draw
-  const p = interpolate(f, [12, 74], [0, 1], {
+// Overall growth block + line chart
+const OverallGrowth: React.FC<{ delay: number }> = ({ delay }) => {
+  const { f, op, ty } = useReveal(delay);
+  const pct = Math.round(interpolate(f, [4, 40], [0, 127], { extrapolateRight: "clamp" }));
+  const p = interpolate(f, [4, 52], [0, 1], {
     extrapolateRight: "clamp",
     easing: Easing.bezier(0.4, 0, 0.4, 1),
   });
-  const L = 1000;
+  const L = 700;
+  const cw = PANEL_W - 300;
 
-  // Glow dot rides the end of the line
-  const dotX = interpolate(p, [0, 1], [70, W - 66]);
-  const dotY = interpolate(p, [0, 0.3, 0.6, 1], [H - 96, H - 150, H - 215, 78]);
+  return (
+    <div style={{ opacity: op, translate: `0px ${ty}px`, display: "flex", gap: 24, alignItems: "flex-start" }}>
+      <div style={{ flexShrink: 0 }}>
+        <div style={{ fontSize: 17, fontWeight: 600, color: T.muted, marginBottom: 5 }}>Overall Growth</div>
+        <div
+          style={{
+            fontSize: 52,
+            fontWeight: 800,
+            color: T.cyan,
+            letterSpacing: "-0.025em",
+            lineHeight: 1,
+            textShadow: "0 0 28px rgba(34,211,238,0.45)",
+            marginBottom: 6,
+          }}
+        >
+          +{pct}%
+        </div>
+        <div style={{ fontSize: 13.5, color: T.muted }}>vs Mar 1 – Mar 31, 2025</div>
+      </div>
+      <svg width={cw} height={118} viewBox={`0 0 ${cw} 118`} style={{ marginTop: 6 }}>
+        {[0.3, 0.6, 0.9].map((r, i) => (
+          <line key={i} x1={0} y1={118 * r} x2={cw} y2={118 * r} stroke="rgba(148,197,255,0.09)" strokeWidth={1} />
+        ))}
+        <path
+          d={`M 4 104 C ${cw * 0.2} 96, ${cw * 0.3} 82, ${cw * 0.45} 70 C ${cw * 0.6} 58, ${cw * 0.75} 40, ${cw - 8} 12`}
+          fill="none"
+          stroke={T.cyan}
+          strokeWidth={2.5}
+          strokeLinecap="round"
+          strokeDasharray={L}
+          strokeDashoffset={L * (1 - p)}
+          style={{ filter: "drop-shadow(0 0 7px rgba(34,211,238,0.7))" }}
+        />
+        <circle cx={cw - 8} cy={12} r={4.5} fill="#CFF6FF" opacity={p > 0.97 ? 1 : 0} />
+      </svg>
+    </div>
+  );
+};
 
-  const pct = Math.round(interpolate(f, [16, 58], [0, 127], { extrapolateRight: "clamp" }));
+// The three metric cards — figures verbatim
+const METRICS = [
+  { label: "Website Visits",   value: "4,892", delta: "+84%"  },
+  { label: "Profile Views",    value: "1,754", delta: "+92%"  },
+  { label: "Customer Actions", value: "673",   delta: "+110%" },
+];
+
+const MetricRow: React.FC<{ delay: number }> = ({ delay }) => {
+  const { op, ty } = useReveal(delay);
+  return (
+    <div style={{ opacity: op, translate: `0px ${ty}px`, display: "flex", gap: 14 }}>
+      {METRICS.map((m) => (
+        <div
+          key={m.label}
+          style={{
+            flex: 1,
+            borderRadius: 14,
+            border: "1px solid rgba(148,197,255,0.14)",
+            background: "rgba(255,255,255,0.025)",
+            padding: "14px 16px",
+          }}
+        >
+          <div style={{ fontSize: 14.5, fontWeight: 600, color: T.muted, marginBottom: 7 }}>{m.label}</div>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 9, marginBottom: 5 }}>
+            <span style={{ fontSize: 29, fontWeight: 800, color: T.white, letterSpacing: "-0.02em" }}>{m.value}</span>
+            <span style={{ fontSize: 15.5, fontWeight: 700, color: T.cyan }}>{m.delta}</span>
+          </div>
+          <div style={{ fontSize: 12.5, color: T.muted }}>vs previous 30 days</div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// Channels + engagement ring — figures verbatim
+const CHANNELS = [
+  { label: "Google Search", value: "1,982", w: 1.0  },
+  { label: "Google Maps",   value: "1,245", w: 0.63 },
+  { label: "Direct",        value: "892",   w: 0.45 },
+  { label: "Referrals",     value: "623",   w: 0.31 },
+];
+
+const ChannelsRow: React.FC<{ delay: number }> = ({ delay }) => {
+  const { f, op, ty } = useReveal(delay);
+  const grow = interpolate(f, [4, 34], [0, 1], { extrapolateRight: "clamp", easing: Easing.bezier(...EO) });
+
+  const R = 42;
+  const C = 2 * Math.PI * R;
+  const ringP = interpolate(f, [8, 48], [0, 0.92], { extrapolateRight: "clamp", easing: Easing.bezier(...EO) });
+
+  return (
+    <div style={{ opacity: op, translate: `0px ${ty}px`, display: "flex", gap: 14 }}>
+      {/* Top Performing Channels */}
+      <div
+        style={{
+          flex: 1.5,
+          borderRadius: 14,
+          border: "1px solid rgba(148,197,255,0.14)",
+          background: "rgba(255,255,255,0.025)",
+          padding: "14px 18px",
+        }}
+      >
+        <div style={{ fontSize: 15, fontWeight: 700, color: "rgba(226,240,255,0.9)", marginBottom: 11 }}>
+          Top Performing Channels
+        </div>
+        {CHANNELS.map((c) => (
+          <div key={c.label} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
+            <div style={{ fontSize: 13.5, color: T.muted, width: 108, flexShrink: 0 }}>{c.label}</div>
+            <div style={{ flex: 1, height: 8, borderRadius: 4, background: "rgba(255,255,255,0.06)", overflow: "hidden" }}>
+              <div
+                style={{
+                  height: "100%",
+                  width: `${c.w * grow * 100}%`,
+                  borderRadius: 4,
+                  background: `linear-gradient(90deg, ${T.blue}, ${T.cyan})`,
+                }}
+              />
+            </div>
+            <div style={{ fontSize: 13.5, fontWeight: 700, color: "rgba(226,240,255,0.9)", width: 46, textAlign: "right", flexShrink: 0 }}>
+              {c.value}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Engagement Rate */}
+      <div
+        style={{
+          flex: 1,
+          borderRadius: 14,
+          border: "1px solid rgba(148,197,255,0.14)",
+          background: "rgba(255,255,255,0.025)",
+          padding: "14px 16px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 8,
+        }}
+      >
+        <svg width={104} height={104} viewBox="0 0 104 104">
+          <circle cx={52} cy={52} r={R} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={9} />
+          <circle
+            cx={52} cy={52} r={R} fill="none"
+            stroke={T.cyan} strokeWidth={9} strokeLinecap="round"
+            strokeDasharray={`${C * ringP} ${C}`}
+            style={{ transform: "rotate(-90deg)", transformOrigin: "52px 52px" }}
+          />
+          <text x={52} y={59} textAnchor="middle" fontFamily={FONT} fontSize={24} fontWeight={800} fill={T.white}>
+            92%
+          </text>
+        </svg>
+        <div style={{ fontSize: 14.5, fontWeight: 700, color: "rgba(226,240,255,0.9)" }}>Engagement Rate</div>
+        <div style={{ fontSize: 12.5, color: T.muted }}>+18% vs previous 30 days</div>
+      </div>
+    </div>
+  );
+};
+
+// Bottom stat strip — figures verbatim
+const BOTTOM = [
+  { label: "Avg. Time on Site", value: "02:48", delta: "+22%", deltaColor: T.cyan },
+  { label: "Bounce Rate",       value: "28%",   delta: "-16%", deltaColor: T.cyan },
+  { label: "Review Rating",     value: "4.9",   delta: "★★★★★", deltaColor: "#F5B942" },
+  { label: "Ranking Keywords",  value: "156",   delta: "+37%", deltaColor: T.cyan },
+];
+
+const BottomStrip: React.FC<{ delay: number }> = ({ delay }) => {
+  const { op, ty } = useReveal(delay);
+  return (
+    <div
+      style={{
+        opacity: op,
+        translate: `0px ${ty}px`,
+        display: "flex",
+        gap: 0,
+        borderRadius: 14,
+        border: "1px solid rgba(148,197,255,0.14)",
+        background: "rgba(255,255,255,0.02)",
+        padding: "13px 6px",
+      }}
+    >
+      {BOTTOM.map((s, i) => (
+        <div
+          key={s.label}
+          style={{
+            flex: 1,
+            textAlign: "center",
+            borderLeft: i > 0 ? "1px solid rgba(148,197,255,0.1)" : "none",
+            padding: "0 8px",
+          }}
+        >
+          <div style={{ fontSize: 12.5, color: T.muted, marginBottom: 5, whiteSpace: "nowrap" }}>{s.label}</div>
+          <div style={{ fontSize: 23, fontWeight: 800, color: T.white, letterSpacing: "-0.02em", marginBottom: 3 }}>
+            {s.value}
+          </div>
+          <div style={{ fontSize: 13.5, fontWeight: 700, color: s.deltaColor }}>{s.delta}</div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const DashboardPanel: React.FC<{ delay: number }> = ({ delay }) => {
+  const { f, op, ty } = useReveal(delay);
+  const sc = interpolate(f, [0, 28], [0.95, 1], {
+    extrapolateRight: "clamp",
+    easing: Easing.bezier(...EO),
+  });
 
   return (
     <div
       style={{
         opacity: op,
         translate: `0px ${ty}px`,
-        width: W,
+        scale: sc.toString(),
+        width: PANEL_W,
         borderRadius: 24,
         border: "1px solid rgba(148,197,255,0.2)",
         background: T.panel,
         backdropFilter: "blur(18px)",
         boxShadow: "0 34px 80px rgba(0,0,0,0.6), 0 0 46px rgba(34,211,238,0.07), inset 0 1px 0 rgba(255,255,255,0.07)",
-        padding: "26px 30px 20px",
+        padding: "22px 26px",
+        display: "flex",
+        flexDirection: "column",
+        gap: 16,
         fontFamily: FONT,
       }}
     >
-      {/* Stat header — verbatim from the original dashboard */}
-      <div style={{ display: "flex", alignItems: "baseline", gap: 18, marginBottom: 10 }}>
-        <div>
-          <div style={{ fontSize: 19, fontWeight: 600, color: T.muted, marginBottom: 4 }}>
-            Overall Growth
-          </div>
-          <div
-            style={{
-              fontSize: 62,
-              fontWeight: 800,
-              color: T.cyan,
-              letterSpacing: "-0.025em",
-              textShadow: "0 0 30px rgba(34,211,238,0.45)",
-              lineHeight: 1,
-            }}
-          >
-            +{pct}%
-          </div>
+      {/* Header — verbatim */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ fontSize: 17, fontWeight: 700, letterSpacing: "0.1em", color: "rgba(226,240,255,0.92)" }}>
+          PERFORMANCE OVERVIEW
+        </div>
+        <div
+          style={{
+            padding: "7px 14px",
+            borderRadius: 9,
+            border: "1px solid rgba(148,197,255,0.2)",
+            fontSize: 13.5,
+            color: T.muted,
+          }}
+        >
+          Apr 1 – Apr 30, 2025 ▾
         </div>
       </div>
 
-      {/* Chart */}
-      <svg width={W - 60} height={H - 190} viewBox={`0 0 ${W - 60} ${H - 190}`}>
-        {/* Grid */}
-        {[0.25, 0.5, 0.75].map((r, i) => (
-          <line key={i} x1={0} y1={(H - 190) * r} x2={W - 60} y2={(H - 190) * r}
-            stroke="rgba(148,197,255,0.09)" strokeWidth={1} />
-        ))}
-        {/* Area fill under line */}
-        <path
-          d={`M 10 ${H - 250} C 160 ${H - 275}, 240 ${H - 305}, 360 ${H - 330} C 480 ${H - 355}, 560 ${H - 395}, ${W - 126} 24 L ${W - 126} ${H - 190} L 10 ${H - 190} Z`}
-          fill="url(#growthFill)"
-          opacity={p * 0.5}
-        />
-        <defs>
-          <linearGradient id="growthFill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="rgba(34,211,238,0.35)" />
-            <stop offset="100%" stopColor="rgba(34,211,238,0)" />
-          </linearGradient>
-        </defs>
-        {/* Line */}
-        <path
-          d={`M 10 ${H - 250} C 160 ${H - 275}, 240 ${H - 305}, 360 ${H - 330} C 480 ${H - 355}, 560 ${H - 395}, ${W - 126} 24`}
-          fill="none"
-          stroke={T.cyan}
-          strokeWidth={3}
-          strokeLinecap="round"
-          strokeDasharray={L}
-          strokeDashoffset={L * (1 - p)}
-          style={{ filter: "drop-shadow(0 0 8px rgba(34,211,238,0.7))" }}
-        />
-      </svg>
-
-      {/* Riding glow dot */}
-      <div
-        style={{
-          position: "absolute",
-          left: dotX,
-          top: dotY,
-          width: 14,
-          height: 14,
-          borderRadius: "50%",
-          background: "#CFF6FF",
-          boxShadow: "0 0 18px rgba(34,211,238,0.95), 0 0 44px rgba(34,211,238,0.5)",
-          opacity: p > 0.02 ? 1 : 0,
-        }}
-      />
+      <OverallGrowth delay={delay + 10} />
+      <MetricRow delay={delay + 22} />
+      <ChannelsRow delay={delay + 32} />
+      <BottomStrip delay={delay + 42} />
     </div>
   );
 };
 
 export const RealGrowthScene: React.FC<{ dur: number }> = ({ dur }) => {
   const frame = useCurrentFrame();
-  const push = interpolate(frame, [0, dur], [1, 1.08], { extrapolateRight: "clamp" });
+  const push = interpolate(frame, [0, dur], [1, 1.06], { extrapolateRight: "clamp" });
 
   return (
     <AbsoluteFill style={{ scale: push.toString(), transformOrigin: "50% 46%" }}>
 
-      {/* Chart panel — center */}
+      {/* Dashboard — center */}
       <Parallax depth={0.55} phase={3}>
-        <div style={{ position: "absolute", top: 620, left: "50%", translate: "-50% 0" }}>
-          <ChartPanel delay={22} />
+        <div style={{ position: "absolute", top: 486, left: "50%", translate: "-50% 0" }}>
+          <DashboardPanel delay={16} />
         </div>
       </Parallax>
 
       {/* Headline — top */}
-      <AbsoluteFill style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: 240 }}>
-        <CinematicText delay={12} size={80}>
+      <AbsoluteFill style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: 196 }}>
+        <CinematicText delay={10} size={72}>
           Real growth.
         </CinematicText>
-        <CinematicText delay={22} size={80} gradient glow tracking>
+        <CinematicText delay={20} size={72} gradient glow tracking>
           Real impact.
         </CinematicText>
       </AbsoluteFill>
@@ -149,7 +315,7 @@ export const RealGrowthScene: React.FC<{ dur: number }> = ({ dur }) => {
           flexDirection: "column",
           justifyContent: "flex-end",
           alignItems: "center",
-          paddingBottom: 226,
+          paddingBottom: 200,
           gap: 10,
         }}
       >

@@ -1,7 +1,7 @@
 import { AbsoluteFill, useCurrentFrame, interpolate, Easing } from "remotion";
 import { Parallax } from "../components/CameraRig";
 import { CinematicText } from "../components/CinematicText";
-import { WebsiteMockup } from "../../components/WebsiteMockup";
+import { PremiumSiteMockup } from "../components/PremiumSiteMockup";
 import { T, FONT, EO } from "../theme";
 
 // Floating satellite: phone mockup with mini UI.
@@ -238,33 +238,33 @@ export const PremiumWebsiteScene: React.FC<{ dur: number }> = ({ dur }) => {
           transformOrigin: "50% 42%",
         }}
       >
-        {/* Main site */}
+        {/* Main site — real copy */}
         <Parallax depth={0.4} phase={2}>
-          <div style={{ position: "absolute", top: 330, left: "50%", translate: "-50% 0" }}>
-            <WebsiteMockup delay={8} width={760} />
+          <div style={{ position: "absolute", top: 300, left: "50%", translate: "-50% 0" }}>
+            <PremiumSiteMockup delay={8} width={780} />
           </div>
         </Parallax>
 
         {/* Connection lines below site */}
         <Parallax depth={0.4} phase={2}>
-          <div style={{ position: "absolute", top: 830, left: "50%", translate: "-50% 0", width: 1080 }}>
+          <div style={{ position: "absolute", top: 950, left: "50%", translate: "-50% 0", width: 1080 }}>
             <ConnectionLines delay={96} />
           </div>
         </Parallax>
 
-        {/* Satellites — nearer depth, float over edges */}
+        {/* Satellites — nearer depth, float over edges (clear of the site copy) */}
         <Parallax depth={0.85} phase={4}>
-          <div style={{ position: "absolute", top: 560, left: "50%", translate: "calc(-50% + 355px) 0" }}>
+          <div style={{ position: "absolute", top: 884, left: "50%", translate: "calc(-50% + 402px) 0" }}>
             <PhoneMockup delay={56} />
           </div>
         </Parallax>
         <Parallax depth={0.8} phase={6}>
-          <div style={{ position: "absolute", top: 268, left: "50%", translate: "calc(-50% - 328px) 0" }}>
+          <div style={{ position: "absolute", top: 178, left: "50%", translate: "calc(-50% - 330px) 0" }}>
             <SpeedCard delay={74} />
           </div>
         </Parallax>
         <Parallax depth={0.9} phase={8}>
-          <div style={{ position: "absolute", top: 812, left: "50%", translate: "calc(-50% - 320px) 0" }}>
+          <div style={{ position: "absolute", top: 962, left: "50%", translate: "calc(-50% - 330px) 0" }}>
             <AnalyticsCard delay={88} />
           </div>
         </Parallax>

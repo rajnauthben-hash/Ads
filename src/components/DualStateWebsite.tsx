@@ -19,12 +19,16 @@ interface Props {
   repairProgress: number; // 0 = broken, 1 = premium
   delay?: number;
   width?: number;
+  withText?: boolean; // render real site labels instead of skeleton bars
 }
+
+const SITE_FONT = "Inter, -apple-system, BlinkMacSystemFont, sans-serif";
 
 export const DualStateWebsite: React.FC<Props> = ({
   repairProgress,
   delay = 0,
   width = 900,
+  withText = false,
 }) => {
   const frame = useCurrentFrame();
   const f = Math.max(0, frame - delay);
@@ -125,7 +129,13 @@ export const DualStateWebsite: React.FC<Props> = ({
             }}
           >
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: logoColor, marginRight: 8, opacity: 0.8 }} />
-            <div style={{ width: lerp(100, 148, t), height: 6, borderRadius: 2, background: "rgba(255,255,255,0.18)" }} />
+            {withText ? (
+              <div style={{ fontFamily: SITE_FONT, fontSize: 12.5, color: "rgba(255,255,255,0.55)", letterSpacing: "0.02em" }}>
+                http://www.yourbusiness.com
+              </div>
+            ) : (
+              <div style={{ width: lerp(100, 148, t), height: 6, borderRadius: 2, background: "rgba(255,255,255,0.18)" }} />
+            )}
           </div>
         </div>
 
@@ -151,12 +161,24 @@ export const DualStateWebsite: React.FC<Props> = ({
                   boxShadow: `0 0 14px rgba(${logoR},${logoG},${logoB},0.5)`,
                 }}
               />
-              <div style={{ width: lerp(BROKEN.logoW, 92, t), height: 8, borderRadius: 3, background: "rgba(255,255,255,0.65)" }} />
+              {withText ? (
+                <div style={{ fontFamily: SITE_FONT, fontSize: 16, fontWeight: 700, letterSpacing: "0.06em", color: "rgba(255,255,255,0.85)" }}>
+                  YOUR BUSINESS
+                </div>
+              ) : (
+                <div style={{ width: lerp(BROKEN.logoW, 92, t), height: 8, borderRadius: 3, background: "rgba(255,255,255,0.65)" }} />
+              )}
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              {[48, 42, 54, 46].map((w, i) => (
-                <div key={i} style={{ width: w, height: 6, borderRadius: 2, background: "rgba(255,255,255,0.2)" }} />
-              ))}
+              {withText
+                ? ["HOME", "ABOUT", "SERVICES", "CONTACT"].map((n) => (
+                    <div key={n} style={{ fontFamily: SITE_FONT, fontSize: 11.5, fontWeight: 500, letterSpacing: "0.05em", color: "rgba(255,255,255,0.5)" }}>
+                      {n}
+                    </div>
+                  ))
+                : [48, 42, 54, 46].map((w, i) => (
+                    <div key={i} style={{ width: w, height: 6, borderRadius: 2, background: "rgba(255,255,255,0.2)" }} />
+                  ))}
               <div
                 style={{
                   marginLeft: 6,
