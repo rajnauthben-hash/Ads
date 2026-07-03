@@ -8,6 +8,7 @@ import { HeroMobile } from "./hero/HeroMobile";
 import { OmniFlowDigitalAd } from "./compositions/OmniFlowAd";
 import { OmniFlowV2 } from "./compositions/OmniFlowV2";
 import { OmniFlowV3 } from "./compositions/OmniFlowV3";
+import { OmniFlowCinematic } from "./cinematic/OmniFlowCinematic";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -62,6 +63,16 @@ export const RemotionRoot: React.FC = () => {
         id="OmniFlowDigitalAd"
         component={OmniFlowDigitalAd}
         durationInFrames={540}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+
+      {/* OmniFlow Cinematic — continuous camera journey — 24s */}
+      <Composition
+        id="OmniFlowCinematic"
+        component={OmniFlowCinematic}
+        durationInFrames={720}
         fps={30}
         width={1080}
         height={1920}
