@@ -17,17 +17,16 @@ export const InvisibleBusinessScene: React.FC<{ dur: number }> = ({ dur }) => {
 
       <GlitchSparks count={12} />
 
-      {/* Far layer — faint brand mark, small, top */}
+      {/* Far layer — brand mark, top (clearly legible like the reference) */}
       <Parallax depth={0.18} phase={1}>
         <div
           style={{
             position: "absolute",
-            top: 150,
+            top: 128,
             left: "50%",
             translate: "-50% 0",
-            opacity: 0.5,
-            scale: "0.62",
-            filter: "blur(0.4px)",
+            opacity: 0.92,
+            scale: "0.95",
           }}
         >
           <LogoLockup delay={4} size="md" />
@@ -75,8 +74,11 @@ export const InvisibleBusinessScene: React.FC<{ dur: number }> = ({ dur }) => {
           gap: 8,
         }}
       >
-        <CinematicText delay={40} size={60} weight={700} color="rgba(235,244,255,0.94)">
-          Your business exists online…
+        <CinematicText delay={40} size={72} weight={700} color="rgba(240,247,255,0.96)">
+          Your business
+        </CinematicText>
+        <CinematicText delay={48} size={72} weight={700} color="rgba(240,247,255,0.96)">
+          exists online…
         </CinematicText>
         <CinematicText delay={72} size={68} gradient glow tracking>
           but customers can’t find it.

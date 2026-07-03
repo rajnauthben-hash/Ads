@@ -258,7 +258,7 @@ const GrowthStatCard: React.FC<{ delay: number }> = ({ delay }) => {
     extrapolateRight: "clamp",
     easing: Easing.bezier(...EO),
   });
-  const pct = Math.round(interpolate(f, [4, 44], [0, 127], { extrapolateRight: "clamp" }));
+  const pct = Math.round(interpolate(f, [4, 24], [0, 127], { extrapolateRight: "clamp" }));
   const bob = Math.sin(frame * 0.028 + 4) * 4;
 
   return (
@@ -366,7 +366,7 @@ export const GoogleVisibilityScene: React.FC<{ dur: number }> = ({ dur }) => {
 
       {/* Copy — top area (map owns the lower half) */}
       <AbsoluteFill style={{ display: "flex", flexDirection: "column", alignItems: "center", paddingTop: 208 }}>
-        <Kicker delay={16} style={{ marginBottom: 14 }}>Google Maps Optimization</Kicker>
+        <Kicker delay={16} pill style={{ marginBottom: 16 }}>Google Maps Optimization</Kicker>
         <CinematicText delay={24} size={66} maxWidth={860}>
           Show up where
         </CinematicText>
@@ -386,9 +386,9 @@ export const GoogleVisibilityScene: React.FC<{ dur: number }> = ({ dur }) => {
           paddingBottom: 200,
         }}
       >
-        <LabelChip delay={70}>Top Rated</LabelChip>
-        <LabelChip delay={78}>Locally Trusted</LabelChip>
-        <LabelChip delay={86}>Easily Found</LabelChip>
+        <LabelChip delay={58}>Top Rated</LabelChip>
+        <LabelChip delay={66}>Locally Trusted</LabelChip>
+        <LabelChip delay={74}>Easily Found</LabelChip>
       </AbsoluteFill>
 
     </AbsoluteFill>

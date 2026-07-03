@@ -79,12 +79,14 @@ export const CinematicText: React.FC<{
 };
 
 // Small uppercase kicker label with expanding tracking.
+// `pill` renders the reference's bordered badge treatment.
 export const Kicker: React.FC<{
   delay?: number;
   color?: string;
+  pill?: boolean;
   children: React.ReactNode;
   style?: React.CSSProperties;
-}> = ({ delay = 0, color = T.cyan, children, style }) => {
+}> = ({ delay = 0, color = T.cyan, pill = false, children, style }) => {
   const frame = useCurrentFrame();
   const f = Math.max(0, frame - delay);
   const op = interpolate(f, [0, 18], [0, 1], { extrapolateRight: "clamp" });
@@ -103,6 +105,15 @@ export const Kicker: React.FC<{
         textTransform: "uppercase",
         color,
         textAlign: "center",
+        ...(pill
+          ? {
+              padding: "12px 30px 12px 36px",
+              borderRadius: 12,
+              border: "1px solid rgba(34,211,238,0.45)",
+              background: "rgba(34,211,238,0.06)",
+              boxShadow: "0 0 24px rgba(34,211,238,0.15)",
+            }
+          : {}),
         ...style,
       }}
     >

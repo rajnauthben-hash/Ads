@@ -7,21 +7,22 @@ import { T, FONT, EO } from "../theme";
 
 // SCENE 2 — floating problem field. Card copy is verbatim from the
 // original ad (beats 2–3 of omniflowv3).
+// Cyan/blue accents — matches the reference's all-blue problem cards.
 const CARDS: ProblemCardSpec[] = [
   {
     icon: "monitor", title: "Outdated Website",
     desc: "Old design builds distrust and drives visitors away.",
-    x: -85, y: -500, depth: 0.88, rot: -2.4, delay: 10, accent: "#F59E0B",
+    x: -85, y: -500, depth: 0.88, rot: -2.4, delay: 10, accent: "#38BDF8",
   },
   {
     icon: "search", title: "Weak Google Visibility",
     desc: "Low rankings mean customers choose your competitors.",
-    x: 95, y: -255, depth: 1.07, rot: 1.8, delay: 26, accent: "#EF4444",
+    x: 95, y: -255, depth: 1.07, rot: 1.8, delay: 26, accent: "#22D3EE",
   },
   {
     icon: "phone", title: "Missed Calls & Leads",
     desc: "Every missed inquiry is revenue you’ll never get back.",
-    x: -80, y: 12, depth: 0.96, rot: -1.3, delay: 42, accent: "#F97316",
+    x: -80, y: 12, depth: 0.96, rot: -1.3, delay: 42, accent: "#3B82F6",
   },
 ];
 
@@ -118,12 +119,12 @@ export const ProblemCardsScene: React.FC<{ dur: number }> = ({ dur }) => {
 
       {/* Cost-beat evidence — appears as the "what it costs you" line lands */}
       <Parallax depth={0.45} phase={11}>
-        <MiniEvidenceCard delay={94}  x={330}  y={-460} title="Traffic Over Time" kind="traffic" />
-        <MiniEvidenceCard delay={102} x={-330} y={228}  title="Customer Activity" kind="activity" />
+        <MiniEvidenceCard delay={84} x={322}  y={-460} title="Traffic Over Time" kind="traffic" />
+        <MiniEvidenceCard delay={92} x={-282} y={228}  title="Customer Activity" kind="activity" />
       </Parallax>
       <Parallax depth={0.55} phase={13}>
-        <div style={{ position: "absolute", left: "50%", top: "50%", translate: "calc(-50% + 320px) 120px", scale: "0.86" }}>
-          <GhostMapCard delay={110} width={300} />
+        <div style={{ position: "absolute", left: "50%", top: "50%", translate: "calc(-50% + 310px) 120px", scale: "0.86" }}>
+          <GhostMapCard delay={98} width={300} />
         </div>
       </Parallax>
 
@@ -138,16 +139,19 @@ export const ProblemCardsScene: React.FC<{ dur: number }> = ({ dur }) => {
           gap: 8,
         }}
       >
-        <Kicker delay={74} style={{ marginBottom: 6 }}>The Problem</Kicker>
-        <CinematicText delay={82} size={56} weight={700} color="rgba(235,244,255,0.92)">
+        <Kicker delay={62} pill style={{ marginBottom: 10 }}>The Problem</Kicker>
+        <CinematicText delay={70} size={56} weight={700} color="rgba(240,247,255,0.95)">
           A weak digital presence
         </CinematicText>
-        <CinematicText delay={92} size={56} weight={700} color="rgba(235,244,255,0.92)" style={{ marginTop: -6 }}>
+        <CinematicText delay={80} size={56} weight={700} gradient glow style={{ marginTop: -6 }}>
           costs attention.
         </CinematicText>
-        <Kicker delay={108} style={{ marginTop: 16, marginBottom: 6 }}>What It Costs You</Kicker>
-        <CinematicText delay={116} size={52} gradient glow tracking>
-          Every day costs real customers.
+        <Kicker delay={96} style={{ marginTop: 16, marginBottom: 6 }}>What It Costs You</Kicker>
+        <CinematicText delay={104} size={54} weight={700} color="rgba(240,247,255,0.95)">
+          Every day costs
+        </CinematicText>
+        <CinematicText delay={112} size={54} gradient glow tracking style={{ marginTop: -4 }}>
+          real customers.
         </CinematicText>
       </AbsoluteFill>
 

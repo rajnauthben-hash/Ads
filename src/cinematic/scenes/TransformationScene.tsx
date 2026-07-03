@@ -63,7 +63,7 @@ export const TransformationScene: React.FC<{ dur: number }> = ({ dur }) => {
   });
 
   // Logo sharpens as the world heals
-  const logoOp = interpolate(frame, [0, 70], [0.45, 1], { extrapolateRight: "clamp" });
+  const logoOp = interpolate(frame, [0, 70], [0.6, 1], { extrapolateRight: "clamp" });
   const logoBlur = interpolate(frame, [0, 70], [2.2, 0], { extrapolateRight: "clamp" });
 
   // Dolly toward the portal in the closing frames (FlyThrough adds the final punch)
@@ -90,10 +90,10 @@ export const TransformationScene: React.FC<{ dur: number }> = ({ dur }) => {
         <div
           style={{
             position: "absolute",
-            top: 168,
+            top: 158,
             left: "50%",
             translate: "-50% 0",
-            scale: "0.72",
+            scale: "0.9",
             opacity: logoOp,
             filter: logoBlur > 0.2 ? `blur(${logoBlur}px)` : undefined,
           }}
@@ -127,10 +127,10 @@ export const TransformationScene: React.FC<{ dur: number }> = ({ dur }) => {
           gap: 14,
         }}
       >
-        <CinematicText delay={88} size={104} gradient glow tracking>
-          We change that.
+        <CinematicText delay={88} size={104} glow tracking color="rgba(240,247,255,0.97)">
+          We change <span style={{ color: T.cyan }}>that.</span>
         </CinematicText>
-        <CinematicText delay={108} size={33} weight={500} color={T.muted}>
+        <CinematicText delay={108} size={33} weight={500} color="rgba(226,240,255,0.75)">
           OmniFlow Digital transforms your online presence.
         </CinematicText>
       </AbsoluteFill>

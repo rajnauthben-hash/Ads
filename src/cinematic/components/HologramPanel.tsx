@@ -17,17 +17,17 @@ export const HologramPanel: React.FC<{
 
   // Irregular flicker — two incommensurate sines + occasional dropout
   const flicker =
-    0.72 +
-    Math.sin(frame * 0.31) * 0.1 +
-    Math.sin(frame * 0.117) * 0.08 -
-    (frame % 67 < 2 ? 0.3 : 0);
+    0.9 +
+    Math.sin(frame * 0.31) * 0.07 +
+    Math.sin(frame * 0.117) * 0.06 -
+    (frame % 67 < 2 ? 0.25 : 0);
 
   // Glitch jitter burst every ~53 frames
   const jitter = frame % 53 === 0 ? 4 : frame % 53 === 1 ? -3 : 0;
   const rgbSplit = frame % 53 <= 1 ? 3 : 0;
 
   const h = Math.round(width * 0.68);
-  const bone = (o: number) => `rgba(150,200,235,${o * flicker})`;
+  const bone = (o: number) => `rgba(168,212,240,${Math.min(1, o * 1.35) * flicker})`;
 
   return (
     <div
@@ -35,9 +35,9 @@ export const HologramPanel: React.FC<{
         position: "relative",
         width,
         height: h,
-        opacity: op * (1 - ghost * 0.25),
+        opacity: op * (1 - ghost * 0.1),
         translate: `${jitter}px 0px`,
-        filter: `drop-shadow(0 0 24px rgba(34,211,238,${0.10 * flicker}))`,
+        filter: `drop-shadow(0 0 24px rgba(34,211,238,${0.14 * flicker}))`,
       }}
     >
       {/* RGB split echo */}
@@ -59,8 +59,8 @@ export const HologramPanel: React.FC<{
           position: "absolute",
           inset: 0,
           borderRadius: 18,
-          border: `1px solid rgba(120,210,255,${0.35 * flicker})`,
-          background: "rgba(10,20,40,0.28)",
+          border: `1px solid rgba(120,210,255,${0.5 * flicker})`,
+          background: "rgba(10,20,40,0.5)",
           overflow: "hidden",
           backdropFilter: "blur(3px)",
         }}

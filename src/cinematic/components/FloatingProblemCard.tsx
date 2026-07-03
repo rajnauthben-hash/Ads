@@ -86,10 +86,10 @@ export const FloatingProblemCard: React.FC<ProblemCardSpec> = ({
         filter: isNear ? "blur(1.1px)" : depth < 0.9 ? "blur(0.6px)" : undefined,
         width: 430,
         borderRadius: 20,
-        border: `1px solid rgba(148,197,255,0.18)`,
+        border: `1px solid ${accent}38`,
         background: T.panel,
         backdropFilter: "blur(18px)",
-        boxShadow: `0 24px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.07), 0 0 40px ${accent}0f`,
+        boxShadow: `0 24px 60px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.07), 0 0 40px ${accent}18`,
         padding: "20px 24px",
         display: "flex",
         alignItems: "center",
@@ -99,11 +99,12 @@ export const FloatingProblemCard: React.FC<ProblemCardSpec> = ({
     >
       <div
         style={{
-          width: 52,
-          height: 52,
-          borderRadius: 15,
-          background: `${accent}14`,
-          border: `1px solid ${accent}30`,
+          width: 54,
+          height: 54,
+          borderRadius: "50%",
+          background: `${accent}16`,
+          border: `1px solid ${accent}45`,
+          boxShadow: `0 0 18px ${accent}22`,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -113,10 +114,11 @@ export const FloatingProblemCard: React.FC<ProblemCardSpec> = ({
         <Icon kind={icon} color={accent} />
       </div>
       <div style={{ minWidth: 0 }}>
-        <div style={{ fontSize: 23, fontWeight: 700, color: T.white, letterSpacing: "-0.01em", marginBottom: 4 }}>
+        {/* Cyan titles — matches the reference's white/cyan hierarchy */}
+        <div style={{ fontSize: 23, fontWeight: 700, color: accent, letterSpacing: "-0.01em", marginBottom: 4 }}>
           {title}
         </div>
-        <div style={{ fontSize: 17, fontWeight: 400, color: T.muted, lineHeight: 1.35 }}>
+        <div style={{ fontSize: 17, fontWeight: 400, color: "rgba(226,240,255,0.8)", lineHeight: 1.35 }}>
           {desc}
         </div>
       </div>
