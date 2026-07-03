@@ -137,10 +137,8 @@ const DropPin: React.FC<{ delay: number }> = ({ delay }) => {
   );
 };
 
-// Search result card rising from the map floor.
-const SearchCard: React.FC<{
-  delay: number; x: number; y: number; top?: boolean; name: string; rating?: string;
-}> = ({ delay, x, y, top = false, name, rating }) => {
+// The business listing card — copy verbatim from the original ad.
+const BusinessCard: React.FC<{ delay: number }> = ({ delay }) => {
   const frame = useCurrentFrame();
   const f = Math.max(0, frame - delay);
   const op = interpolate(f, [0, 16], [0, 1], { extrapolateRight: "clamp" });
@@ -148,97 +146,81 @@ const SearchCard: React.FC<{
     extrapolateRight: "clamp",
     easing: Easing.bezier(...EO),
   });
-  const bob = Math.sin(frame * 0.03 + delay) * 4;
+  const bob = Math.sin(frame * 0.03 + 1) * 4;
 
   return (
     <div
       style={{
         position: "absolute",
-        left: `calc(50% + ${x}px)`,
-        top: `calc(50% + ${y}px)`,
+        left: "50%",
+        top: "50%",
         translate: `-50% ${ty + bob}px`,
-        opacity: op * (top ? 1 : 0.65),
-        width: top ? 400 : 330,
-        borderRadius: 16,
-        border: `1px solid ${top ? "rgba(34,211,238,0.45)" : "rgba(148,197,255,0.16)"}`,
-        background: top ? "rgba(10,26,40,0.92)" : T.panel,
+        opacity: op,
+        width: 430,
+        borderRadius: 18,
+        border: "1px solid rgba(34,211,238,0.42)",
+        background: "rgba(10,26,40,0.93)",
         backdropFilter: "blur(14px)",
-        boxShadow: top
-          ? "0 0 44px rgba(34,211,238,0.2), 0 26px 60px rgba(0,0,0,0.55)"
-          : "0 20px 46px rgba(0,0,0,0.5)",
-        padding: top ? "18px 22px" : "14px 18px",
+        boxShadow: "0 0 44px rgba(34,211,238,0.18), 0 26px 60px rgba(0,0,0,0.55)",
+        padding: "20px 24px 16px",
         fontFamily: FONT,
-        display: "flex",
-        alignItems: "center",
-        gap: 14,
       }}
     >
+      <div style={{ fontSize: 25, fontWeight: 800, color: T.white, letterSpacing: "-0.01em", marginBottom: 7 }}>
+        Your Business
+      </div>
+      <div style={{ fontSize: 18, marginBottom: 5 }}>
+        <span style={{ color: T.white, fontWeight: 600 }}>4.9 </span>
+        <span style={{ color: "#F5B942" }}>★★★★★</span>
+        <span style={{ color: T.muted }}> (128)</span>
+      </div>
+      <div style={{ fontSize: 17, marginBottom: 3 }}>
+        <span style={{ color: "#34D399", fontWeight: 600 }}>Open</span>
+        <span style={{ color: T.muted }}> · Closes 8 PM</span>
+      </div>
+      <div style={{ fontSize: 17, color: T.muted, marginBottom: 14 }}>Marketing Agency</div>
+
+      {/* Action row */}
       <div
         style={{
-          width: top ? 42 : 34,
-          height: top ? 42 : 34,
-          borderRadius: 11,
-          background: top ? T.cyan : "rgba(255,255,255,0.07)",
           display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: top ? 19 : 15,
-          fontWeight: 800,
-          color: top ? "#04121E" : T.muted,
-          flexShrink: 0,
-          boxShadow: top ? "0 0 20px rgba(34,211,238,0.5)" : "none",
+          gap: 10,
+          borderTop: "1px solid rgba(148,197,255,0.14)",
+          paddingTop: 13,
         }}
       >
-        {top ? "1" : "·"}
-      </div>
-      <div style={{ minWidth: 0 }}>
-        <div style={{ fontSize: top ? 22 : 18, fontWeight: 700, color: top ? T.white : "rgba(226,240,255,0.6)", whiteSpace: "nowrap" }}>
-          {name}
-        </div>
-        {rating && (
-          <div style={{ fontSize: 16, color: top ? "#F5B942" : T.muted, marginTop: 3 }}>
-            {rating}
+        {["Call", "Directions", "Website"].map((a) => (
+          <div
+            key={a}
+            style={{
+              flex: 1,
+              textAlign: "center",
+              padding: "9px 0",
+              borderRadius: 22,
+              background: "rgba(34,211,238,0.10)",
+              border: "1px solid rgba(34,211,238,0.3)",
+              fontSize: 16.5,
+              fontWeight: 600,
+              color: T.cyan,
+            }}
+          >
+            {a}
           </div>
-        )}
+        ))}
       </div>
-      {top && (
-        <div
-          style={{
-            marginLeft: "auto",
-            padding: "6px 14px",
-            borderRadius: 20,
-            background: "rgba(34,211,238,0.15)",
-            border: "1px solid rgba(34,211,238,0.4)",
-            fontSize: 14,
-            fontWeight: 700,
-            color: T.cyan,
-            whiteSpace: "nowrap",
-          }}
-        >
-          Top Result
-        </div>
-      )}
     </div>
   );
 };
 
-// Customers converging toward the pin along curved paths.
-const ConvergingCustomer: React.FC<{ delay: number; fromX: number; fromY: number }> = ({
-  delay, fromX, fromY,
-}) => {
+// Nearby-competitor skeletons — text-free props on the map floor.
+const CompetitorGhost: React.FC<{ delay: number; x: number; y: number }> = ({ delay, x, y }) => {
   const frame = useCurrentFrame();
   const f = Math.max(0, frame - delay);
-  const p = interpolate(f, [0, 70], [0, 1], {
+  const op = interpolate(f, [0, 16], [0, 0.4], { extrapolateRight: "clamp" });
+  const ty = interpolate(f, [0, 26], [60, 0], {
     extrapolateRight: "clamp",
-    easing: Easing.bezier(0.4, 0, 0.6, 1),
+    easing: Easing.bezier(...EO),
   });
-  const op = interpolate(p, [0, 0.15, 0.85, 1], [0, 0.85, 0.7, 0]);
-
-  // Quadratic path toward center-lower (pin base ~ (0, 210))
-  const cx = fromX * 0.4;
-  const cy = fromY * 0.15 - 60;
-  const x = (1 - p) * (1 - p) * fromX + 2 * (1 - p) * p * cx + p * p * 0;
-  const y = (1 - p) * (1 - p) * fromY + 2 * (1 - p) * p * cy + p * p * 210;
 
   return (
     <div
@@ -246,14 +228,63 @@ const ConvergingCustomer: React.FC<{ delay: number; fromX: number; fromY: number
         position: "absolute",
         left: `calc(50% + ${x}px)`,
         top: `calc(50% + ${y}px)`,
-        translate: "-50% -50%",
+        translate: `-50% ${ty}px`,
         opacity: op,
+        width: 300,
+        borderRadius: 14,
+        border: "1px solid rgba(148,197,255,0.14)",
+        background: T.panel,
+        padding: "14px 18px",
+        display: "flex",
+        alignItems: "center",
+        gap: 13,
       }}
     >
-      <svg width={26} height={26} viewBox="0 0 24 24">
-        <circle cx={12} cy={8} r={4} fill="rgba(190,240,255,0.9)" />
-        <path d="M4 21 c0 -4.5 3.5 -7 8 -7 s8 2.5 8 7" fill="rgba(190,240,255,0.75)" />
-      </svg>
+      <div style={{ width: 32, height: 32, borderRadius: 9, background: "rgba(255,255,255,0.06)", flexShrink: 0 }} />
+      <div style={{ flex: 1 }}>
+        <div style={{ width: "70%", height: 9, borderRadius: 3, background: "rgba(148,197,255,0.25)", marginBottom: 7 }} />
+        <div style={{ width: "45%", height: 7, borderRadius: 3, background: "rgba(148,197,255,0.14)" }} />
+      </div>
+    </div>
+  );
+};
+
+// Local search growth stat — copy verbatim from the original ad.
+const GrowthStatCard: React.FC<{ delay: number }> = ({ delay }) => {
+  const frame = useCurrentFrame();
+  const f = Math.max(0, frame - delay);
+  const op = interpolate(f, [0, 18], [0, 1], { extrapolateRight: "clamp" });
+  const tx = interpolate(f, [0, 28], [70, 0], {
+    extrapolateRight: "clamp",
+    easing: Easing.bezier(...EO),
+  });
+  const pct = Math.round(interpolate(f, [4, 44], [0, 127], { extrapolateRight: "clamp" }));
+  const bob = Math.sin(frame * 0.028 + 4) * 4;
+
+  return (
+    <div
+      style={{
+        opacity: op,
+        translate: `${tx}px ${bob}px`,
+        width: 270,
+        borderRadius: 16,
+        border: "1px solid rgba(148,197,255,0.22)",
+        background: T.panel,
+        backdropFilter: "blur(14px)",
+        boxShadow: "0 22px 52px rgba(0,0,0,0.5)",
+        padding: "18px 22px",
+        fontFamily: FONT,
+      }}
+    >
+      <div style={{ fontSize: 17, fontWeight: 600, color: T.muted, marginBottom: 6 }}>
+        Local Search Growth
+      </div>
+      <div style={{ fontSize: 42, fontWeight: 800, color: T.cyan, letterSpacing: "-0.02em", marginBottom: 4, textShadow: "0 0 24px rgba(34,211,238,0.4)" }}>
+        +{pct}%
+      </div>
+      <div style={{ fontSize: 15.5, color: T.muted, lineHeight: 1.35 }}>
+        increase in local search visibility
+      </div>
     </div>
   );
 };
@@ -280,14 +311,18 @@ const LabelChip: React.FC<{ delay: number; children: React.ReactNode }> = ({ del
         fontWeight: 600,
         color: T.white,
         whiteSpace: "nowrap",
+        display: "flex",
+        alignItems: "center",
+        gap: 8,
       }}
     >
+      <span style={{ color: T.cyan, fontSize: 17 }}>✓</span>
       {children}
     </div>
   );
 };
 
-// SCENE 5 — holographic map, pin drop, customers converge.
+// SCENE 5 — holographic map, pin drop, business card, growth stat.
 export const GoogleVisibilityScene: React.FC<{ dur: number }> = ({ dur }) => {
   const frame = useCurrentFrame();
   const push = interpolate(frame, [0, dur], [1.0, 1.09], { extrapolateRight: "clamp" });
@@ -309,22 +344,24 @@ export const GoogleVisibilityScene: React.FC<{ dur: number }> = ({ dur }) => {
         </div>
       </Parallax>
 
-      {/* Converging customers */}
-      <Parallax depth={0.6} phase={5}>
-        <AbsoluteFill style={{ translate: "0px -300px" }}>
-          <ConvergingCustomer delay={40} fromX={-430} fromY={-120} />
-          <ConvergingCustomer delay={52} fromX={440}  fromY={-60} />
-          <ConvergingCustomer delay={64} fromX={-380} fromY={300} />
-          <ConvergingCustomer delay={74} fromX={400}  fromY={330} />
-          <ConvergingCustomer delay={86} fromX={60}   fromY={-380} />
+      {/* The business listing rising below the pin */}
+      <Parallax depth={0.8} phase={6}>
+        <AbsoluteFill style={{ translate: "0px 10px" }}>
+          <BusinessCard delay={34} />
         </AbsoluteFill>
       </Parallax>
 
-      {/* Search results rising from the floor */}
-      <Parallax depth={0.8} phase={6}>
-        <SearchCard delay={34} x={-6}   y={-8}  top name="Your Business" rating="★★★★★ 4.9 · Open" />
-        <SearchCard delay={48} x={-215} y={196} name="Competitor A" />
-        <SearchCard delay={58} x={225}  y={228} name="Competitor B" />
+      {/* Growth stat — floats beside the pin */}
+      <Parallax depth={0.7} phase={7}>
+        <div style={{ position: "absolute", top: 620, left: "50%", translate: "calc(-50% + 330px) 0" }}>
+          <GrowthStatCard delay={56} />
+        </div>
+      </Parallax>
+
+      {/* Competitor skeleton props on the floor */}
+      <Parallax depth={0.5} phase={8}>
+        <CompetitorGhost delay={48} x={-235} y={256} />
+        <CompetitorGhost delay={58} x={245}  y={296} />
       </Parallax>
 
       {/* Copy — top area (map owns the lower half) */}
@@ -338,7 +375,7 @@ export const GoogleVisibilityScene: React.FC<{ dur: number }> = ({ dur }) => {
         </CinematicText>
       </AbsoluteFill>
 
-      {/* Label chips — bottom */}
+      {/* Trust chips — bottom (verbatim from the original card) */}
       <AbsoluteFill
         style={{
           display: "flex",
@@ -349,9 +386,9 @@ export const GoogleVisibilityScene: React.FC<{ dur: number }> = ({ dur }) => {
           paddingBottom: 200,
         }}
       >
-        <LabelChip delay={70}>Google visibility</LabelChip>
-        <LabelChip delay={78}>Lead generation</LabelChip>
-        <LabelChip delay={86}>Local search growth</LabelChip>
+        <LabelChip delay={70}>Top Rated</LabelChip>
+        <LabelChip delay={78}>Locally Trusted</LabelChip>
+        <LabelChip delay={86}>Easily Found</LabelChip>
       </AbsoluteFill>
 
     </AbsoluteFill>

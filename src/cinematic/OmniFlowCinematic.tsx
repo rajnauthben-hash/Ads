@@ -6,6 +6,9 @@ import { ProblemCardsScene } from "./scenes/ProblemCardsScene";
 import { TransformationScene } from "./scenes/TransformationScene";
 import { PremiumWebsiteScene } from "./scenes/PremiumWebsiteScene";
 import { GoogleVisibilityScene } from "./scenes/GoogleVisibilityScene";
+import { GrowthActionsScene } from "./scenes/GrowthActionsScene";
+import { RealGrowthScene } from "./scenes/RealGrowthScene";
+import { OnePartnerScene } from "./scenes/OnePartnerScene";
 import { FinalCTAScene } from "./scenes/FinalCTAScene";
 import { SCN } from "./theme";
 
@@ -59,7 +62,28 @@ export const OmniFlowCinematic: React.FC = () => {
           </FlyThrough>
         </Sequence>
 
-        {/* 6 — Final lockup (pull-back reveal, no exit) */}
+        {/* 6 — More actions / more customers */}
+        <Sequence from={SCN.actions.from} durationInFrames={SCN.actions.dur}>
+          <FlyThrough dur={SCN.actions.dur} origin="50% 46%">
+            <GrowthActionsScene dur={SCN.actions.dur} />
+          </FlyThrough>
+        </Sequence>
+
+        {/* 7 — Real growth / real impact */}
+        <Sequence from={SCN.growth.from} durationInFrames={SCN.growth.dur}>
+          <FlyThrough dur={SCN.growth.dur} origin="50% 50%">
+            <RealGrowthScene dur={SCN.growth.dur} />
+          </FlyThrough>
+        </Sequence>
+
+        {/* 8 — One partner / everything you need */}
+        <Sequence from={SCN.partner.from} durationInFrames={SCN.partner.dur}>
+          <FlyThrough dur={SCN.partner.dur} origin="50% 52%">
+            <OnePartnerScene dur={SCN.partner.dur} />
+          </FlyThrough>
+        </Sequence>
+
+        {/* 9 — Final lockup (pull-back reveal, no exit) */}
         <Sequence from={SCN.cta.from} durationInFrames={SCN.cta.dur}>
           <FlyThrough dur={SCN.cta.dur} enterMode="pullback" exitMode="none">
             <FinalCTAScene dur={SCN.cta.dur} />

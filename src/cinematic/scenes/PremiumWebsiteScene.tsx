@@ -1,6 +1,6 @@
 import { AbsoluteFill, useCurrentFrame, interpolate, Easing } from "remotion";
 import { Parallax } from "../components/CameraRig";
-import { CinematicText, Kicker } from "../components/CinematicText";
+import { CinematicText } from "../components/CinematicText";
 import { WebsiteMockup } from "../../components/WebsiteMockup";
 import { T, FONT, EO } from "../theme";
 
@@ -281,7 +281,6 @@ export const PremiumWebsiteScene: React.FC<{ dur: number }> = ({ dur }) => {
           gap: 6,
         }}
       >
-        <Kicker delay={100} style={{ marginBottom: 8 }}>What we build</Kicker>
         <CinematicText delay={108} size={84}>
           Premium Websites.
         </CinematicText>

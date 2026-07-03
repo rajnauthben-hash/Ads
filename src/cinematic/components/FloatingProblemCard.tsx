@@ -116,7 +116,7 @@ export const FloatingProblemCard: React.FC<ProblemCardSpec> = ({
         <div style={{ fontSize: 23, fontWeight: 700, color: T.white, letterSpacing: "-0.01em", marginBottom: 4 }}>
           {title}
         </div>
-        <div style={{ fontSize: 17, fontWeight: 400, color: T.muted, whiteSpace: "nowrap" }}>
+        <div style={{ fontSize: 17, fontWeight: 400, color: T.muted, lineHeight: 1.35 }}>
           {desc}
         </div>
       </div>

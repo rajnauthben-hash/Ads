@@ -100,29 +100,40 @@ export const FinalCTAScene: React.FC<{ dur: number }> = ({ dur }) => {
         </AbsoluteFill>
       </Parallax>
 
-      {/* Lockup + copy + CTA */}
+      {/* Lockup + copy + CTA — verbatim from the original final frame */}
       <AbsoluteFill
         style={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          paddingBottom: 260,
+          paddingBottom: 250,
         }}
       >
-        <div style={{ marginBottom: 66 }}>
+        <div style={{ marginBottom: 48 }}>
           <LogoLockup delay={4} size="lg" />
         </div>
 
-        <CinematicText delay={22} size={57} weight={700} maxWidth={880} color="rgba(235,244,255,0.95)">
-          Turn your digital presence
+        <CinematicText delay={14} size={72} weight={800} color="rgba(240,247,255,0.97)">
+          Get Found.
         </CinematicText>
-        <CinematicText delay={32} size={57} gradient glow>
-          into a growth engine.
+        <CinematicText delay={22} size={72} weight={800} color="rgba(240,247,255,0.97)">
+          Look Professional.
+        </CinematicText>
+        <CinematicText delay={30} size={84} gradient glow tracking>
+          Grow Online.
+        </CinematicText>
+
+        <CinematicText delay={44} size={29} weight={500} color={T.muted} style={{ marginTop: 20 }}>
+          Premium Websites  •  Google Maps  •  Local Visibility
         </CinematicText>
 
         {/* CTA pill */}
-        <CTAButton delay={50} pulse={ctaPulse} />
+        <CTAButton delay={56} pulse={ctaPulse} />
+
+        <CinematicText delay={70} size={22} weight={600} color={T.muted} style={{ marginTop: 26, letterSpacing: "0.3em" }}>
+          OMNIFLOW DIGITAL
+        </CinematicText>
       </AbsoluteFill>
 
     </AbsoluteFill>
@@ -160,7 +171,7 @@ const CTAButton: React.FC<{ delay: number; pulse: number }> = ({ delay, pulse })
         ].join(", "),
       }}
     >
-      Start with OmniFlow Digital
+      DM ‘FLOW’ TO START
     </div>
   );
 };

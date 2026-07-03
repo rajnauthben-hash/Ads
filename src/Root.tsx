@@ -68,11 +68,11 @@ export const RemotionRoot: React.FC = () => {
         height={1920}
       />
 
-      {/* OmniFlow Cinematic — continuous camera journey — 24s */}
+      {/* OmniFlow Cinematic — continuous camera journey, full original text — 33.6s */}
       <Composition
         id="OmniFlowCinematic"
         component={OmniFlowCinematic}
-        durationInFrames={720}
+        durationInFrames={1008}
         fps={30}
         width={1080}
         height={1920}
