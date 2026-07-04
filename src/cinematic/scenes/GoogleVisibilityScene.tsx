@@ -249,46 +249,6 @@ const CompetitorGhost: React.FC<{ delay: number; x: number; y: number }> = ({ de
   );
 };
 
-// Local search growth stat — copy verbatim from the original ad.
-const GrowthStatCard: React.FC<{ delay: number }> = ({ delay }) => {
-  const frame = useCurrentFrame();
-  const f = Math.max(0, frame - delay);
-  const op = interpolate(f, [0, 18], [0, 1], { extrapolateRight: "clamp" });
-  const tx = interpolate(f, [0, 28], [70, 0], {
-    extrapolateRight: "clamp",
-    easing: Easing.bezier(...EO),
-  });
-  const pct = Math.round(interpolate(f, [4, 24], [0, 127], { extrapolateRight: "clamp" }));
-  const bob = Math.sin(frame * 0.028 + 4) * 4;
-
-  return (
-    <div
-      style={{
-        opacity: op,
-        translate: `${tx}px ${bob}px`,
-        width: 270,
-        borderRadius: 16,
-        border: "1px solid rgba(148,197,255,0.22)",
-        background: T.panel,
-        backdropFilter: "blur(14px)",
-        boxShadow: "0 22px 52px rgba(0,0,0,0.5)",
-        padding: "18px 22px",
-        fontFamily: FONT,
-      }}
-    >
-      <div style={{ fontSize: 17, fontWeight: 600, color: T.muted, marginBottom: 6 }}>
-        Local Search Growth
-      </div>
-      <div style={{ fontSize: 42, fontWeight: 800, color: T.cyan, letterSpacing: "-0.02em", marginBottom: 4, textShadow: "0 0 24px rgba(34,211,238,0.4)" }}>
-        +{pct}%
-      </div>
-      <div style={{ fontSize: 15.5, color: T.muted, lineHeight: 1.35 }}>
-        increase in local search visibility
-      </div>
-    </div>
-  );
-};
-
 const LabelChip: React.FC<{ delay: number; children: React.ReactNode }> = ({ delay, children }) => {
   const frame = useCurrentFrame();
   const f = Math.max(0, frame - delay);
@@ -349,13 +309,6 @@ export const GoogleVisibilityScene: React.FC<{ dur: number }> = ({ dur }) => {
         <AbsoluteFill style={{ translate: "0px 10px" }}>
           <BusinessCard delay={34} />
         </AbsoluteFill>
-      </Parallax>
-
-      {/* Growth stat — floats beside the pin */}
-      <Parallax depth={0.7} phase={7}>
-        <div style={{ position: "absolute", top: 620, left: "50%", translate: "calc(-50% + 330px) 0" }}>
-          <GrowthStatCard delay={56} />
-        </div>
       </Parallax>
 
       {/* Competitor skeleton props on the floor */}

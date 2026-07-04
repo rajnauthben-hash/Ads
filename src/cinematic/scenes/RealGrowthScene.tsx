@@ -19,42 +19,26 @@ const useReveal = (delay: number) => {
   };
 };
 
-// Overall growth block + line chart
+// Overall growth block + line chart — the rising chart tells the story,
+// no fabricated percentage claim.
 const OverallGrowth: React.FC<{ delay: number }> = ({ delay }) => {
   const { f, op, ty } = useReveal(delay);
-  const pct = Math.round(interpolate(f, [4, 40], [0, 127], { extrapolateRight: "clamp" }));
   const p = interpolate(f, [4, 52], [0, 1], {
     extrapolateRight: "clamp",
     easing: Easing.bezier(0.4, 0, 0.4, 1),
   });
-  const L = 700;
-  const cw = PANEL_W - 300;
+  const L = 1200;
+  const cw = PANEL_W - 60;
 
   return (
-    <div style={{ opacity: op, translate: `0px ${ty}px`, display: "flex", gap: 24, alignItems: "flex-start" }}>
-      <div style={{ flexShrink: 0 }}>
-        <div style={{ fontSize: 17, fontWeight: 600, color: T.muted, marginBottom: 5 }}>Overall Growth</div>
-        <div
-          style={{
-            fontSize: 52,
-            fontWeight: 800,
-            color: T.cyan,
-            letterSpacing: "-0.025em",
-            lineHeight: 1,
-            textShadow: "0 0 28px rgba(34,211,238,0.45)",
-            marginBottom: 6,
-          }}
-        >
-          +{pct}%
-        </div>
-        <div style={{ fontSize: 13.5, color: T.muted }}>vs Mar 1 – Mar 31, 2025</div>
-      </div>
-      <svg width={cw} height={118} viewBox={`0 0 ${cw} 118`} style={{ marginTop: 6 }}>
+    <div style={{ opacity: op, translate: `0px ${ty}px` }}>
+      <div style={{ fontSize: 17, fontWeight: 600, color: T.muted, marginBottom: 8 }}>Overall Growth</div>
+      <svg width={cw} height={110} viewBox={`0 0 ${cw} 110`}>
         {[0.3, 0.6, 0.9].map((r, i) => (
-          <line key={i} x1={0} y1={118 * r} x2={cw} y2={118 * r} stroke="rgba(148,197,255,0.09)" strokeWidth={1} />
+          <line key={i} x1={0} y1={110 * r} x2={cw} y2={110 * r} stroke="rgba(148,197,255,0.09)" strokeWidth={1} />
         ))}
         <path
-          d={`M 4 104 C ${cw * 0.2} 96, ${cw * 0.3} 82, ${cw * 0.45} 70 C ${cw * 0.6} 58, ${cw * 0.75} 40, ${cw - 8} 12`}
+          d={`M 4 96 C ${cw * 0.2} 88, ${cw * 0.3} 76, ${cw * 0.45} 64 C ${cw * 0.6} 52, ${cw * 0.75} 34, ${cw - 8} 10`}
           fill="none"
           stroke={T.cyan}
           strokeWidth={2.5}
@@ -63,7 +47,7 @@ const OverallGrowth: React.FC<{ delay: number }> = ({ delay }) => {
           strokeDashoffset={L * (1 - p)}
           style={{ filter: "drop-shadow(0 0 7px rgba(34,211,238,0.7))" }}
         />
-        <circle cx={cw - 8} cy={12} r={4.5} fill="#CFF6FF" opacity={p > 0.97 ? 1 : 0} />
+        <circle cx={cw - 8} cy={10} r={4.5} fill="#CFF6FF" opacity={p > 0.97 ? 1 : 0} />
       </svg>
     </div>
   );
@@ -71,9 +55,9 @@ const OverallGrowth: React.FC<{ delay: number }> = ({ delay }) => {
 
 // The three metric cards — figures verbatim
 const METRICS = [
-  { label: "Website Visits",   value: "4,892", delta: "+84%"  },
-  { label: "Profile Views",    value: "1,754", delta: "+92%"  },
-  { label: "Customer Actions", value: "673",   delta: "+110%" },
+  { label: "Website Visits",   value: "4,892" },
+  { label: "Profile Views",    value: "1,754" },
+  { label: "Customer Actions", value: "673" },
 ];
 
 const MetricRow: React.FC<{ delay: number }> = ({ delay }) => {
@@ -92,11 +76,7 @@ const MetricRow: React.FC<{ delay: number }> = ({ delay }) => {
           }}
         >
           <div style={{ fontSize: 14.5, fontWeight: 600, color: T.muted, marginBottom: 7 }}>{m.label}</div>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 9, marginBottom: 5 }}>
-            <span style={{ fontSize: 29, fontWeight: 800, color: T.white, letterSpacing: "-0.02em" }}>{m.value}</span>
-            <span style={{ fontSize: 15.5, fontWeight: 700, color: T.cyan }}>{m.delta}</span>
-          </div>
-          <div style={{ fontSize: 12.5, color: T.muted }}>vs previous 30 days</div>
+          <div style={{ fontSize: 29, fontWeight: 800, color: T.white, letterSpacing: "-0.02em" }}>{m.value}</div>
         </div>
       ))}
     </div>
@@ -182,18 +162,18 @@ const ChannelsRow: React.FC<{ delay: number }> = ({ delay }) => {
           </text>
         </svg>
         <div style={{ fontSize: 14.5, fontWeight: 700, color: "rgba(226,240,255,0.9)" }}>Engagement Rate</div>
-        <div style={{ fontSize: 12.5, color: T.muted }}>+18% vs previous 30 days</div>
       </div>
     </div>
   );
 };
 
-// Bottom stat strip — figures verbatim
-const BOTTOM = [
-  { label: "Avg. Time on Site", value: "02:48", delta: "+22%", deltaColor: T.cyan },
-  { label: "Bounce Rate",       value: "28%",   delta: "-16%", deltaColor: T.cyan },
-  { label: "Review Rating",     value: "4.9",   delta: "★★★★★", deltaColor: "#F5B942" },
-  { label: "Ranking Keywords",  value: "156",   delta: "+37%", deltaColor: T.cyan },
+// Bottom stat strip — plausible state metrics only (no fabricated
+// growth-delta claims). Star rating kept: it is a rating, not a delta.
+const BOTTOM: { label: string; value: string; delta?: string; deltaColor?: string }[] = [
+  { label: "Avg. Time on Site", value: "02:48" },
+  { label: "Bounce Rate",       value: "28%" },
+  { label: "Review Rating",     value: "4.9", delta: "★★★★★", deltaColor: "#F5B942" },
+  { label: "Ranking Keywords",  value: "156" },
 ];
 
 const BottomStrip: React.FC<{ delay: number }> = ({ delay }) => {
@@ -225,7 +205,9 @@ const BottomStrip: React.FC<{ delay: number }> = ({ delay }) => {
           <div style={{ fontSize: 23, fontWeight: 800, color: T.white, letterSpacing: "-0.02em", marginBottom: 3 }}>
             {s.value}
           </div>
-          <div style={{ fontSize: 13.5, fontWeight: 700, color: s.deltaColor }}>{s.delta}</div>
+          {s.delta && (
+            <div style={{ fontSize: 13.5, fontWeight: 700, color: s.deltaColor }}>{s.delta}</div>
+          )}
         </div>
       ))}
     </div>
