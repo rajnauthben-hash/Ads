@@ -1,9 +1,7 @@
-import React, { useEffect, useRef } from "react";
-import { AbsoluteFill, Sequence, useCurrentFrame, delayRender, continueRender } from "remotion";
-import { COLORS } from "../config/design";
-import { SCENES } from "../config/timing";
-import { fontsReady } from "../config/fonts";
-import { RouteSystem } from "../components/RouteSystem";
+import React from "react";
+import { AbsoluteFill, Sequence } from "remotion";
+import { SCENES, SCENE_LEN } from "../config/timing";
+import { EnergyStreak } from "../components/EnergyStreak";
 import { Scene01Hook } from "../scenes/Scene01Hook";
 import { Scene02Search } from "../scenes/Scene02Search";
 import { Scene03Compression } from "../scenes/Scene03Compression";
@@ -15,7 +13,7 @@ import { Scene08Signals } from "../scenes/Scene08Signals";
 import { Scene09Outcomes } from "../scenes/Scene09Outcomes";
 import { Scene10Resolution } from "../scenes/Scene10Resolution";
 
-const SCENE_COMPONENTS = [
+const SCENE_COMPONENTS: React.FC[] = [
   Scene01Hook,
   Scene02Search,
   Scene03Compression,
@@ -29,28 +27,26 @@ const SCENE_COMPONENTS = [
 ];
 
 export const InvisibleStorefront30: React.FC = () => {
-  const frame = useCurrentFrame();
-  const handle = useRef<number | null>(null);
-
-  useEffect(() => {
-    handle.current = delayRender("invisible-storefront-fonts");
-    fontsReady().then(() => {
-      if (handle.current !== null) continueRender(handle.current);
-    });
-  }, []);
-
   return (
-    <AbsoluteFill style={{ backgroundColor: COLORS.bg, overflow: "hidden" }}>
-      <RouteSystem frame={frame} />
-
+    <AbsoluteFill
+      style={{
+        background: "linear-gradient(180deg, #080B0D 0%, #0D0F11 45%, #121314 100%)",
+        overflow: "hidden",
+      }}
+    >
       {SCENES.map((scene, i) => {
         const SceneComponent = SCENE_COMPONENTS[i];
+        // Non-final scenes overhang 14 frames past their cut so the outgoing
+        // composition keeps dimming underneath the incoming scene — cuts are
+        // bridged by shared motion, never a black hole.
+        const overhang = i < SCENES.length - 1 ? 14 : 0;
         return (
-          <Sequence key={scene.id} from={scene.start} durationInFrames={scene.end - scene.start + 1}>
+          <Sequence key={scene.id} from={scene.start} durationInFrames={SCENE_LEN + overhang}>
             <SceneComponent />
           </Sequence>
         );
       })}
+      <EnergyStreak />
     </AbsoluteFill>
   );
 };

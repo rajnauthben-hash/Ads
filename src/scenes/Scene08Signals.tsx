@@ -1,102 +1,58 @@
 import React from "react";
-import { AbsoluteFill, useCurrentFrame, interpolate } from "remotion";
-import { COPY, SCENES } from "../config/timing";
-import { sceneFadeOpacity } from "../components/sceneFade";
-import { SceneHeader } from "../components/SceneHeader";
-import { KineticHeadline } from "../components/KineticHeadline";
-import { BodyCopy } from "../components/BodyCopy";
-import { StoreNode } from "../components/StoreNode";
-import { SignalNode } from "../components/SignalNode";
+import { useCurrentFrame, interpolate } from "remotion";
+import { NodePulseOverlay } from "../components/NodePulseOverlay";
+import { PlateScene } from "./PlateScene";
 
-const SCENE = SCENES[7];
-const DURATION = SCENE.end - SCENE.start + 1;
-const STORE = { x: 540, y: 1150 };
+const NODES = [
+  { x: 147, y: 933 },
+  { x: 539, y: 752 },
+  { x: 930, y: 936 },
+  { x: 197, y: 1424 },
+  { x: 867, y: 1424 },
+];
 
-export const Scene08Signals: React.FC = () => {
+/** One synchronized visibility pulse across all five signal nodes + store. */
+const FinalSyncPulse: React.FC = () => {
   const frame = useCurrentFrame();
-  const copy = COPY[8];
-  const fade = sceneFadeOpacity(frame, DURATION, 8, 10);
+  if (frame < 62) return null;
+  return (
+    <>
+      {NODES.map((n, i) => (
+        <NodePulseOverlay key={i} x={n.x} y={n.y} frame={frame} at={62} color="cyan" radius={95} />
+      ))}
+      <NodePulseOverlay x={540} y={1150} frame={frame} at={62} color="cyan" radius={170} />
+    </>
+  );
+};
 
-  const storeStrength = interpolate(frame, [10, DURATION - 10], [0.25, 1], {
+/** Central signal intensity grows with each completed connection. */
+const CentralIntensity: React.FC = () => {
+  const frame = useCurrentFrame();
+  const level = interpolate(frame, [12, 20, 28, 36, 44, 52], [0, 0.2, 0.4, 0.6, 0.8, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-
+  if (level <= 0.01) return null;
   return (
-    <AbsoluteFill style={{ opacity: fade }}>
-      <StoreNode x={STORE.x} y={STORE.y} frame={frame} strength={storeStrength} entrance={1} />
-
-      <SignalNode
-        frame={frame}
-        start={12}
-        x={170}
-        y={1000}
-        bendX={350}
-        bendY={1080}
-        storeX={STORE.x}
-        storeY={STORE.y}
-        icon="camera"
-        label="PHOTOS"
-        gold
-      />
-      <SignalNode
-        frame={frame}
-        start={20}
-        x={540}
-        y={780}
-        bendX={540}
-        bendY={950}
-        storeX={STORE.x}
-        storeY={STORE.y}
-        icon="star"
-        label="REVIEWS"
-        showStars
-      />
-      <SignalNode
-        frame={frame}
-        start={28}
-        x={930}
-        y={1000}
-        bendX={730}
-        bendY={1080}
-        storeX={STORE.x}
-        storeY={STORE.y}
-        icon="list"
-        label="CATEGORIES"
-        gold
-      />
-      <SignalNode
-        frame={frame}
-        start={36}
-        x={260}
-        y={1400}
-        bendX={400}
-        bendY={1280}
-        storeX={STORE.x}
-        storeY={STORE.y}
-        icon="clock"
-        label="HOURS"
-        gold
-      />
-      <SignalNode
-        frame={frame}
-        start={44}
-        x={830}
-        y={1400}
-        bendX={680}
-        bendY={1280}
-        storeX={STORE.x}
-        storeY={STORE.y}
-        icon="chartUp"
-        label="ACTIVITY"
-        gold
-      />
-
-      <SceneHeader frame={frame} sceneNumber={8} />
-      {copy.headline.map((block, i) => (
-        <KineticHeadline key={i} frame={frame} start={14} block={block} />
-      ))}
-      <BodyCopy frame={frame} start={36} block={copy.body} />
-    </AbsoluteFill>
+    <div
+      style={{
+        position: "absolute",
+        left: 540 - 220,
+        top: 1150 - 160,
+        width: 440,
+        height: 320,
+        borderRadius: "50%",
+        background: "radial-gradient(ellipse, rgba(0,210,255,0.5) 0%, rgba(0,210,255,0) 65%)",
+        opacity: 0.35 * level + 0.08 * Math.sin(frame / 8) * level,
+        mixBlendMode: "screen",
+      }}
+    />
   );
 };
+
+export const Scene08Signals: React.FC = () => (
+  <PlateScene scene={8}>
+    <CentralIntensity />
+    <FinalSyncPulse />
+  </PlateScene>
+);

@@ -9,6 +9,7 @@ import {
   InvisibleStorefront30,
   INVISIBLE_STOREFRONT_DURATION,
 } from "./compositions/InvisibleStorefront30";
+import { ReferenceAudit } from "./compositions/ReferenceAudit";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -60,6 +61,15 @@ export const RemotionRoot: React.FC = () => {
         fps={30}
         width={1080}
         height={1920}
+      />
+      <Composition
+        id="ReferenceAudit"
+        component={ReferenceAudit}
+        durationInFrames={INVISIBLE_STOREFRONT_DURATION}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{ mode: "wipe" as const }}
       />
     </>
   );
