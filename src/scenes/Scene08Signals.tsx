@@ -14,13 +14,13 @@ const NODES = [
 /** One synchronized visibility pulse across all five signal nodes + store. */
 const FinalSyncPulse: React.FC = () => {
   const frame = useCurrentFrame();
-  if (frame < 62) return null;
+  if (frame < 88) return null;
   return (
     <>
       {NODES.map((n, i) => (
-        <NodePulseOverlay key={i} x={n.x} y={n.y} frame={frame} at={62} color="cyan" radius={95} />
+        <NodePulseOverlay key={i} x={n.x} y={n.y} frame={frame} at={88} color="cyan" radius={95} />
       ))}
-      <NodePulseOverlay x={540} y={1150} frame={frame} at={62} color="cyan" radius={170} />
+      <NodePulseOverlay x={540} y={1150} frame={frame} at={88} color="cyan" radius={170} />
     </>
   );
 };
