@@ -216,7 +216,15 @@ export const Scene04PassedOver: React.FC = () => {
           </TextDissolve>
         </div>
 
-        <TechnicalTelemetry tag="SIGNAL / 04 — VISIBILITY GAP" readout="PASS.RATE" seed={38} />
+        <TechnicalTelemetry
+          tag="SIGNAL / 04 — VISIBILITY GAP"
+          readout="PASS.RATE"
+          seed={38}
+          opacity={interpolate(frame, [10, 18, 74, 82], [0, 1, 1, 0], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp",
+          })}
+        />
       </AbsoluteFill>
     </SceneTransition>
   );

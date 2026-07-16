@@ -219,7 +219,15 @@ export const Scene05Signals: React.FC = () => {
           </TextDissolve>
         </div>
 
-        <TechnicalTelemetry tag="SIGNAL / 05 — PROFILE STRENGTH" readout="TRUST.IDX" seed={47} />
+        <TechnicalTelemetry
+          tag="SIGNAL / 05 — PROFILE STRENGTH"
+          readout="TRUST.IDX"
+          seed={47}
+          opacity={interpolate(frame, [10, 18, 80, 88], [0, 1, 1, 0], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp",
+          })}
+        />
       </AbsoluteFill>
     </SceneTransition>
   );

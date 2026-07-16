@@ -189,7 +189,15 @@ export const Scene03Ranking: React.FC = () => {
           }}
         />
 
-        <TechnicalTelemetry tag="SIGNAL / 03 — DECISION WINDOW" readout="DWELL.MS" seed={22} />
+        <TechnicalTelemetry
+          tag="SIGNAL / 03 — DECISION WINDOW"
+          readout="DWELL.MS"
+          seed={22}
+          opacity={interpolate(frame, [10, 18, 62, 70], [0, 1, 1, 0], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp",
+          })}
+        />
       </AbsoluteFill>
     </SceneTransition>
   );

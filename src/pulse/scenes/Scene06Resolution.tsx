@@ -149,7 +149,15 @@ export const Scene06Resolution: React.FC = () => {
           />
         </div>
 
-        <TechnicalTelemetry tag="SIGNAL / 06 — CONNECTION COMPLETE" readout="VISITS.IN" seed={59} />
+        <TechnicalTelemetry
+          tag="SIGNAL / 06 — CONNECTION COMPLETE"
+          readout="VISITS.IN"
+          seed={59}
+          opacity={interpolate(frame, [10, 18], [0, 1], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp",
+          })}
+        />
       </AbsoluteFill>
     </SceneTransition>
   );

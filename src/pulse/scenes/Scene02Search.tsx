@@ -180,7 +180,15 @@ export const Scene02Search: React.FC = () => {
           </TextDissolve>
         </div>
 
-        <TechnicalTelemetry tag="SIGNAL / 02 — SEARCH INTENT" readout="QUERY.VOL" seed={12} />
+        <TechnicalTelemetry
+          tag="SIGNAL / 02 — SEARCH INTENT"
+          readout="QUERY.VOL"
+          seed={12}
+          opacity={interpolate(frame, [10, 18, 74, 82], [0, 1, 1, 0], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp",
+          })}
+        />
       </AbsoluteFill>
     </SceneTransition>
   );

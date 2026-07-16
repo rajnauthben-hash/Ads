@@ -163,7 +163,18 @@ export const Scene01Hook: React.FC = () => {
           </TextDissolve>
         </div>
 
-        <TechnicalTelemetry tag="SIGNAL / 01 — LOCAL INTENT" readout="TRAFFIC.OUT" seed={1} opacity={wake} />
+        <TechnicalTelemetry
+          tag="SIGNAL / 01 — LOCAL INTENT"
+          readout="TRAFFIC.OUT"
+          seed={1}
+          opacity={
+            wake *
+            interpolate(frame, [82, 90], [1, 0], {
+              extrapolateLeft: "clamp",
+              extrapolateRight: "clamp",
+            })
+          }
+        />
       </AbsoluteFill>
     </SceneTransition>
   );
