@@ -3,15 +3,16 @@
 // in one visual language.
 
 export const COLORS = {
-  bg: "#090B0D",
+  bg: "#0A0B0D",
   slate: "#121314",
-  cyan: "#00D2FF",
-  cyanSoft: "#45DFFF",
-  gold: "#FFC700",
-  goldWarm: "#DDAE4A",
-  text: "#F4F6F7",
-  textDim: "#A7AFB7",
-  mutedUi: "rgba(0, 210, 255, 0.14)",
+  cyan: "#00D8FF",
+  cyanSoft: "rgba(0, 216, 255, 0.35)",
+  gold: "#E0B85B",
+  goldWarm: "#C9A24A",
+  goldGlow: "rgba(224, 184, 91, 0.35)",
+  text: "#F5F6F7",
+  textDim: "#9AA3AD",
+  mutedUi: "rgba(0, 216, 255, 0.13)",
 } as const;
 
 export const FONTS = {

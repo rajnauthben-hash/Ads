@@ -26,7 +26,7 @@ export const ReferenceOverlay: React.FC = () => {
   if (idx < 0) {
     return null;
   }
-  const src = staticFile(`refs/ref-0${idx + 1}.jpg`);
+  const src = staticFile(`refs/ref-0${idx + 1}.png`);
 
   if (MODE === "side-by-side") {
     return (

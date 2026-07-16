@@ -12,33 +12,29 @@ import { TextDissolve } from "../TextDissolve";
 import { COLORS, FONTS } from "../theme";
 
 // Scene 01 — The hook. Frames 0–89 (sequence runs to 100 for the outgoing
-// overlap). Near darkness; a pulse activates at the storefront, then the
-// route visibly leaves the business for brighter gold destinations while
-// the three copy blocks materialize.
+// overlap). Near darkness; the premium storefront reveals from shadow, the
+// thick neon route energizes away from it toward a cluster of glowing gold
+// destinations on the right, and the copy assembles in phrase groups.
 const ROUTE = [
-  { x: 250, y: 1545 },
-  { x: 400, y: 1470 },
-  { x: 560, y: 1420 },
-  { x: 700, y: 1330 },
-  { x: 830, y: 1250 },
-];
-const BRANCH_A = [
-  { x: 700, y: 1330 },
-  { x: 720, y: 1230 },
-  { x: 700, y: 1140 },
-];
-const BRANCH_B = [
-  { x: 830, y: 1250 },
-  { x: 880, y: 1350 },
-  { x: 900, y: 1440 },
+  { x: 258, y: 1655 },
+  { x: 310, y: 1620 },
+  { x: 415, y: 1555 },
+  { x: 500, y: 1580 },
+  { x: 585, y: 1520 },
+  { x: 665, y: 1535 },
+  { x: 730, y: 1465 },
+  { x: 790, y: 1400 },
+  { x: 830, y: 1300 },
+  { x: 862, y: 1195 },
+  { x: 875, y: 1115 },
 ];
 // Transition object: the route accelerating toward the top of frame,
 // where it becomes scene 02's search-interface cable.
 const EXIT_ROUTE = [
-  { x: 830, y: 1250 },
-  { x: 780, y: 1000 },
-  { x: 620, y: 720 },
-  { x: 470, y: 560 },
+  { x: 875, y: 1115 },
+  { x: 800, y: 900 },
+  { x: 620, y: 680 },
+  { x: 420, y: 520 },
 ];
 
 const DUR = 100;
@@ -46,26 +42,20 @@ const DUR = 100;
 export const Scene01Hook: React.FC = () => {
   const frame = useCurrentFrame();
 
-  // Darkness lifts as the first pulse activates (frames 0–8).
-  const wake = interpolate(frame, [0, 8], [0, 1], {
+  // Darkness lifts as the first pulse activates (frames 0–10).
+  const wake = interpolate(frame, [0, 10], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const routeProgress = interpolate(frame, [15, 70], [0, 1], {
+  const routeProgress = interpolate(frame, [14, 66], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
     easing: Easing.bezier(0.3, 0.2, 0.3, 1),
   });
-  const branchProgress = interpolate(frame, [40, 68], [0, 1], {
+  const ringActivity = interpolate(frame, [12, 34, 62, 86], [0, 0.5, 0.25, 0.12], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  // The storefront's signal ring tries to activate but weakens.
-  const ringActivity = interpolate(frame, [12, 34, 62, 86], [0, 0.55, 0.22, 0.1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-  // Exit: the route accelerates upward and the text is pulled into it.
   const exitProgress = interpolate(frame, [80, 98], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -82,48 +72,84 @@ export const Scene01Hook: React.FC = () => {
       rotate={0.6}
       scaleTo={1.028}
     >
-      <AbsoluteFill style={{ opacity: 0.25 + 0.75 * wake }}>
-        <PerspectiveMap seed={11} brightness={0.85 * wake} driftX={-frame * 0.06} />
+      <AbsoluteFill style={{ opacity: 0.2 + 0.8 * wake }}>
+        <PerspectiveMap
+          seed={11}
+          brightness={0.95 * wake}
+          driftX={-frame * 0.06}
+          labels={["PINE ST", "OAK AVE", "MAPLE DR"]}
+          goldDust={1}
+        />
+
+        {/* Atmospheric falloff pooling light around the destinations */}
+        <AbsoluteFill
+          style={{
+            background:
+              "radial-gradient(ellipse 40% 22% at 80% 55%, rgba(224,184,91,0.10), transparent 70%), radial-gradient(ellipse 45% 26% at 18% 78%, rgba(224,166,80,0.06), transparent 70%)",
+            opacity: wake,
+          }}
+        />
 
         <svg width="1080" height="1920" style={{ position: "absolute", inset: 0 }}>
-          <DataParticleField x={80} y={1000} width={920} height={800} count={16} seed={4} opacity={0.5} />
+          <DataParticleField x={80} y={1000} width={920} height={800} count={14} seed={4} opacity={0.45} />
 
-          {/* Route leaving the business */}
-          <RoutePath points={ROUTE} progress={routeProgress} frame={frame} arrows pulses={3} seed={2} />
-          <RoutePath points={BRANCH_A} progress={branchProgress} frame={frame} pulses={1} coreWidth={1.6} glowWidth={8} seed={3} />
-          <RoutePath points={BRANCH_B} progress={branchProgress} frame={frame} pulses={1} coreWidth={1.6} glowWidth={8} seed={4} />
+          {/* Thick neon route leaving the business */}
+          <RoutePath
+            points={ROUTE}
+            progress={routeProgress}
+            frame={frame}
+            chevrons={4}
+            pulses={3}
+            coreWidth={5}
+            glowWidth={22}
+            glowOpacity={0.2}
+            hot
+            seed={2}
+          />
           <DataParticleStream points={ROUTE} progress={routeProgress} count={5} seed={6} />
 
           {/* Exit acceleration toward the search interface */}
-          <RoutePath points={EXIT_ROUTE} progress={exitProgress} frame={frame} pulses={2} coreWidth={2.6} glowWidth={12} seed={5} />
+          <RoutePath points={EXIT_ROUTE} progress={exitProgress} frame={frame} pulses={2} coreWidth={3.4} glowWidth={14} hot seed={5} />
 
-          {/* Gold destinations receiving the traffic */}
-          <DestinationPin x={700} y={1140} appearFrame={26} pulseAt={52} />
-          <DestinationPin x={830} y={1250} appearFrame={32} pulseAt={60} scale={0.88} />
-          <DestinationPin x={900} y={1440} appearFrame={38} pulseAt={66} scale={0.8} />
-          {/* The business's own marker — dimmer than the competition */}
-          <DestinationPin x={250} y={1545} appearFrame={10} dim color={COLORS.cyan} scale={0.75} />
+          {/* Premium storefront revealing from shadow */}
+          <StorefrontNode
+            x={200}
+            y={1620}
+            scale={1.55}
+            brightness={0.34 + 0.16 * wake}
+            ringActivity={ringActivity}
+            appearFrame={2}
+            label="YOUR BUSINESS"
+          />
+          {/* The business's cyan pin — on the sidewalk in front of the door */}
+          <DestinationPin x={258} y={1655} appearFrame={8} flatBody="#0E3540" color={COLORS.cyan} scale={0.85} ringRichness={0.9} seed={4} />
 
-          <StorefrontNode x={250} y={1600} brightness={0.3} ringActivity={ringActivity} appearFrame={4} label="YOUR BUSINESS" />
+          {/* Gold destination cluster on the right — one hero, satellites */}
+          <DestinationPin x={875} y={1115} appearFrame={34} scale={1.35} icon="none" ringRichness={1.5} pulseAt={62} seed={11} />
+          <DestinationPin x={755} y={965} appearFrame={42} scale={1} pulseAt={70} seed={12} />
+          <DestinationPin x={815} y={815} appearFrame={48} scale={0.68} glow={0.8} seed={13} />
+          <DestinationPin x={938} y={880} appearFrame={53} scale={0.6} glow={0.7} seed={14} />
         </svg>
 
         {/* Copy stack */}
-        <div style={{ position: "absolute", left: 84, top: 168, right: 70 }}>
+        <div style={{ position: "absolute", left: 100, top: 235, right: 60 }}>
           <TextDissolve exitStart={78} exitDuration={12} pullTarget={{ x: 360, y: 300 }} seed={21}>
             <MaterializedText
               startFrame={8}
               lines={[
-                [{ text: "You might not be losing customers to" }],
+                [{ text: "You might not be" }],
+                [{ text: "losing customers to" }],
                 [{ text: "better businesses." }],
               ]}
-              fontSize={47}
-              fontWeight={500}
-              lineHeight={1.24}
+              fontSize={46}
+              fontWeight={480}
+              lineHeight={1.26}
+              color="rgba(230,234,237,0.82)"
               seed={31}
             />
           </TextDissolve>
 
-          <TextDissolve exitStart={80} exitDuration={12} pullTarget={{ x: 320, y: 160 }} seed={22} style={{ marginTop: 46 }}>
+          <TextDissolve exitStart={80} exitDuration={12} pullTarget={{ x: 320, y: 160 }} seed={22} style={{ marginTop: 68 }}>
             <MaterializedText
               startFrame={20}
               lineDuration={18}
@@ -133,15 +159,15 @@ export const Scene01Hook: React.FC = () => {
                 [{ text: "to the businesses", color: COLORS.gold }],
                 [{ text: "that show up first.", color: COLORS.gold }],
               ]}
-              fontSize={84}
-              fontWeight={600}
-              lineHeight={1.12}
+              fontSize={80}
+              fontWeight={620}
+              lineHeight={1.13}
               fragmentColor={COLORS.gold}
               seed={32}
             />
           </TextDissolve>
 
-          <TextDissolve exitStart={82} exitDuration={12} pullTarget={{ x: 280, y: -60 }} seed={23} style={{ marginTop: 46 }}>
+          <TextDissolve exitStart={82} exitDuration={12} pullTarget={{ x: 280, y: -60 }} seed={23} style={{ marginTop: 44 }}>
             <MaterializedText
               startFrame={34}
               lineDuration={14}
@@ -168,6 +194,7 @@ export const Scene01Hook: React.FC = () => {
           readout="TRAFFIC.OUT"
           seed={1}
           opacity={
+            0.75 *
             wake *
             interpolate(frame, [82, 90], [1, 0], {
               extrapolateLeft: "clamp",

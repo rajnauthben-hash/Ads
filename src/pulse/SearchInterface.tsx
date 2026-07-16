@@ -9,63 +9,57 @@ type Props = {
   style?: React.CSSProperties;
 };
 
-const MODULES = [
-  { label: "MAPS", icon: "pin" },
-  { label: "REVIEWS", icon: "stars" },
-  { label: "PHOTOS", icon: "photo" },
-  { label: "OPENING HOURS", icon: "clock" },
+export const SEARCH_ROWS = [
+  { label: "Places", icon: "pin" },
+  { label: "Reviews", icon: "star" },
+  { label: "Photos", icon: "photo" },
+  { label: "Opening hours", icon: "clock" },
 ] as const;
 
-const ModuleIcon: React.FC<{ kind: string; active: number }> = ({ kind, active }) => {
-  const stroke = `rgba(0, 210, 255, ${0.45 + 0.55 * active})`;
+// Geometry shared with the scene so data strands can attach to each row.
+export const SEARCH_PANEL = { width: 540, barH: 76, rowH: 78, rowsTop: 100 };
+export const searchRowCenterY = (i: number): number =>
+  SEARCH_PANEL.rowsTop + SEARCH_PANEL.rowH * i + SEARCH_PANEL.rowH / 2;
+
+const RowIcon: React.FC<{ kind: string; a: number }> = ({ kind, a }) => {
+  const stroke = `rgba(0, 216, 255, ${0.4 + 0.5 * a})`;
   switch (kind) {
     case "pin":
       return (
-        <svg width="34" height="34" viewBox="0 0 34 34">
-          <path d="M17 29 C 10 20 8 17 8 12 A 9 9 0 1 1 26 12 C 26 17 24 20 17 29 Z" fill="none" stroke={stroke} strokeWidth={2} />
-          <circle cx="17" cy="12.5" r="3.4" fill={stroke} />
+        <svg width="30" height="30" viewBox="0 0 30 30">
+          <path d="M15 26 C 9 18 7.5 15 7.5 10.5 A 7.5 7.5 0 1 1 22.5 10.5 C 22.5 15 21 18 15 26 Z" fill="none" stroke={stroke} strokeWidth={1.8} />
+          <circle cx="15" cy="11" r="2.8" fill={stroke} />
         </svg>
       );
-    case "stars":
+    case "star":
       return (
-        <svg width="34" height="34" viewBox="0 0 34 34">
-          {[0, 1, 2].map((i) => (
-            <path
-              key={i}
-              transform={`translate(${4 + i * 10} 12) scale(0.5)`}
-              d="M8 0 L10 6 L16 6 L11 10 L13 16 L8 12 L3 16 L5 10 L0 6 L6 6 Z"
-              fill={i < 2 ? COLORS.goldWarm : "none"}
-              stroke={i < 2 ? "none" : stroke}
-              strokeWidth={1.6}
-              opacity={0.4 + 0.6 * active}
-            />
-          ))}
-          <rect x="4" y="23" width={18 * active + 4} height="3" rx="1.5" fill={stroke} />
+        <svg width="30" height="30" viewBox="0 0 30 30">
+          <path d="M15 3 L18.2 11 L27 11.5 L20 17 L22.4 25.6 L15 20.6 L7.6 25.6 L10 17 L3 11.5 L11.8 11 Z" fill="none" stroke={stroke} strokeWidth={1.8} strokeLinejoin="round" />
         </svg>
       );
     case "photo":
       return (
-        <svg width="34" height="34" viewBox="0 0 34 34">
-          <rect x="5" y="7" width="24" height="20" rx="3" fill="none" stroke={stroke} strokeWidth={2} />
-          <circle cx="12" cy="14" r="2.4" fill={stroke} />
-          <path d="M7 24 L 15 16 L 20 21 L 24 17 L 28 21" fill="none" stroke={stroke} strokeWidth={2} />
+        <svg width="30" height="30" viewBox="0 0 30 30">
+          <rect x="4" y="6" width="22" height="18" rx="3" fill="none" stroke={stroke} strokeWidth={1.8} />
+          <circle cx="10.5" cy="12" r="2.2" fill={stroke} />
+          <path d="M 6 21 L 13 14 L 17.5 18.5 L 21 15 L 24 18" fill="none" stroke={stroke} strokeWidth={1.8} />
         </svg>
       );
     default:
       return (
-        <svg width="34" height="34" viewBox="0 0 34 34">
-          <circle cx="17" cy="17" r="11" fill="none" stroke={stroke} strokeWidth={2} />
-          <path d={`M17 17 L 17 10`} stroke={stroke} strokeWidth={2} strokeLinecap="round" />
-          <path d={`M17 17 L ${17 + 6 * Math.cos(active * 6)} ${17 + 6 * Math.sin(active * 6)}`} stroke={stroke} strokeWidth={2} strokeLinecap="round" />
+        <svg width="30" height="30" viewBox="0 0 30 30">
+          <circle cx="15" cy="15" r="10" fill="none" stroke={stroke} strokeWidth={1.8} />
+          <path d="M 15 9.5 L 15 15 L 19.5 17.5" fill="none" stroke={stroke} strokeWidth={1.8} strokeLinecap="round" />
         </svg>
       );
   }
 };
 
-// Abstract search surface (deliberately not Google's UI, no logo): a search
-// field constructs itself from the incoming route, four intent modules
-// materialize in sequence, and scanning indicators keep the panel alive.
-export const SearchInterface: React.FC<Props> = ({ buildFrame, width = 620, style }) => {
+// Premium translucent search surface (deliberately not Google's UI): a pill
+// search field with placeholder + filter control, then four quiet intent
+// rows divided by hairlines. Constructs from the incoming route cable, kept
+// alive by a soft scan sweep and breathing row icons.
+export const SearchInterface: React.FC<Props> = ({ buildFrame, width = SEARCH_PANEL.width, style }) => {
   const frame = useCurrentFrame();
   const t = (from: number, dur: number, easing = Easing.bezier(0.2, 0.8, 0.25, 1)) =>
     interpolate(frame, [buildFrame + from, buildFrame + from + dur], [0, 1], {
@@ -75,147 +69,127 @@ export const SearchInterface: React.FC<Props> = ({ buildFrame, width = 620, styl
     });
 
   const bar = t(0, 12);
-  const scanY = ((frame - buildFrame) * 4.2) % 560;
+  const panel = t(4, 14);
+  const totalH = SEARCH_PANEL.rowsTop + SEARCH_PANEL.rowH * SEARCH_ROWS.length + 18;
+  const scanY = ((frame - buildFrame) * 3.4) % totalH;
 
   return (
-    <div style={{ width, position: "relative", ...style }}>
-      {/* Search field — draws its own outline first */}
+    <div style={{ width, position: "relative", height: totalH, ...style }}>
+      {/* Panel body behind the rows */}
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          top: 40,
+          bottom: 0,
+          borderRadius: 28,
+          background: "linear-gradient(160deg, rgba(22,24,27,0.78), rgba(14,15,17,0.62))",
+          border: "1px solid rgba(0,216,255,0.13)",
+          boxShadow: "0 24px 60px rgba(0,0,0,0.5), inset 0 1px 0 rgba(245,246,247,0.05)",
+          opacity: panel,
+          transform: `translate3d(0, ${(1 - panel) * 26}px, 0)`,
+        }}
+      />
+
+      {/* Search pill */}
       <div
         style={{
           position: "relative",
-          height: 92,
-          borderRadius: 46,
-          background: "rgba(18, 19, 20, 0.92)",
-          border: `1.5px solid rgba(0, 210, 255, ${0.2 + 0.45 * bar})`,
-          boxShadow: `0 0 ${26 * bar}px rgba(0, 210, 255, 0.14)`,
+          height: SEARCH_PANEL.barH,
+          borderRadius: SEARCH_PANEL.barH / 2,
+          background: "rgba(16,17,19,0.92)",
+          border: `1.4px solid rgba(0,216,255,${0.22 + 0.4 * bar})`,
+          boxShadow: `0 0 ${30 * bar}px rgba(0,216,255,0.13), inset 0 1px 0 rgba(245,246,247,0.06)`,
           display: "flex",
           alignItems: "center",
-          padding: "0 34px",
-          gap: 22,
-          clipPath: `inset(0 ${(1 - bar) * 100}% 0 0 round 46px)`,
+          padding: "0 26px",
+          gap: 18,
+          clipPath: `inset(0 ${(1 - bar) * 100}% 0 0 round ${SEARCH_PANEL.barH / 2}px)`,
         }}
       >
-        <svg width="34" height="34" viewBox="0 0 34 34">
-          <circle cx="15" cy="15" r="9" fill="none" stroke={COLORS.cyan} strokeWidth={2.4} />
-          <line x1="22" y1="22" x2="29" y2="29" stroke={COLORS.cyan} strokeWidth={2.6} strokeLinecap="round" />
+        <svg width="28" height="28" viewBox="0 0 28 28">
+          <circle cx="12" cy="12" r="7.5" fill="none" stroke={COLORS.cyan} strokeWidth={2.2} />
+          <line x1="18" y1="18" x2="24" y2="24" stroke={COLORS.cyan} strokeWidth={2.4} strokeLinecap="round" />
         </svg>
         <div
           style={{
-            fontFamily: FONTS.mono,
-            fontWeight: 500,
-            fontSize: 24,
-            letterSpacing: 2,
-            color: COLORS.textDim,
+            flex: 1,
+            fontFamily: FONTS.body,
+            fontWeight: 400,
+            fontSize: 20,
+            letterSpacing: 0.2,
+            color: "rgba(154,163,173,0.85)",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            opacity: t(6, 10),
           }}
         >
-          {"coffee near me".slice(0, Math.floor(t(6, 26, Easing.linear) * 14))}
+          Search places, restaurants, services...
         </div>
-        {/* Blinking caret, frame-driven */}
-        <div
-          style={{
-            width: 2.5,
-            height: 30,
-            background: COLORS.cyan,
-            opacity: Math.floor(frame / 14) % 2 === 0 ? 1 : 0.15,
-            marginLeft: -14,
-          }}
-        />
+        {/* Filter control */}
+        <svg width="30" height="30" viewBox="0 0 30 30" style={{ opacity: t(8, 8) }}>
+          <circle cx="15" cy="15" r="12" fill="none" stroke="rgba(0,216,255,0.4)" strokeWidth={1.4} />
+          <line x1="9" y1="12" x2="21" y2="12" stroke={COLORS.cyan} strokeWidth={1.6} />
+          <line x1="9" y1="18" x2="21" y2="18" stroke={COLORS.cyan} strokeWidth={1.6} />
+          <circle cx="17.5" cy="12" r="2" fill={COLORS.bg} stroke={COLORS.cyan} strokeWidth={1.4} />
+          <circle cx="12.5" cy="18" r="2" fill={COLORS.bg} stroke={COLORS.cyan} strokeWidth={1.4} />
+        </svg>
       </div>
 
-      {/* Modules */}
-      <div style={{ marginTop: 26, display: "flex", flexDirection: "column", gap: 18 }}>
-        {MODULES.map((m, i) => {
-          const mt = t(10 + i * 7, 12);
-          if (mt <= 0) {
-            return <div key={m.label} style={{ height: 96 }} />;
-          }
-          const stream = t(22 + i * 7, 20, Easing.linear);
-          return (
+      {/* Intent rows */}
+      {SEARCH_ROWS.map((row, i) => {
+        const rt = t(12 + i * 6, 12);
+        if (rt <= 0) {
+          return null;
+        }
+        const breathe = 0.8 + 0.2 * Math.sin(frame * 0.07 + i * 1.4);
+        return (
+          <div
+            key={row.label}
+            style={{
+              position: "absolute",
+              left: 26,
+              right: 26,
+              top: SEARCH_PANEL.rowsTop + i * SEARCH_PANEL.rowH,
+              height: SEARCH_PANEL.rowH,
+              display: "flex",
+              alignItems: "center",
+              gap: 22,
+              opacity: rt,
+              transform: `translate3d(${(1 - rt) * -30}px, 0, 0)`,
+              filter: `blur(${(1 - rt) * 5}px)`,
+              borderBottom: i < SEARCH_ROWS.length - 1 ? "1px solid rgba(154,163,173,0.1)" : "none",
+            }}
+          >
+            <div style={{ opacity: 0.55 + 0.45 * breathe }}>
+              <RowIcon kind={row.icon} a={rt} />
+            </div>
             <div
-              key={m.label}
               style={{
-                position: "relative",
-                height: 96,
-                borderRadius: 18,
-                background: "rgba(18, 19, 20, 0.88)",
-                border: `1.2px solid rgba(0, 210, 255, ${0.12 + 0.3 * mt})`,
-                display: "flex",
-                alignItems: "center",
-                gap: 24,
-                padding: "0 28px",
-                opacity: mt,
-                transform: `translate3d(${(1 - mt) * -34}px, 0, 0)`,
-                filter: `blur(${(1 - mt) * 6}px)`,
+                fontFamily: FONTS.body,
+                fontWeight: 400,
+                fontSize: 27,
+                letterSpacing: 0.2,
+                color: "#DEE3E7",
               }}
             >
-              <div
-                style={{
-                  width: 58,
-                  height: 58,
-                  borderRadius: 14,
-                  background: COLORS.mutedUi,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <ModuleIcon kind={m.icon} active={mt} />
-              </div>
-              <div>
-                <div
-                  style={{
-                    fontFamily: FONTS.mono,
-                    fontWeight: 500,
-                    fontSize: 19,
-                    letterSpacing: 4,
-                    color: COLORS.text,
-                  }}
-                >
-                  {m.label}
-                </div>
-                {/* Abstract content bars */}
-                <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-                  {[86, 130, 58].map((w, bi) => (
-                    <div
-                      key={bi}
-                      style={{
-                        width: w * mt,
-                        height: 7,
-                        borderRadius: 3.5,
-                        background: bi === 0 ? "rgba(221,174,74,0.55)" : "rgba(167,175,183,0.3)",
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-              {/* Data stream leaving the module toward the map */}
-              <div
-                style={{
-                  position: "absolute",
-                  right: -6,
-                  top: "50%",
-                  width: 46,
-                  height: 2,
-                  background: `linear-gradient(90deg, transparent, ${COLORS.cyan})`,
-                  opacity: stream > 0 ? 0.4 + 0.6 * (0.5 + 0.5 * Math.sin(frame * 0.3 + i)) : 0,
-                }}
-              />
+              {row.label}
             </div>
-          );
-        })}
-      </div>
+          </div>
+        );
+      })}
 
-      {/* Scanning indicator sweeping the panel */}
-      {bar > 0.5 && (
+      {/* Scan sweep */}
+      {panel > 0.5 && (
         <div
           style={{
             position: "absolute",
-            left: 0,
-            right: 0,
+            left: 8,
+            right: 8,
             top: scanY,
-            height: 40,
-            background:
-              "linear-gradient(180deg, transparent, rgba(0,210,255,0.045), transparent)",
+            height: 34,
+            background: "linear-gradient(180deg, transparent, rgba(0,216,255,0.05), transparent)",
             pointerEvents: "none",
           }}
         />

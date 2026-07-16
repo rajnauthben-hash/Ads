@@ -22,6 +22,11 @@ type RoutePathProps = {
   // Global speed for travelling elements (frame-driven by the caller).
   frame: number;
   arrows?: boolean;
+  // Number of directional chevrons distributed along the path; they creep
+  // forward slowly to keep the route visibly moving.
+  chevrons?: number;
+  // Adds a white-hot inner filament for the fully energized neon look.
+  hot?: boolean;
   opacity?: number;
   seed?: number;
 };
@@ -36,6 +41,8 @@ export const RoutePath: React.FC<RoutePathProps> = ({
   pulses = 2,
   frame,
   arrows = false,
+  chevrons = 0,
+  hot = false,
   opacity = 1,
   seed = 1,
 }) => {
@@ -55,21 +62,26 @@ export const RoutePath: React.FC<RoutePathProps> = ({
     );
   });
 
-  const arrowMarks = arrows
-    ? [0.3, 0.6, 0.85].map((t, i) => {
-        if (t > p) {
-          return null;
-        }
-        const a = splinePoint(points, Math.max(0, t - 0.015));
-        const b = splinePoint(points, Math.min(1, t + 0.015));
-        const ang = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
-        return (
-          <g key={i} transform={`translate(${b.x} ${b.y}) rotate(${ang})`}>
-            <path d="M -7 -6 L 5 0 L -7 6" fill="none" stroke={color} strokeWidth={2.4} opacity={0.9} />
-          </g>
-        );
-      })
-    : null;
+  const chevronCount = chevrons > 0 ? chevrons : arrows ? 3 : 0;
+  const arrowMarks =
+    chevronCount > 0
+      ? Array.from({ length: chevronCount }, (_, i) => {
+          // Chevrons creep forward slowly so the route always reads as flow.
+          const t = (((i + 0.55) / chevronCount + frame * 0.0011) % 1) * p;
+          if (t < 0.05) {
+            return null;
+          }
+          const a = splinePoint(points, Math.max(0, t - 0.015));
+          const b = splinePoint(points, Math.min(1, t + 0.015));
+          const ang = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
+          const s = 0.8 + coreWidth * 0.16;
+          return (
+            <g key={i} transform={`translate(${b.x} ${b.y}) rotate(${ang}) scale(${s})`}>
+              <path d="M -8 -7 L 6 0 L -8 7" fill="none" stroke="#DFFBFF" strokeWidth={3} opacity={0.95} strokeLinecap="round" strokeLinejoin="round" />
+            </g>
+          );
+        })
+      : null;
 
   return (
     <g opacity={opacity}>
@@ -84,6 +96,20 @@ export const RoutePath: React.FC<RoutePathProps> = ({
         strokeDasharray={100}
         strokeDashoffset={dashOffset}
       />
+      {/* Outer soft bloom for thick neon routes */}
+      {hot && (
+        <path
+          d={d}
+          fill="none"
+          stroke={color}
+          strokeWidth={glowWidth * 2.1}
+          strokeLinecap="round"
+          opacity={glowOpacity * 0.45}
+          pathLength={100}
+          strokeDasharray={100}
+          strokeDashoffset={dashOffset}
+        />
+      )}
       <path
         d={d}
         fill="none"
@@ -94,6 +120,20 @@ export const RoutePath: React.FC<RoutePathProps> = ({
         strokeDasharray={100}
         strokeDashoffset={dashOffset}
       />
+      {/* White-hot inner filament */}
+      {hot && (
+        <path
+          d={d}
+          fill="none"
+          stroke="#E9FCFF"
+          strokeWidth={Math.max(1.4, coreWidth * 0.42)}
+          strokeLinecap="round"
+          opacity={0.85}
+          pathLength={100}
+          strokeDasharray={100}
+          strokeDashoffset={dashOffset}
+        />
+      )}
       {/* Travelling highlight riding the drawn portion */}
       <path
         d={d}
@@ -121,28 +161,28 @@ export const RoutePath: React.FC<RoutePathProps> = ({
 // (S4), collapses into the storefront's signal core (S5) and completes the
 // customer route (S6).
 const WAYPOINTS: { f: number; p: Pt }[] = [
-  { f: 0, p: { x: 250, y: 1565 } }, // storefront, scene 01
-  { f: 22, p: { x: 470, y: 1430 } },
-  { f: 46, p: { x: 700, y: 1310 } },
-  { f: 66, p: { x: 850, y: 1180 } }, // gold destinations
-  { f: 82, p: { x: 720, y: 830 } }, // accelerates upward
-  { f: 96, p: { x: 470, y: 620 } }, // becomes the search cable
-  { f: 118, p: { x: 330, y: 900 } }, // walks the modules
-  { f: 140, p: { x: 520, y: 1150 } },
-  { f: 158, p: { x: 800, y: 1240 } }, // into the map
-  { f: 172, p: { x: 560, y: 830 } }, // ranking column top
-  { f: 192, p: { x: 590, y: 1030 } }, // down the top three
-  { f: 214, p: { x: 560, y: 1230 } },
-  { f: 232, p: { x: 190, y: 1330 } }, // swings left, bypass traffic
-  { f: 258, p: { x: 560, y: 1380 } }, // passes the storefront
-  { f: 284, p: { x: 880, y: 1220 } }, // toward the gold pins
-  { f: 302, p: { x: 640, y: 1180 } }, // collapse toward the store core
-  { f: 330, p: { x: 540, y: 1280 } }, // scene 05 storefront core
-  { f: 358, p: { x: 505, y: 1320 } },
-  { f: 376, p: { x: 300, y: 1560 } }, // scene 06 storefront
-  { f: 404, p: { x: 560, y: 1330 } }, // customer route
-  { f: 430, p: { x: 770, y: 1120 } },
-  { f: TOTAL_FRAMES, p: { x: 815, y: 1035 } }, // premium destination
+  { f: 0, p: { x: 258, y: 1650 } }, // storefront sidewalk, scene 01
+  { f: 22, p: { x: 470, y: 1570 } },
+  { f: 46, p: { x: 720, y: 1440 } },
+  { f: 66, p: { x: 875, y: 1120 } }, // gold destinations
+  { f: 82, p: { x: 700, y: 760 } }, // accelerates upward
+  { f: 96, p: { x: 340, y: 500 } }, // becomes the search cable
+  { f: 118, p: { x: 300, y: 720 } }, // walks the module rows
+  { f: 140, p: { x: 640, y: 850 } }, // rides the data strands
+  { f: 158, p: { x: 860, y: 950 } }, // into the map pins
+  { f: 172, p: { x: 655, y: 940 } }, // ranking spine top
+  { f: 192, p: { x: 660, y: 1090 } }, // down the top three
+  { f: 214, p: { x: 400, y: 1260 } }, // toward the cyan origin
+  { f: 232, p: { x: 140, y: 1640 } }, // swings low, bypass route start
+  { f: 258, p: { x: 430, y: 1450 } }, // passes the storefront
+  { f: 284, p: { x: 840, y: 900 } }, // riding the bypass upward
+  { f: 302, p: { x: 730, y: 760 } }, // collapse toward the store core
+  { f: 330, p: { x: 683, y: 700 } }, // scene 05 storefront core
+  { f: 358, p: { x: 620, y: 860 } },
+  { f: 376, p: { x: 245, y: 1640 } }, // scene 06 storefront puddle
+  { f: 404, p: { x: 500, y: 1330 } }, // customer route
+  { f: 430, p: { x: 720, y: 1050 } },
+  { f: TOTAL_FRAMES, p: { x: 878, y: 1030 } }, // premium star destination
 ];
 
 const posAt = (frame: number): Pt => {
