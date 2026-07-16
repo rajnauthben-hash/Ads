@@ -5,6 +5,13 @@ import { OmniFlowPremiumAd } from "./omniflow/OmniFlowPremiumAd";
 import { HeroDesktop, TOTAL_FRAMES } from "./hero/HeroDesktop";
 import { TikTokPreview, PREVIEW_FRAMES } from "./tiktok/TikTokPreview";
 import { TikTokAd } from "./tiktok/TikTokAd";
+import { PulseOfLocalSearch15 } from "./pulse/PulseOfLocalSearch15";
+import {
+  FPS as PULSE_FPS,
+  HEIGHT as PULSE_HEIGHT,
+  TOTAL_FRAMES as PULSE_FRAMES,
+  WIDTH as PULSE_WIDTH,
+} from "./pulse/theme";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -48,6 +55,14 @@ export const RemotionRoot: React.FC = () => {
         fps={30}
         width={1080}
         height={1920}
+      />
+      <Composition
+        id="PulseOfLocalSearch15"
+        component={PulseOfLocalSearch15}
+        durationInFrames={PULSE_FRAMES}
+        fps={PULSE_FPS}
+        width={PULSE_WIDTH}
+        height={PULSE_HEIGHT}
       />
     </>
   );
