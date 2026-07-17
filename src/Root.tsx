@@ -5,10 +5,20 @@ import { OmniFlowPremiumAd } from "./omniflow/OmniFlowPremiumAd";
 import { HeroDesktop, TOTAL_FRAMES } from "./hero/HeroDesktop";
 import { TikTokPreview, PREVIEW_FRAMES } from "./tiktok/TikTokPreview";
 import { TikTokAd } from "./tiktok/TikTokAd";
+import { PulseOfLocalSearch15 } from "./pulse/PulseOfLocalSearch15";
+import { DURATION, FPS, H, W } from "./pulse/theme";
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition
+        id="PulseOfLocalSearch15"
+        component={PulseOfLocalSearch15}
+        durationInFrames={DURATION}
+        fps={FPS}
+        width={W}
+        height={H}
+      />
       <Composition
         id="MyComp"
         component={MyComposition}
