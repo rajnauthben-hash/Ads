@@ -5,10 +5,13 @@ import { DestinationPin, IconGlyph, type PinIcon } from "../DestinationPin";
 import { MaterializedText } from "../MaterializedText";
 import { RoutePath } from "../PersistentPulseRoute";
 import { PerspectiveMap } from "../PerspectiveMap";
+import { DepthCamera, DepthLayer } from "../DepthCamera";
 import { SceneTransition } from "../SceneTransition";
+import { StorefrontIllumination } from "../StorefrontIllumination";
 import { StorefrontNode } from "../StorefrontNode";
 import { TechnicalTelemetry } from "../TechnicalTelemetry";
 import { splinePoint } from "../helpers";
+import { EASE_ROUTE } from "../motion";
 import { COLORS, FONTS } from "../theme";
 
 // Scene 06 — The resolution. Sequence: global 362–450 (local 0–88; nominal
@@ -84,7 +87,7 @@ export const Scene06Resolution: React.FC = () => {
   const routeDraw = interpolate(frame, [6, 40], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
-    easing: Easing.bezier(0.25, 0.5, 0.25, 1),
+    easing: EASE_ROUTE,
   });
   const illuminate = interpolate(frame, [4, 24], [0.45, 1], {
     extrapolateLeft: "clamp",
@@ -115,6 +118,8 @@ export const Scene06Resolution: React.FC = () => {
       scaleTo={1.03}
     >
       <AbsoluteFill>
+        <DepthCamera mode="follow" duration={DUR}>
+        <DepthLayer factor={0.3}>
         {/* Cleanest, brightest neighborhood of the film */}
         <PerspectiveMap
           seed={89}
@@ -133,7 +138,9 @@ export const Scene06Resolution: React.FC = () => {
               "radial-gradient(ellipse 40% 20% at 80% 54%, rgba(224,184,91,0.13), transparent 70%), radial-gradient(ellipse 42% 24% at 16% 84%, rgba(224,166,80,0.1), transparent 70%)",
           }}
         />
+        </DepthLayer>
 
+        <DepthLayer factor={0.65}>
         <svg width="1080" height="1920" style={{ position: "absolute", inset: 0 }}>
           <DataParticleField x={80} y={880} width={920} height={840} count={14} seed={66} opacity={0.55} />
 
@@ -197,8 +204,16 @@ export const Scene06Resolution: React.FC = () => {
             );
           })}
 
-          {/* Grand gold star destination */}
+          {/* Grand gold star destination — the lock-in pulse is the
+              strongest but most refined of the film: one clean double ring,
+              no bloom explosion */}
           <DestinationPin x={878} y={1042} appearFrame={22} scale={1.75} icon="star" ringRichness={2.1} pulseAt={56} glow={1.2} seed={77} />
+          {completion >= 1 && frame < 74 && (
+            <g opacity={interpolate(frame, [56, 60, 74], [0, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })}>
+              <ellipse cx={878} cy={1044} rx={30 + (frame - 56) * 9} ry={11 + (frame - 56) * 3.2} fill="none" stroke="#F2D48A" strokeWidth={2.2} />
+              <ellipse cx={878} cy={1044} rx={18 + (frame - 56) * 6} ry={7 + (frame - 56) * 2.1} fill="none" stroke={COLORS.cyan} strokeWidth={1.2} opacity={0.5} />
+            </g>
+          )}
 
           {/* CRAFT & CO. — fully lit premium storefront */}
           <StorefrontNode
@@ -212,8 +227,11 @@ export const Scene06Resolution: React.FC = () => {
             goldSign
             plants
           />
+          <StorefrontIllumination x={200} y={1688} scale={1.58} strength={illuminate} goldAccent={0.35 * illuminate} />
         </svg>
+        </DepthLayer>
 
+        <DepthLayer factor={1}>
         {/* 06 / 06 label with gold rule */}
         <div style={{ position: "absolute", left: 100, top: 178, opacity: labelIn }}>
           <div style={{ fontFamily: FONTS.mono, fontWeight: 500, fontSize: 24, letterSpacing: 5, color: COLORS.gold, marginBottom: 14 }}>
@@ -241,6 +259,7 @@ export const Scene06Resolution: React.FC = () => {
             fontWeight={620}
             lineHeight={1.15}
             fragmentColor={COLORS.gold}
+            flavor={6}
             seed={81}
           />
         </div>
@@ -265,6 +284,8 @@ export const Scene06Resolution: React.FC = () => {
             seed={82}
           />
         </div>
+        </DepthLayer>
+        </DepthCamera>
 
         <TechnicalTelemetry
           tag="SIGNAL / 06 — CONNECTION COMPLETE"

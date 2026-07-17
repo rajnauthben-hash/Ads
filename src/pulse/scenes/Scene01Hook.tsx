@@ -1,14 +1,17 @@
 import React from "react";
 import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
 import { DataParticleField, DataParticleStream } from "../DataParticle";
+import { DepthCamera, DepthLayer } from "../DepthCamera";
 import { DestinationPin } from "../DestinationPin";
 import { MaterializedText } from "../MaterializedText";
 import { RoutePath } from "../PersistentPulseRoute";
 import { PerspectiveMap } from "../PerspectiveMap";
 import { SceneTransition } from "../SceneTransition";
+import { StorefrontIllumination } from "../StorefrontIllumination";
 import { StorefrontNode } from "../StorefrontNode";
 import { TechnicalTelemetry } from "../TechnicalTelemetry";
 import { TextDissolve } from "../TextDissolve";
+import { EASE_ROUTE } from "../motion";
 import { COLORS, FONTS } from "../theme";
 
 // Scene 01 — The hook. Frames 0–89 (sequence runs to 100 for the outgoing
@@ -50,12 +53,16 @@ export const Scene01Hook: React.FC = () => {
   const routeProgress = interpolate(frame, [14, 66], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
-    easing: Easing.bezier(0.3, 0.2, 0.3, 1),
+    easing: EASE_ROUTE,
   });
-  const ringActivity = interpolate(frame, [12, 34, 62, 86], [0, 0.5, 0.25, 0.12], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+  // The storefront attempts one weak pulse as the gold phrase locks (~f56),
+  // fails to attract the route, and contracts — the emotional beat.
+  const ringActivity = interpolate(
+    frame,
+    [12, 34, 50, 56, 63, 72, 86],
+    [0, 0.42, 0.24, 0.62, 0.2, 0.13, 0.1],
+    { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+  );
   const exitProgress = interpolate(frame, [80, 98], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
@@ -73,6 +80,8 @@ export const Scene01Hook: React.FC = () => {
       scaleTo={1.028}
     >
       <AbsoluteFill style={{ opacity: 0.2 + 0.8 * wake }}>
+        <DepthCamera mode="push" duration={DUR}>
+        <DepthLayer factor={0.3}>
         <PerspectiveMap
           seed={11}
           brightness={0.95 * wake}
@@ -89,7 +98,9 @@ export const Scene01Hook: React.FC = () => {
             opacity: wake,
           }}
         />
+        </DepthLayer>
 
+        <DepthLayer factor={0.62}>
         <svg width="1080" height="1920" style={{ position: "absolute", inset: 0 }}>
           <DataParticleField x={80} y={1000} width={920} height={800} count={14} seed={4} opacity={0.45} />
 
@@ -124,14 +135,21 @@ export const Scene01Hook: React.FC = () => {
           {/* The business's cyan pin — on the sidewalk in front of the door */}
           <DestinationPin x={258} y={1655} appearFrame={8} flatBody="#0E3540" color={COLORS.cyan} scale={0.85} ringRichness={0.9} seed={4} />
 
-          {/* Gold destination cluster on the right — one hero, satellites */}
-          <DestinationPin x={875} y={1115} appearFrame={34} scale={1.35} icon="none" ringRichness={1.5} pulseAt={62} seed={11} />
-          <DestinationPin x={755} y={965} appearFrame={42} scale={1} pulseAt={70} seed={12} />
-          <DestinationPin x={815} y={815} appearFrame={48} scale={0.68} glow={0.8} seed={13} />
-          <DestinationPin x={938} y={880} appearFrame={53} scale={0.6} glow={0.7} seed={14} />
+          {/* Hero beat: pins awaken in sequence the moment "that show up
+              first." resolves in gold (~f50) — the route visibly chooses
+              them over the storefront. */}
+          <DestinationPin x={875} y={1115} appearFrame={48} scale={1.35} icon="none" ringRichness={1.5} pulseAt={62} seed={11} />
+          <DestinationPin x={755} y={965} appearFrame={54} scale={1} pulseAt={70} seed={12} />
+          <DestinationPin x={815} y={815} appearFrame={60} scale={0.68} glow={0.8} seed={13} />
+          <DestinationPin x={938} y={880} appearFrame={65} scale={0.6} glow={0.7} seed={14} />
+
+          {/* Weak digital presence on the building itself */}
+          <StorefrontIllumination x={200} y={1620} scale={1.55} strength={ringActivity * 0.45} />
         </svg>
+        </DepthLayer>
 
         {/* Copy stack */}
+        <DepthLayer factor={1}>
         <div style={{ position: "absolute", left: 100, top: 235, right: 60 }}>
           <TextDissolve exitStart={78} exitDuration={12} pullTarget={{ x: 360, y: 300 }} seed={21}>
             <MaterializedText
@@ -163,6 +181,7 @@ export const Scene01Hook: React.FC = () => {
               fontWeight={620}
               lineHeight={1.13}
               fragmentColor={COLORS.gold}
+              flavor={1}
               seed={32}
             />
           </TextDissolve>
@@ -188,6 +207,8 @@ export const Scene01Hook: React.FC = () => {
             />
           </TextDissolve>
         </div>
+        </DepthLayer>
+        </DepthCamera>
 
         <TechnicalTelemetry
           tag="SIGNAL / 01 — LOCAL INTENT"

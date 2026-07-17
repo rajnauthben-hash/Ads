@@ -5,10 +5,13 @@ import { DestinationPin } from "../DestinationPin";
 import { MaterializedText } from "../MaterializedText";
 import { RoutePath } from "../PersistentPulseRoute";
 import { PerspectiveMap } from "../PerspectiveMap";
+import { DepthCamera, DepthLayer } from "../DepthCamera";
 import { SceneTransition } from "../SceneTransition";
+import { StorefrontIllumination } from "../StorefrontIllumination";
 import { StorefrontNode } from "../StorefrontNode";
 import { TechnicalTelemetry } from "../TechnicalTelemetry";
 import { TextDissolve } from "../TextDissolve";
+import { EASE_ROUTE } from "../motion";
 import { COLORS, FONTS } from "../theme";
 
 // Scene 04 — The business gets passed over. Sequence: global 212–304
@@ -62,10 +65,18 @@ const COLLAPSE_BRANCHES = [
 export const Scene04PassedOver: React.FC = () => {
   const frame = useCurrentFrame();
 
-  const bypass = interpolate(frame, [4, 44], [0, 1], {
+  // Hero beat: the route approaches the storefront, hesitates for ~3 frames
+  // right in front of it (t≈0.3 on the path), then commits away toward the
+  // gold destinations. The bend must read as a decision, not an accident.
+  const bypass = interpolate(frame, [4, 22, 25, 48], [0, 0.3, 0.32, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
-    easing: Easing.bezier(0.3, 0.25, 0.3, 1),
+    easing: EASE_ROUTE,
+  });
+  // The storefront pin's failed activation attempt during the hesitation.
+  const attempt = interpolate(frame, [22, 27, 36], [0, 1, 0], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
   });
   const spurs = interpolate(frame, [34, 54], [0, 1], {
     extrapolateLeft: "clamp",
@@ -105,6 +116,8 @@ export const Scene04PassedOver: React.FC = () => {
       scaleTo={1.03}
     >
       <AbsoluteFill>
+        <DepthCamera mode="track" duration={DUR}>
+        <DepthLayer factor={0.3}>
         <PerspectiveMap
           seed={53}
           brightness={1}
@@ -122,7 +135,9 @@ export const Scene04PassedOver: React.FC = () => {
               "radial-gradient(ellipse 34% 16% at 86% 12%, rgba(224,184,91,0.1), transparent 70%), radial-gradient(ellipse 30% 14% at 84% 80%, rgba(224,184,91,0.08), transparent 70%)",
           }}
         />
+        </DepthLayer>
 
+        <DepthLayer factor={0.65}>
         <svg width="1080" height="1920" style={{ position: "absolute", inset: 0 }}>
           <DataParticleField x={60} y={850} width={960} height={860} count={16} seed={44} opacity={0.5} />
 
@@ -157,7 +172,15 @@ export const Scene04PassedOver: React.FC = () => {
 
           {/* The dim business, brushed past */}
           <StorefrontNode x={215} y={1470} scale={1.45} brightness={0.22} ringActivity={contraction} appearFrame={0} label="YOUR BUSINESS" />
+          <StorefrontIllumination x={215} y={1470} scale={1.45} strength={0.12 + attempt * 0.4} />
           <DestinationPin x={215} y={1180} appearFrame={4} dim color={COLORS.cyan} flatBody="#0E3540" scale={0.85} ringRichness={0.7} seed={24} />
+          {/* Failed activation attempt while the route hesitates alongside */}
+          {attempt > 0.02 && (
+            <g opacity={attempt}>
+              <circle cx={215} cy={1148} r={20 + attempt * 30} fill="none" stroke={COLORS.cyan} strokeWidth={1.8} opacity={0.7 * (1 - attempt * 0.5)} />
+              <circle cx={215} cy={1148} r={9 + attempt * 12} fill={COLORS.cyan} opacity={0.16} />
+            </g>
+          )}
           {/* Failed-signal badge */}
           {disconnect > 0 && (
             <g transform="translate(300 1160)" opacity={disconnect}>
@@ -168,7 +191,20 @@ export const Scene04PassedOver: React.FC = () => {
             </g>
           )}
         </svg>
+        </DepthLayer>
 
+        <DepthLayer factor={1}>
+        {/* Local atmosphere behind the copy */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 260,
+            width: 780,
+            height: 560,
+            background: "radial-gradient(ellipse 66% 55% at 38% 45%, rgba(10,11,13,0.66), transparent 74%)",
+          }}
+        />
         {/* Headline */}
         <div style={{ position: "absolute", left: 100, top: 355 }}>
           <TextDissolve exitStart={78} exitDuration={12} pullTarget={{ x: 260, y: 400 }} seed={61}>
@@ -185,6 +221,7 @@ export const Scene04PassedOver: React.FC = () => {
               fontWeight={620}
               lineHeight={1.22}
               fragmentColor={COLORS.gold}
+              flavor={4}
               seed={62}
             />
           </TextDissolve>
@@ -212,6 +249,8 @@ export const Scene04PassedOver: React.FC = () => {
             />
           </TextDissolve>
         </div>
+        </DepthLayer>
+        </DepthCamera>
 
         <TechnicalTelemetry
           tag="SIGNAL / 04 — VISIBILITY GAP"

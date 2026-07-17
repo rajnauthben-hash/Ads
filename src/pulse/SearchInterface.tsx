@@ -1,6 +1,7 @@
 import React from "react";
-import { Easing, interpolate, useCurrentFrame } from "remotion";
+import { interpolate, useCurrentFrame } from "remotion";
 import { COLORS, FONTS } from "./theme";
+import { EASE_UI } from "./motion";
 
 type Props = {
   // Local frame at which the interface begins constructing itself.
@@ -21,37 +22,79 @@ export const SEARCH_PANEL = { width: 540, barH: 76, rowH: 78, rowsTop: 100 };
 export const searchRowCenterY = (i: number): number =>
   SEARCH_PANEL.rowsTop + SEARCH_PANEL.rowH * i + SEARCH_PANEL.rowH / 2;
 
-const RowIcon: React.FC<{ kind: string; a: number }> = ({ kind, a }) => {
+// Each intent row carries its own restrained hero micro-animation, driven by
+// frames since the row activated: Places pings a map coordinate, Reviews
+// sweeps its rating fill, Photos runs a thumbnail scan, Opening hours
+// completes its clock arc.
+const RowIcon: React.FC<{ kind: string; a: number; since: number }> = ({ kind, a, since }) => {
   const stroke = `rgba(0, 216, 255, ${0.4 + 0.5 * a})`;
   switch (kind) {
-    case "pin":
+    case "pin": {
+      // Coordinate pulse — a ring expands from the pin tip, twice, staggered.
+      const ping = since > 0 ? ((since * 0.022) % 1) : 0;
       return (
-        <svg width="30" height="30" viewBox="0 0 30 30">
+        <svg width="30" height="30" viewBox="0 0 30 30" style={{ overflow: "visible" }}>
+          {since > 2 && (
+            <circle cx="15" cy="11" r={3 + ping * 13} fill="none" stroke={stroke} strokeWidth={1.2} opacity={(1 - ping) * 0.7} />
+          )}
           <path d="M15 26 C 9 18 7.5 15 7.5 10.5 A 7.5 7.5 0 1 1 22.5 10.5 C 22.5 15 21 18 15 26 Z" fill="none" stroke={stroke} strokeWidth={1.8} />
           <circle cx="15" cy="11" r="2.8" fill={stroke} />
         </svg>
       );
-    case "star":
+    }
+    case "star": {
+      // Rating sweep — the star fills once, left to right, then settles.
+      const sweep = Math.min(1, Math.max(0, (since - 4) / 16));
       return (
         <svg width="30" height="30" viewBox="0 0 30 30">
           <path d="M15 3 L18.2 11 L27 11.5 L20 17 L22.4 25.6 L15 20.6 L7.6 25.6 L10 17 L3 11.5 L11.8 11 Z" fill="none" stroke={stroke} strokeWidth={1.8} strokeLinejoin="round" />
+          {sweep > 0 && (
+            <path
+              d="M15 3 L18.2 11 L27 11.5 L20 17 L22.4 25.6 L15 20.6 L7.6 25.6 L10 17 L3 11.5 L11.8 11 Z"
+              fill={COLORS.gold}
+              opacity={0.75}
+              clipPath={`inset(0 ${(1 - sweep) * 100}% 0 0)`}
+            />
+          )}
         </svg>
       );
-    case "photo":
+    }
+    case "photo": {
+      // Thumbnail scan — a bright line crosses the frame once.
+      const scan = Math.min(1, Math.max(0, (since - 6) / 18));
       return (
         <svg width="30" height="30" viewBox="0 0 30 30">
           <rect x="4" y="6" width="22" height="18" rx="3" fill="none" stroke={stroke} strokeWidth={1.8} />
           <circle cx="10.5" cy="12" r="2.2" fill={stroke} />
           <path d="M 6 21 L 13 14 L 17.5 18.5 L 21 15 L 24 18" fill="none" stroke={stroke} strokeWidth={1.8} />
+          {scan > 0 && scan < 1 && (
+            <line x1={5 + scan * 20} y1={7} x2={5 + scan * 20} y2={23} stroke="#CFF6FF" strokeWidth={1.6} opacity={0.9 * Math.sin(scan * Math.PI)} />
+          )}
         </svg>
       );
-    default:
+    }
+    default: {
+      // Clock arc completes once on activation.
+      const arc = Math.min(1, Math.max(0, (since - 2) / 20));
+      const circ = 2 * Math.PI * 10;
       return (
-        <svg width="30" height="30" viewBox="0 0 30 30">
-          <circle cx="15" cy="15" r="10" fill="none" stroke={stroke} strokeWidth={1.8} />
-          <path d="M 15 9.5 L 15 15 L 19.5 17.5" fill="none" stroke={stroke} strokeWidth={1.8} strokeLinecap="round" />
+        <svg width="30" height="30" viewBox="0 0 30 30" style={{ transform: "rotate(-90deg)" }}>
+          <circle cx="15" cy="15" r="10" fill="none" stroke={stroke} strokeWidth={1.8} opacity={0.4} />
+          <circle
+            cx="15"
+            cy="15"
+            r="10"
+            fill="none"
+            stroke={stroke}
+            strokeWidth={1.8}
+            strokeDasharray={circ}
+            strokeDashoffset={circ * (1 - arc)}
+            strokeLinecap="round"
+          />
+          <path d="M 15 9.5 L 15 15 L 19.5 17.5" fill="none" stroke={stroke} strokeWidth={1.8} strokeLinecap="round" transform="rotate(90 15 15)" />
         </svg>
       );
+    }
   }
 };
 
@@ -61,7 +104,7 @@ const RowIcon: React.FC<{ kind: string; a: number }> = ({ kind, a }) => {
 // alive by a soft scan sweep and breathing row icons.
 export const SearchInterface: React.FC<Props> = ({ buildFrame, width = SEARCH_PANEL.width, style }) => {
   const frame = useCurrentFrame();
-  const t = (from: number, dur: number, easing = Easing.bezier(0.2, 0.8, 0.25, 1)) =>
+  const t = (from: number, dur: number, easing = EASE_UI) =>
     interpolate(frame, [buildFrame + from, buildFrame + from + dur], [0, 1], {
       extrapolateLeft: "clamp",
       extrapolateRight: "clamp",
@@ -163,7 +206,7 @@ export const SearchInterface: React.FC<Props> = ({ buildFrame, width = SEARCH_PA
             }}
           >
             <div style={{ opacity: 0.55 + 0.45 * breathe }}>
-              <RowIcon kind={row.icon} a={rt} />
+              <RowIcon kind={row.icon} a={rt} since={frame - (buildFrame + 12 + i * 6)} />
             </div>
             <div
               style={{

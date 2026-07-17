@@ -4,10 +4,12 @@ import { DataParticleField, DataParticleStream } from "../DataParticle";
 import { MaterializedText } from "../MaterializedText";
 import { RoutePath } from "../PersistentPulseRoute";
 import { PerspectiveMap } from "../PerspectiveMap";
+import { DepthCamera, DepthLayer } from "../DepthCamera";
 import { RANK_ROW_SPACING, RankingSystem } from "../RankingSystem";
 import { SceneTransition } from "../SceneTransition";
 import { TechnicalTelemetry } from "../TechnicalTelemetry";
 import { TextDissolve } from "../TextDissolve";
+import { EASE_UI } from "../motion";
 import { COLORS, FONTS } from "../theme";
 
 // Scene 03 — People choose quickly. Sequence: global 152–232 (local 0–80;
@@ -73,7 +75,7 @@ export const Scene03Ranking: React.FC = () => {
   const spineDraw = interpolate(frame, [22, 40], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
-    easing: Easing.bezier(0.25, 0.6, 0.3, 1),
+    easing: EASE_UI,
   });
   const dimSpine = interpolate(frame, [36, 52], [0, 1], {
     extrapolateLeft: "clamp",
@@ -101,11 +103,15 @@ export const Scene03Ranking: React.FC = () => {
       scaleTo={1.045}
     >
       <AbsoluteFill>
+        <DepthCamera mode="narrow" duration={DUR}>
         {/* City below, weighted to the lower-left like the reference */}
+        <DepthLayer factor={0.28}>
         <div style={{ position: "absolute", left: -420, top: 480, width: 1500, height: 1500, opacity: 0.85 }}>
           <PerspectiveMap seed={37} brightness={0.85} tilt={57} width={1500} height={1300} driftX={frame * 0.04} labels={["OAK AVE", "PINE ST"]} goldDust={0.7} />
         </div>
+        </DepthLayer>
 
+        <DepthLayer factor={0.6}>
         <svg width="1080" height="1920" style={{ position: "absolute", inset: 0 }}>
           <DataParticleField x={60} y={900} width={520} height={800} count={12} seed={31} opacity={0.5} />
 
@@ -197,7 +203,9 @@ export const Scene03Ranking: React.FC = () => {
             <RoutePath key={`e${i}`} points={line} progress={exitStretch} frame={frame} pulses={1} coreWidth={2.6} glowWidth={11} seed={19 + i} />
           ))}
         </svg>
+        </DepthLayer>
 
+        <DepthLayer factor={1}>
         {/* Scene index label */}
         <div style={{ position: "absolute", left: 100, top: 210, display: "flex", alignItems: "center", gap: 16, opacity: interpolate(frame, [6, 16], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }) }}>
           <div style={{ width: 54, height: 1.5, background: COLORS.gold, opacity: 0.8 }} />
@@ -219,6 +227,7 @@ export const Scene03Ranking: React.FC = () => {
               fontSize={88}
               fontWeight={620}
               lineHeight={1.12}
+              flavor={3}
               seed={52}
             />
           </TextDissolve>
@@ -259,6 +268,8 @@ export const Scene03Ranking: React.FC = () => {
         >
           <RankingSystem buildFrame={14} attentionNarrowing={Math.max(narrowing, exitStretch)} />
         </div>
+        </DepthLayer>
+        </DepthCamera>
 
         {/* Attention vignette tightening with the narrowing */}
         <AbsoluteFill

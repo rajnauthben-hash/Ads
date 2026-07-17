@@ -233,22 +233,29 @@ export const PerspectiveMap: React.FC<Props> = ({
             />
           );
         })}
-        {world.labelPos.map((l, i) => (
-          <text
-            key={i}
-            x={l.x}
-            y={l.y}
-            fill="rgba(154,163,173,0.4)"
-            fontFamily={FONTS.mono}
-            fontWeight={500}
-            fontSize={17}
-            letterSpacing={5}
-            opacity={0.55 * brightness}
-            transform={`rotate(${l.rot} ${l.x} ${l.y})`}
-          >
-            {l.text}
-          </text>
-        ))}
+        {world.labelPos.map((l, i) => {
+          // Labels scan into focus in sequence rather than being static.
+          const reveal = Math.min(1, Math.max(0, (frame - (14 + i * 9)) / 12));
+          if (reveal <= 0) {
+            return null;
+          }
+          return (
+            <text
+              key={i}
+              x={l.x}
+              y={l.y}
+              fill="rgba(154,163,173,0.4)"
+              fontFamily={FONTS.mono}
+              fontWeight={500}
+              fontSize={17}
+              letterSpacing={5 + (1 - reveal) * 7}
+              opacity={0.55 * brightness * reveal}
+              transform={`rotate(${l.rot} ${l.x} ${l.y}) translate(${(1 - reveal) * 16} 0)`}
+            >
+              {l.text}
+            </text>
+          );
+        })}
       </svg>
     </div>
   );

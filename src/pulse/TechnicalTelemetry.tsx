@@ -52,6 +52,23 @@ export const TechnicalTelemetry: React.FC<Props> = ({
         <div style={{ ...mono, color: COLORS.cyan, opacity: 0.75 }}>{tag}</div>
         <div style={mono}>T+{secs}s</div>
       </div>
+      {/* Coordinate ticks sweeping the top edge */}
+      <div style={{ position: "absolute", top: 88, left: 64, right: 64, height: 6, display: "flex", gap: 0 }}>
+        {Array.from({ length: 36 }, (_, i) => {
+          const sweep = Math.floor(frame * 0.55 + seed * 5) % 36;
+          const hot = i === sweep;
+          return (
+            <div
+              key={i}
+              style={{
+                flex: 1,
+                height: hot ? 6 : i % 6 === 0 ? 5 : 3,
+                borderLeft: `1px solid ${hot ? "rgba(0,216,255,0.9)" : "rgba(154,163,173,0.22)"}`,
+              }}
+            />
+          );
+        })}
+      </div>
       <div
         style={{
           position: "absolute",

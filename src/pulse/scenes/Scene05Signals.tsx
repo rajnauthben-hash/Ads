@@ -1,12 +1,14 @@
 import React from "react";
 import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
-import { DataParticleField, DataParticleStream } from "../DataParticle";
+import { DataParticleField } from "../DataParticle";
+import { DepthCamera, DepthLayer } from "../DepthCamera";
 import { DestinationPin } from "../DestinationPin";
 import { MaterializedText } from "../MaterializedText";
 import { RoutePath } from "../PersistentPulseRoute";
 import { PerspectiveMap } from "../PerspectiveMap";
 import { SceneTransition } from "../SceneTransition";
-import { SignalNode } from "../SignalNode";
+import { SignalNetwork } from "../SignalNetwork";
+import { StorefrontIllumination } from "../StorefrontIllumination";
 import { StorefrontNode } from "../StorefrontNode";
 import { TechnicalTelemetry } from "../TechnicalTelemetry";
 import { TextDissolve } from "../TextDissolve";
@@ -27,12 +29,6 @@ const NODES = [
   { label: "CATEGORIES", icon: "categories" as const, x: 935, y: 430 },
   { label: "HOURS", icon: "hours" as const, x: 438, y: 830 },
   { label: "UPDATES", icon: "updates" as const, x: 913, y: 830 },
-];
-
-const connection = (n: { x: number; y: number }) => [
-  { x: n.x, y: n.y + 70 },
-  { x: (n.x + STORE.x) / 2, y: (n.y + STORE.y) / 2 + 14 },
-  { x: STORE.x, y: STORE.y - 100 },
 ];
 
 // Exit: all spokes surge and the energy leaves as one bright route toward
@@ -76,6 +72,16 @@ export const Scene05Signals: React.FC = () => {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
+  // Per-signal storefront improvements, keyed to each node's connection:
+  // 0 PHOTOS — window light, 1 REVIEWS — gold reputation glow,
+  // 2 CATEGORIES — map relationship, 3 HOURS — status dot,
+  // 4 UPDATES — telemetry rhythm.
+  const improvements = KEYWORD_FRAMES.map((f) =>
+    interpolate(frame, [f + 12, f + 22], [0, 1], {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    }),
+  );
 
   return (
     <SceneTransition
@@ -90,15 +96,20 @@ export const Scene05Signals: React.FC = () => {
       scaleTo={1.035}
     >
       <AbsoluteFill>
+        <DepthCamera mode="orbit" duration={DUR}>
         {/* Map clearly visible beneath the network */}
+        <DepthLayer factor={0.28}>
         <div style={{ position: "absolute", left: -260, top: -420, width: 1700, height: 1750, opacity: 0.9 }}>
           <PerspectiveMap seed={71} brightness={0.85 + charge * 0.25} tilt={56} width={1650} height={1500} driftY={-frame * 0.04} labels={["MAIN ST", "OAK DRIVE"]} goldDust={0.85} />
         </div>
         {/* Keep the lower text field readable */}
         <AbsoluteFill style={{ background: "linear-gradient(180deg, transparent 42%, rgba(10,11,13,0.82) 62%, rgba(10,11,13,0.95) 100%)" }} />
+        </DepthLayer>
 
+        <DepthLayer factor={0.6}>
         <svg width="1080" height="1920" style={{ position: "absolute", inset: 0 }}>
-          {/* Radial guides around the storefront */}
+          {/* Radial guides — the map relationship sharpens when CATEGORIES
+              connects (hero improvement #3) */}
           {[300, 440].map((r, i) => (
             <ellipse
               key={i}
@@ -107,60 +118,62 @@ export const Scene05Signals: React.FC = () => {
               rx={r}
               ry={r * 0.62}
               fill="none"
-              stroke="rgba(0,216,255,0.1)"
-              strokeWidth={1}
+              stroke={`rgba(0,216,255,${0.08 + 0.1 * improvements[2]})`}
+              strokeWidth={1 + 0.5 * improvements[2]}
               strokeDasharray="4 10"
               transform={`rotate(${frame * (i % 2 === 0 ? 0.1 : -0.08)} ${STORE.x} ${STORE.y - 80})`}
             />
           ))}
           <DataParticleField x={300} y={150} width={700} height={800} count={12} seed={55} opacity={0.5} />
 
-          {/* Connections: each node feeds the storefront */}
-          {NODES.map((n, i) => {
-            const p = interpolate(frame, [KEYWORD_FRAMES[i] + 6, KEYWORD_FRAMES[i] + 20], [0, 1], {
-              extrapolateLeft: "clamp",
-              extrapolateRight: "clamp",
-            });
-            const pts = connection(n);
-            return (
-              <g key={n.label}>
-                <RoutePath
-                  points={pts}
-                  progress={p}
-                  frame={frame}
-                  pulses={surge > 0 ? 3 : 1}
-                  coreWidth={surge > 0 ? 3 : 2}
-                  glowWidth={surge > 0 ? 14 : 9}
-                  glowOpacity={0.15 + surge * 0.14}
-                  hot={surge > 0}
-                  seed={71 + i}
-                />
-                <DataParticleStream points={pts} progress={p} count={2} seed={81 + i} size={2.4} speed={0.02} />
-              </g>
-            );
-          })}
+          {/* The five-spoke network: activations, connections, synchronized
+              visibility pulse */}
+          <SignalNetwork nodes={NODES} center={STORE} activationFrames={KEYWORD_FRAMES} frame={frame} surge={surge} />
 
           {/* Exit: one bright collapsed route toward scene 06 */}
           <RoutePath points={EXIT_ROUTE} progress={exitRoute} frame={frame} pulses={2} coreWidth={3.6} glowWidth={16} hot seed={90} />
 
-          {/* Storefront brightening with every connection, gold pin above */}
+          {/* Storefront brightening with every connection, gold pin above.
+              PHOTOS lifts the windows; REVIEWS adds the gold reputation
+              glow; HOURS lights the status dot; UPDATES starts a telemetry
+              rhythm beside the door. */}
           <StorefrontNode
             x={STORE.x}
             y={STORE.y}
             scale={1.02}
-            brightness={Math.min(1, charge + surge * 0.3)}
+            brightness={Math.min(1, 0.2 + improvements[0] * 0.3 + charge * 0.55 + surge * 0.3)}
             ringActivity={ringActivity}
             appearFrame={0}
             label="YOUR BUSINESS"
           />
+          <StorefrontIllumination
+            x={STORE.x}
+            y={STORE.y}
+            scale={1.02}
+            strength={Math.min(1, charge * 0.9 + surge * 0.4)}
+            goldAccent={improvements[1]}
+          />
+          {/* HOURS status indicator */}
+          {improvements[3] > 0.02 && (
+            <g transform={`translate(${STORE.x + 128} ${STORE.y - 148})`} opacity={improvements[3]}>
+              <circle cx={0} cy={0} r={7} fill="rgba(12,13,15,0.9)" stroke={COLORS.gold} strokeWidth={1.4} />
+              <circle cx={0} cy={0} r={3} fill={COLORS.gold} opacity={0.6 + 0.4 * Math.sin(frame * 0.16)} />
+            </g>
+          )}
+          {/* UPDATES telemetry rhythm */}
+          {improvements[4] > 0.02 && (
+            <g transform={`translate(${STORE.x - 165} ${STORE.y - 40})`} opacity={improvements[4]}>
+              {[0, 1, 2, 3, 4].map((i) => {
+                const h = 6 + 12 * (0.5 + 0.5 * Math.sin(frame * 0.18 + i * 1.3));
+                return <rect key={i} x={i * 8} y={-h} width={5} height={h} fill={COLORS.cyan} opacity={0.55} />;
+              })}
+            </g>
+          )}
           <DestinationPin x={STORE.x} y={STORE.y - 256} appearFrame={6} scale={1.2} ringRichness={0.9} pulseAt={86} seed={31} />
-
-          {/* Signal nodes */}
-          {NODES.map((n, i) => (
-            <SignalNode key={n.label} label={n.label} icon={n.icon} x={n.x} y={n.y} activateFrame={KEYWORD_FRAMES[i]} size={148} />
-          ))}
         </svg>
+        </DepthLayer>
 
+        <DepthLayer factor={1}>
         {/* Scene index + progress dots */}
         <div style={{ position: "absolute", left: 64, top: 96, opacity: labelIn }}>
           <div style={{ fontFamily: FONTS.mono, fontWeight: 500, fontSize: 24, letterSpacing: 4, color: COLORS.gold }}>05</div>
@@ -197,6 +210,7 @@ export const Scene05Signals: React.FC = () => {
               fontWeight={640}
               lineHeight={1.12}
               fragmentColor={COLORS.gold}
+              flavor={5}
               seed={72}
             />
           </TextDissolve>
@@ -252,6 +266,8 @@ export const Scene05Signals: React.FC = () => {
             </div>
           </TextDissolve>
         </div>
+        </DepthLayer>
+        </DepthCamera>
 
         <TechnicalTelemetry
           tag="SIGNAL / 05 — PROFILE STRENGTH"

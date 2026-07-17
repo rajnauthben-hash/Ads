@@ -9,7 +9,9 @@ import { SceneTransition } from "../SceneTransition";
 import { SearchInterface, searchRowCenterY } from "../SearchInterface";
 import { TechnicalTelemetry } from "../TechnicalTelemetry";
 import { TextDissolve } from "../TextDissolve";
+import { DepthCamera, DepthLayer } from "../DepthCamera";
 import { noise, smoothPath, type Pt } from "../helpers";
+import { EASE_ROUTE, EASE_UI } from "../motion";
 import { COLORS, FONTS } from "../theme";
 
 // Scene 02 — Search happens first. Sequence: global 80–172 (local 0–92;
@@ -59,7 +61,7 @@ const GoldPlaceBadge: React.FC<{
   const a = interpolate(frame, [appear, appear + 12], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
-    easing: Easing.bezier(0.2, 0.85, 0.3, 1),
+    easing: EASE_UI,
   });
   if (a <= 0) {
     return null;
@@ -90,7 +92,7 @@ export const Scene02Search: React.FC = () => {
   const cableIn = interpolate(frame, [0, 13], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
-    easing: Easing.bezier(0.3, 0.4, 0.3, 1),
+    easing: EASE_ROUTE,
   });
   const flow = interpolate(frame, [30, 60], [0, 1], {
     extrapolateLeft: "clamp",
@@ -116,7 +118,9 @@ export const Scene02Search: React.FC = () => {
       scaleTo={1.03}
     >
       <AbsoluteFill>
+        <DepthCamera mode="lateral" duration={DUR}>
         {/* City map dominating the right half */}
+        <DepthLayer factor={0.25}>
         <div style={{ position: "absolute", right: -560, top: -60, width: 1300, height: 2000, opacity: 0.92 }}>
           <PerspectiveMap
             seed={23}
@@ -135,7 +139,9 @@ export const Scene02Search: React.FC = () => {
             background: "linear-gradient(100deg, rgba(10,11,13,0.9) 26%, rgba(10,11,13,0.25) 55%, transparent 75%)",
           }}
         />
+        </DepthLayer>
 
+        <DepthLayer factor={0.55}>
         <svg width="1080" height="1920" style={{ position: "absolute", inset: 0 }}>
           <DataParticleField x={600} y={300} width={460} height={1300} count={14} seed={14} opacity={0.5} />
 
@@ -190,8 +196,10 @@ export const Scene02Search: React.FC = () => {
             <GoldPlaceBadge key={p.icon} x={p.x} y={p.y} icon={p.icon} appear={p.at} frame={frame} />
           ))}
         </svg>
+        </DepthLayer>
 
         {/* Search panel constructing from the cable, folding out at exit */}
+        <DepthLayer factor={0.8}>
         <div
           style={{
             position: "absolute",
@@ -205,8 +213,21 @@ export const Scene02Search: React.FC = () => {
         >
           <SearchInterface buildFrame={8} />
         </div>
+        </DepthLayer>
 
         {/* Headline — lower-left quadrant */}
+        <DepthLayer factor={1}>
+        {/* Local atmosphere so the copy never fights the strands behind it */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 940,
+            width: 760,
+            height: 700,
+            background: "radial-gradient(ellipse 70% 55% at 34% 45%, rgba(10,11,13,0.72), transparent 72%)",
+          }}
+        />
         <div style={{ position: "absolute", left: 84, top: 1020 }}>
           <TextDissolve exitStart={78} exitDuration={12} pullTarget={{ x: 240, y: -300 }} seed={41}>
             <MaterializedText
@@ -222,6 +243,7 @@ export const Scene02Search: React.FC = () => {
               fontSize={88}
               fontWeight={620}
               lineHeight={1.1}
+              flavor={2}
               seed={42}
             />
           </TextDissolve>
@@ -249,6 +271,8 @@ export const Scene02Search: React.FC = () => {
             />
           </TextDissolve>
         </div>
+        </DepthLayer>
+        </DepthCamera>
 
         <TechnicalTelemetry
           tag="SIGNAL / 02 — SEARCH INTENT"
