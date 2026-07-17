@@ -22,7 +22,7 @@ export const OmniFlowPremiumAd: React.FC = () => {
     <AbsoluteFill>
       <AnimatedBackground />
 
-      <Sequence from={0} durationInFrames={95}>
+      <Sequence durationInFrames={95}>
         <Scene1Hook />
       </Sequence>
       <Sequence from={85} durationInFrames={100}>
