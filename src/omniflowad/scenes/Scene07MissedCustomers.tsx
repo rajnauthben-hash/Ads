@@ -28,7 +28,7 @@ export const Scene07MissedCustomers: React.FC = () => {
 
   const routeP = prog(frame, 14, 62, EASE.inOut);
   const storeT = prog(frame, 2, 18);
-  const exit = fadeOut(frame, 110, 14);
+  const exit = fadeOut(frame, 140, 14);
 
   return (
     <AbsoluteFill>

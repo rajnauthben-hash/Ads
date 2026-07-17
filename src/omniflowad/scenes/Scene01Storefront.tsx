@@ -19,10 +19,10 @@ export const Scene01Storefront: React.FC = () => {
   const lightsOn = prog(frame, 8, 38);
 
   // Slow push toward the storefront across the whole scene
-  const push = iv(frame, [0, 132], [1, 1.045]);
+  const push = iv(frame, [0, 162], [1, 1.045]);
 
   // Exit: storefront defocuses into the bokeh field of scene 02
-  const exitT = prog(frame, 112, 20);
+  const exitT = prog(frame, 142, 20);
 
   return (
     <AbsoluteFill>
@@ -62,7 +62,7 @@ export const Scene01Storefront: React.FC = () => {
         <WetGround frame={frame} top={1470} opacity={0.55 + 0.45 * lightsOn} />
 
         {/* text column (fades ahead of the scene boundary) */}
-        <AbsoluteFill style={{ ...fadeOut(frame, 110, 14) }}>
+        <AbsoluteFill style={{ ...fadeOut(frame, 140, 14) }}>
         <div style={{ position: "absolute", left: 76, top: 236 }}>
           <Lines
             lines={[

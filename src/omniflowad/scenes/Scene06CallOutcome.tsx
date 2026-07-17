@@ -15,15 +15,15 @@ export const Scene06CallOutcome: React.FC = () => {
   const frame = useCurrentFrame();
 
   // storefront brightens slightly through the scene
-  const glow = iv(frame, [0, 120], [0.88, 1]);
+  const glow = iv(frame, [0, 150], [0.88, 1]);
   const enterT = prog(frame, 0, 18);
 
   // ghost of the winning result card traveling into the call card
   const ghostT = prog(frame, 0, 22);
 
   // exit: the storefront pulls back toward its distant scene-07 position
-  const exitT = prog(frame, 110, 22);
-  const textExit = fadeOut(frame, 110, 14);
+  const exitT = prog(frame, 140, 22);
+  const textExit = fadeOut(frame, 140, 14);
 
   return (
     <AbsoluteFill>

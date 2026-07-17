@@ -19,20 +19,20 @@ export const Scene02PhoneSearch: React.FC = () => {
   const floatR = Math.sin(frame / 33 + 1.2) * 0.7;
 
   // Exit hand-off to the map world: phone lifts and dissolves upward
-  const exitT = prog(frame, 110, 22);
+  const exitT = prog(frame, 140, 22);
 
-  const drift = iv(frame, [0, 132], [0, -14]);
+  const drift = iv(frame, [0, 162], [0, -14]);
 
   return (
     <AbsoluteFill>
       {/* the storefront's light, now out of focus */}
-      <Bokeh seed={23} count={20} frame={frame} opacity={0.85 * (1 - prog(frame, 110, 16))} region={{ left: 30, top: 8, width: 68, height: 70 }} cyanRatio={0.14} />
-      <Bokeh seed={5} count={8} frame={frame} opacity={0.5 * (1 - prog(frame, 110, 16))} region={{ left: 0, top: 55, width: 40, height: 40 }} cyanRatio={0.4} />
-      <WetGround frame={frame} top={1560} opacity={0.7 * (1 - prog(frame, 110, 16))} />
+      <Bokeh seed={23} count={20} frame={frame} opacity={0.85 * (1 - prog(frame, 140, 16))} region={{ left: 30, top: 8, width: 68, height: 70 }} cyanRatio={0.14} />
+      <Bokeh seed={5} count={8} frame={frame} opacity={0.5 * (1 - prog(frame, 140, 16))} region={{ left: 0, top: 55, width: 40, height: 40 }} cyanRatio={0.4} />
+      <WetGround frame={frame} top={1560} opacity={0.7 * (1 - prog(frame, 140, 16))} />
 
       <AbsoluteFill style={{ transform: `translateY(${drift}px)` }}>
         {/* text column (fades ahead of the boundary) */}
-        <AbsoluteFill style={{ ...fadeOut(frame, 110, 14) }}>
+        <AbsoluteFill style={{ ...fadeOut(frame, 140, 14) }}>
         <div style={{ position: "absolute", left: 76, top: 300 }}>
           <Lines
             lines={[S2.headline[0], S2.headline[1], [{ t: S2.headline[2], c: PAL.gold, d: 5 }]]}

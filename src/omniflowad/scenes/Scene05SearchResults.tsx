@@ -17,7 +17,7 @@ export const Scene05SearchResults: React.FC = () => {
   const frame = useCurrentFrame();
 
   const routeP = prog(frame, 6, 56, EASE.inOut);
-  const exit = fadeOut(frame, 110, 14);
+  const exit = fadeOut(frame, 140, 14);
 
   const hues = [30, 210, 0, 16];
 

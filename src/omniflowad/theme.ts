@@ -42,16 +42,21 @@ export const EASE = {
 
 export const FONT = "Inter, sans-serif";
 
-// Scene boundaries (global frames)
+// Scene boundaries (global frames).
+// 150f per scene: entrance choreography matches the original 120f design,
+// the extra second is pure hold time so copy stays readable.
 export const SCENE = {
   s1: 0,
-  s2: 120,
-  s3: 240,
-  s4: 360,
-  s5: 480,
-  s6: 600,
-  s7: 720,
-  s8: 840,
-  end: 960,
-  len: 120,
+  s2: 150,
+  s3: 300,
+  s4: 450,
+  s5: 600,
+  s6: 750,
+  s7: 900,
+  s8: 1050,
+  end: 1200,
+  len: 150,
 } as const;
+
+// Frame (scene-local) where a scene starts handing off to the next one.
+export const EXIT = SCENE.len - 10;

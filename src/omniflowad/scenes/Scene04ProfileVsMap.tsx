@@ -22,7 +22,7 @@ export const Scene04ProfileVsMap: React.FC = () => {
   const frame = useCurrentFrame();
 
   const routeP = prog(frame, 64, 30, EASE.inOut);
-  const exit = fadeOut(frame, 110, 14);
+  const exit = fadeOut(frame, 140, 14);
 
   return (
     <AbsoluteFill>

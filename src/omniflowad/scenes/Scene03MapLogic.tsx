@@ -27,10 +27,10 @@ export const Scene03MapLogic: React.FC = () => {
   // one scan shimmer sweeping the grid
   const scanT = prog(frame, 26, 60, EASE.inOut);
 
-  const drift = iv(frame, [0, 132], [8, -18]);
+  const drift = iv(frame, [0, 162], [8, -18]);
 
   return (
-    <AbsoluteFill style={{ ...fadeOut(frame, 110, 14, 0) }}>
+    <AbsoluteFill style={{ ...fadeOut(frame, 140, 14, 0) }}>
       <AbsoluteFill style={{ transform: `translateY(${drift}px)` }}>
         {/* scan shimmer */}
         <div
