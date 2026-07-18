@@ -2,7 +2,7 @@ import { AbsoluteFill, useCurrentFrame } from "remotion";
 import { C } from "../styles/tokens";
 import { EASE } from "../../omniflowad/theme";
 import { fadeOut, prog, reveal } from "../../omniflowad/ui/anim";
-import { AnimatedHeadline, BodyCopy, SceneNumber } from "../components/text";
+import { AnimatedHeadline, BodyCopy } from "../components/text";
 import { BusinessProfilePanel } from "../components/BusinessProfilePanel";
 import { WarningPanel } from "../components/WarningPanel";
 import { Callout, CustomerLocation, MapPin, StoreLocation } from "../components/StoreLocation";
@@ -114,7 +114,6 @@ export const Scene02ProfileMismatch: React.FC = () => {
           />
         </div>
 
-        <SceneNumber num="02" delay={0} />
       </AbsoluteFill>
       <ReferenceOverlay scene={2} />
     </AbsoluteFill>

@@ -2,7 +2,7 @@ import { AbsoluteFill, useCurrentFrame } from "remotion";
 import { C, F } from "../styles/tokens";
 import { EASE } from "../../omniflowad/theme";
 import { iv, prog } from "../../omniflowad/ui/anim";
-import { AnimatedHeadline, BodyCopy, SceneNumber } from "../components/text";
+import { AnimatedHeadline, BodyCopy } from "../components/text";
 import { CyanRoute } from "../../omniflowad/ui/CyanRoute";
 import { Storefront } from "../../omniflowad/ui/Storefront";
 import { Checklist, CustomerMarker } from "../../omniflowad/ui/Panels";
@@ -185,7 +185,6 @@ export const Scene04OmniFlowSolution: React.FC = () => {
         </div>
       </div>
 
-      <SceneNumber num="04" delay={0} />
       <ReferenceOverlay scene={4} />
     </AbsoluteFill>
   );

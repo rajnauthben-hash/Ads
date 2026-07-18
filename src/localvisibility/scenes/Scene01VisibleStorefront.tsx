@@ -2,7 +2,7 @@ import { AbsoluteFill, useCurrentFrame } from "remotion";
 import { C } from "../styles/tokens";
 import { EASE } from "../../omniflowad/theme";
 import { fadeOut, iv, prog } from "../../omniflowad/ui/anim";
-import { AnimatedHeadline, BodyCopy, SceneNumber } from "../components/text";
+import { AnimatedHeadline, BodyCopy } from "../components/text";
 import { PhoneSearchUI } from "../components/PhoneSearchUI";
 import { CyanRoute } from "../../omniflowad/ui/CyanRoute";
 import { Storefront } from "../../omniflowad/ui/Storefront";
@@ -131,7 +131,6 @@ export const Scene01VisibleStorefront: React.FC = () => {
           <div style={{ position: "absolute", left: 76, top: 590 }}>
             <BodyCopy lines={[[{ t: "They’re searching on their phone.", c: C.cyan }]]} delay={48} size={31} weight={500} />
           </div>
-          <SceneNumber num="01" delay={12} />
         </AbsoluteFill>
 
         {/* phone rises from lower-left with shallow perspective */}

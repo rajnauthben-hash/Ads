@@ -2,7 +2,7 @@ import { AbsoluteFill, useCurrentFrame } from "remotion";
 import { C } from "../styles/tokens";
 import { EASE } from "../../omniflowad/theme";
 import { fadeOut, iv, prog } from "../../omniflowad/ui/anim";
-import { AnimatedHeadline, BodyCopy, SceneNumber } from "../components/text";
+import { AnimatedHeadline, BodyCopy } from "../components/text";
 import { ResultCard } from "../components/ResultCard";
 import { IncomingCallCard } from "../components/IncomingCallCard";
 import { CyanRoute } from "../../omniflowad/ui/CyanRoute";
@@ -107,7 +107,6 @@ export const Scene03CompetitorCall: React.FC = () => {
             />
           </div>
 
-          <SceneNumber num="03" delay={0} />
         </AbsoluteFill>
       </AbsoluteFill>
 
