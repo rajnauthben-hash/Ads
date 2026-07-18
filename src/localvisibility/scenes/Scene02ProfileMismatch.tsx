@@ -24,7 +24,7 @@ export const Scene02ProfileMismatch: React.FC = () => {
   // Spec: diagram rises 184–228 (local 64–108); route draws inside that window.
   const routeP = prog(frame, 72, 24, EASE.inOut);
   const competitorLit = 0.7 + 0.3 * prog(frame, 96, 12);
-  const exit = fadeOut(frame, 110, 14);
+  const exit = fadeOut(frame, 140, 14);
 
   return (
     <AbsoluteFill>

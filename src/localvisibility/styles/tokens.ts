@@ -26,14 +26,16 @@ export const F = {
   label: "'IBM Plex Sans', sans-serif", // Medium 500 — scene numbers, micro labels
 } as const;
 
-// Scene boundaries (global frames): 4 × 120f = 480f @30fps = 16s
+// Scene boundaries (global frames): 4 × 150f = 600f @30fps = 20s.
+// Entrance choreography keeps the original 120f design; the extra second
+// per scene is pure hold time so the information stays readable.
 export const LV = {
   s1: 0,
-  s2: 120,
-  s3: 240,
-  s4: 360,
-  end: 480,
-  len: 120,
+  s2: 150,
+  s3: 300,
+  s4: 450,
+  end: 600,
+  len: 150,
 } as const;
 
 /** Development-only: show the supplied keyframes at 30% for alignment. */

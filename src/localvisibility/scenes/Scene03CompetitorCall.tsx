@@ -23,8 +23,8 @@ export const Scene03CompetitorCall: React.FC = () => {
 
   const routeP = prog(frame, 66, 38, EASE.inOut);
   const selectGlow = prog(frame, 40, 16);
-  const exit = fadeOut(frame, 110, 14);
-  const drift = iv(frame, [0, 132], [6, -10]);
+  const exit = fadeOut(frame, 140, 14);
+  const drift = iv(frame, [0, 162], [6, -10]);
 
   return (
     <AbsoluteFill>

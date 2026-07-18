@@ -28,11 +28,11 @@ export const Scene01VisibleStorefront: React.FC = () => {
   const pinPulse = prog(frame, 76, 14);
 
   const phoneT = prog(frame, 30, 30);
-  const push = iv(frame, [0, 132], [1, 1.035]);
+  const push = iv(frame, [0, 162], [1, 1.035]);
 
   // Exit: the phone's outline stretches toward the scene 02 profile panel.
-  const exitT = prog(frame, 112, 20, EASE.inOut);
-  const textExit = fadeOut(frame, 110, 14);
+  const exitT = prog(frame, 142, 20, EASE.inOut);
+  const textExit = fadeOut(frame, 140, 14);
 
   return (
     <AbsoluteFill>
@@ -159,11 +159,11 @@ export const Scene01VisibleStorefront: React.FC = () => {
           <div
             style={{
               position: "absolute",
-              left: iv(frame, [112, 132], [72, 55], EASE.inOut),
-              top: iv(frame, [112, 132], [742, 580], EASE.inOut),
-              width: iv(frame, [112, 132], [424, 476], EASE.inOut),
-              height: iv(frame, [112, 132], [820, 640], EASE.inOut),
-              borderRadius: iv(frame, [112, 132], [62, 26], EASE.inOut),
+              left: iv(frame, [142, 162], [72, 55], EASE.inOut),
+              top: iv(frame, [142, 162], [742, 580], EASE.inOut),
+              width: iv(frame, [142, 162], [424, 476], EASE.inOut),
+              height: iv(frame, [142, 162], [820, 640], EASE.inOut),
+              borderRadius: iv(frame, [142, 162], [62, 26], EASE.inOut),
               border: `2.5px solid ${C.cyan}`,
               boxShadow: `0 0 60px ${C.cyanGlow}`,
               opacity: Math.sin(exitT * Math.PI) * 0.9,
