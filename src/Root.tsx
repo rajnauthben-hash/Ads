@@ -31,7 +31,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="OmniFlowDigitalVisibilityAd"
         component={OmniFlowDigitalVisibilityAd}
-        durationInFrames={480}
+        durationInFrames={600}
         fps={30}
         width={1080}
         height={1920}

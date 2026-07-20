@@ -46,8 +46,9 @@ export const Scene1Hook: React.FC = () => {
   const phoneScale = 0.92 + phoneT * 0.08;
 
   // exit hand-off: phone rotates down & slides offscreen; scene fades over tail
-  const exitT = prog(frame, 96, 16, EASE.inOut);
-  const fade = prog(frame, 104, 8);
+  // (+30f hold vs the 16s cut: exit moved from 96/104 to 126/134)
+  const exitT = prog(frame, 126, 16, EASE.inOut);
+  const fade = prog(frame, 134, 8);
   const store = prog(frame, 6, 20);
 
   return (

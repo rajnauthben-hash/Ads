@@ -27,7 +27,8 @@ export const Scene2Mechanism: React.FC = () => {
   const broken = frame >= 66;
   const store = prog(frame, 4, 18);
   // fast fade-out over the boundary tail (route stays the continuous spine)
-  const exit = prog(frame, 119, 8);
+  // (+30f hold vs the 16s cut: exit moved from 119 to 149)
+  const exit = prog(frame, 149, 8);
 
   return (
     <AbsoluteFill style={{ opacity: 1 - exit }}>

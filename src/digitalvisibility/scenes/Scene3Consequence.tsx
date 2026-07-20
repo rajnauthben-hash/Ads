@@ -30,7 +30,8 @@ export const Scene3Consequence: React.FC = () => {
   const dottedP = iv(frame, [4, 30], [0, 1], EASE.out);
   const arrived = prog(frame, 48, 16);
   const bestLit = 0.85 + 0.15 * prog(frame, 46, 14);
-  const exit = prog(frame, 119, 8);
+  // (+30f hold vs the 16s cut: exit moved from 119 to 149)
+  const exit = prog(frame, 149, 8);
 
   return (
     <AbsoluteFill style={{ opacity: 1 - exit }}>
