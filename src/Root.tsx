@@ -7,6 +7,7 @@ import { TikTokPreview, PREVIEW_FRAMES } from "./tiktok/TikTokPreview";
 import { TikTokAd } from "./tiktok/TikTokAd";
 import { MainComposition as OmniFlowMotionAd } from "./omniflowad/MainComposition";
 import { OmniFlowLocalVisibilityAd } from "./localvisibility/OmniFlowLocalVisibilityAd";
+import { OmniFlowDigitalVisibilityAd } from "./digitalvisibility/OmniFlowDigitalVisibilityAd";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -23,6 +24,14 @@ export const RemotionRoot: React.FC = () => {
         id="OmniFlowMotionAd"
         component={OmniFlowMotionAd}
         durationInFrames={1200}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="OmniFlowDigitalVisibilityAd"
+        component={OmniFlowDigitalVisibilityAd}
+        durationInFrames={480}
         fps={30}
         width={1080}
         height={1920}
