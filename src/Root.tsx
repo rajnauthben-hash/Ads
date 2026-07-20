@@ -12,6 +12,7 @@ import {
   TOTAL_FRAMES as PULSE_FRAMES,
   WIDTH as PULSE_WIDTH,
 } from "./pulse/theme";
+import { LocalSearchPulseAd } from "./local/LocalSearchPulseAd";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -63,6 +64,14 @@ export const RemotionRoot: React.FC = () => {
         fps={PULSE_FPS}
         width={PULSE_WIDTH}
         height={PULSE_HEIGHT}
+      />
+      <Composition
+        id="LocalSearchPulseAd"
+        component={LocalSearchPulseAd}
+        durationInFrames={450}
+        fps={30}
+        width={1080}
+        height={1920}
       />
     </>
   );
