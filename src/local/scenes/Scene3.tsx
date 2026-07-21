@@ -11,14 +11,15 @@ import { COLORS, FONTS } from "../theme";
 
 const DUR = 86;
 
-// Customer origin -> storefront entrance.
+// Customer origin -> storefront entrance (the glass doors of the facade).
 const ROUTE = [
   { x: 170, y: 1390 },
-  { x: 340, y: 1250 },
+  { x: 360, y: 1255 },
   { x: 560, y: 1120 },
-  { x: 620, y: 980 },
-  { x: 720, y: 850 },
-  { x: 840, y: 700 },
+  { x: 650, y: 970 },
+  { x: 735, y: 800 },
+  { x: 792, y: 660 },
+  { x: 805, y: 560 },
 ];
 
 export const Scene3: React.FC<{ breakAt?: number; divert?: number }> = ({ breakAt, divert = 0 }) => {
@@ -35,9 +36,9 @@ export const Scene3: React.FC<{ breakAt?: number; divert?: number }> = ({ breakA
           <CinematicMap seed={37} brightness={0.85} warm={0.45} driftX={frame * 0.04} />
         </ParallaxLayer>
 
-        {/* Storefront */}
+        {/* Cinematic photographic storefront in the tall right panel */}
         <ParallaxLayer depth={0.5}>
-          <Storefront x={530} y={95} width={510} height={1150} appear={6} warmth={warmth} />
+          <Storefront x={535} y={90} width={530} variant="glass" pavement={700} appear={6} warmth={warmth} />
         </ParallaxLayer>
 
         {/* Route + nodes + cards */}
@@ -55,13 +56,13 @@ export const Scene3: React.FC<{ breakAt?: number; divert?: number }> = ({ breakA
           </svg>
           {/* Arrival card near entrance */}
           <div style={{ opacity: interpolate(frame, [50, 60], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }) * (1 - divert) }}>
-            <div style={{ position: "absolute", left: 700, top: 620, borderRadius: 14, background: "rgba(9,14,20,0.9)", border: "1.4px solid rgba(243,188,66,0.5)", padding: "12px 18px", display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ position: "absolute", left: 578, top: 470, borderRadius: 14, background: "rgba(9,14,20,0.92)", border: "1.4px solid rgba(243,188,66,0.5)", padding: "12px 18px", display: "flex", alignItems: "center", gap: 12 }}>
               <svg width="26" height="26" viewBox="0 0 26 26"><circle cx="13" cy="13" r="11" fill="none" stroke={COLORS.gold} strokeWidth="1.6" /><path d="M8 13 L12 17 L18 9" fill="none" stroke={COLORS.gold} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
               <span style={{ fontFamily: FONTS.body, fontWeight: 600, fontSize: 22, color: COLORS.gold }}>ARRIVING SOON<br /><span style={{ fontWeight: 400, fontSize: 20, color: COLORS.gray }}>2 min • 0.3 mi</span></span>
             </div>
           </div>
           {/* Travel card along route */}
-          <div style={{ position: "absolute", left: 470, top: 1080, borderRadius: 12, background: "rgba(9,14,20,0.85)", border: "1px solid rgba(85,188,235,0.3)", padding: "8px 14px", opacity: interpolate(frame, [36, 46], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }) * (1 - divert) }}>
+          <div style={{ position: "absolute", left: 605, top: 890, borderRadius: 12, background: "rgba(9,14,20,0.85)", border: "1px solid rgba(85,188,235,0.3)", padding: "8px 14px", opacity: interpolate(frame, [36, 46], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }) * (1 - divert) }}>
             <span style={{ fontFamily: FONTS.body, fontWeight: 500, fontSize: 22, color: COLORS.white, display: "flex", alignItems: "center", gap: 8 }}>
               <svg width="16" height="22" viewBox="0 0 16 22"><circle cx="8" cy="4" r="3" fill={COLORS.cyan} /><path d="M8 7 L8 14 M8 9 L3 12 M8 9 L13 11 M8 14 L4 21 M8 14 L12 21" stroke={COLORS.cyan} strokeWidth="1.8" strokeLinecap="round" fill="none" /></svg>
               2 min<br />0.3 mi

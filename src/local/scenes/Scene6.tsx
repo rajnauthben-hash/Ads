@@ -12,14 +12,14 @@ import { COLORS, FONTS } from "../theme";
 
 const DUR = 80;
 
-// Customer node -> storefront entrance, fully connected.
+// Customer node -> storefront base (the doorway of the facade), fully connected.
 const ROUTE = [
   { x: 185, y: 1390 },
   { x: 340, y: 1240 },
   { x: 470, y: 1080 },
-  { x: 560, y: 900 },
-  { x: 660, y: 720 },
-  { x: 730, y: 560 },
+  { x: 580, y: 900 },
+  { x: 720, y: 720 },
+  { x: 810, y: 560 },
 ];
 
 const BENEFITS: { y: number; h: number; icon: React.ReactNode; lines: string[]; appear: number }[] = [
@@ -66,7 +66,7 @@ export const Scene6: React.FC = () => {
 
         {/* Storefront upper-right */}
         <ParallaxLayer depth={0.45}>
-          <Storefront x={615} y={200} width={415} height={475} appear={4} warmth={warmth} pin pinAppear={40} />
+          <Storefront x={578} y={248} width={470} variant="wood" appear={4} warmth={warmth} pin pinAppear={40} />
         </ParallaxLayer>
 
         {/* Completed route */}

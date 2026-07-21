@@ -88,35 +88,37 @@ const SceneStack: React.FC = () => {
   // Transition drivers (global frames) — each ramps over ~16 frames.
   const t = (a: number, b: number) => interpolate(frame, [a, b], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
-  // S1->2: phone fragments as the cyan line expands (global 72–88).
-  const s1Fragment = t(72, 88);
-  // S2->3: selected hardware node expands, others recede (global 130–146).
-  const s2Select = t(130, 146);
-  // S3->4: route breaks and diverts (breakAt fixed, divert ramps 198–214).
-  const s3Divert = t(198, 214);
-  // S4->5: consequence cards compress (global 268–284).
-  const s4Compress = t(268, 284);
-  // S5->6: diagnostic spine bends into route (global 354–370).
-  const s5Bend = t(354, 370);
+  // Scene dominant ranges: S1 0–74, S2 75–149, S3 150–224, S4 225–299,
+  // S5 300–374, S6 375–449. Each transition object ramps over ~14 frames.
+  // S1->2: phone fragments as the cyan line expands.
+  const s1Fragment = t(74, 88);
+  // S2->3: selected hardware node expands, others recede.
+  const s2Select = t(148, 162);
+  // S3->4: route breaks and diverts toward the competitor.
+  const s3Divert = t(212, 226);
+  // S4->5: consequence cards compress into the diagnostic spine.
+  const s4Compress = t(286, 300);
+  // S5->6: diagnostic spine bends into the completed route.
+  const s5Bend = t(360, 374);
 
   return (
     <>
       <TransSlot from={0} dur={88} name="S1 — Customer Search">
         <Scene1 fragment={s1Fragment} />
       </TransSlot>
-      <TransSlot from={72} dur={74} name="S2 — Heartbeat">
+      <TransSlot from={74} dur={90} name="S2 — Heartbeat">
         <Scene2 selectExpand={s2Select} />
       </TransSlot>
-      <TransSlot from={142} dur={72} name="S3 — Searches Become Action">
+      <TransSlot from={148} dur={90} name="S3 — Searches Become Action">
         <Scene3 breakAt={s3Divert > 0 ? 0.55 : undefined} divert={s3Divert} />
       </TransSlot>
-      <TransSlot from={212} dur={72} name="S4 — Pulse Misses You">
+      <TransSlot from={223} dur={90} name="S4 — Pulse Misses You">
         <Scene4 compress={s4Compress} />
       </TransSlot>
-      <TransSlot from={282} dur={88} name="S5 — What Keeps You Connected">
+      <TransSlot from={298} dur={90} name="S5 — What Keeps You Connected">
         <Scene5 bend={s5Bend} />
       </TransSlot>
-      <TransSlot from={368} dur={82} name="S6 — Reconnect">
+      <TransSlot from={373} dur={77} name="S6 — Reconnect">
         <Scene6 />
       </TransSlot>
     </>

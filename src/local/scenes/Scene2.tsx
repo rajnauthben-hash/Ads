@@ -106,7 +106,7 @@ export const Scene2: React.FC<{ selectExpand?: number }> = ({ selectExpand = 0 }
               <span style={{ fontFamily: FONTS.body, fontWeight: 500, fontSize: 34, color: COLORS.white }}>These searches happen all day,<br />across every category.</span>
             </div>
           </GlassPanel>
-          <GlassPanel x={55} y={1690} width={970} height={100} appear={56} accent="gold" glow radius={20} padding="0 34px">
+          <GlassPanel x={55} y={1690} width={970} height={100} appear={46} accent="gold" glow radius={20} padding="0 34px">
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20, height: "100%" }}>
               <span style={{ fontFamily: FONTS.body, fontWeight: 600, fontSize: 34, color: COLORS.gold }}>Intent is already in motion.</span>
               <svg width="60" height="30" viewBox="0 0 60 30"><line x1="2" y1="15" x2="48" y2="15" stroke={COLORS.gold} strokeWidth="2.6" strokeLinecap="round" /><path d="M40 5 L55 15 L40 25" fill="none" stroke={COLORS.gold} strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" /></svg>

@@ -47,7 +47,7 @@ export const Scene1: React.FC<{ fragment?: number }> = ({ fragment = 0 }) => {
 
         {/* Phone */}
         <ParallaxLayer depth={0.7}>
-          <PhoneSearchUI x={455} y={135} width={590} height={1370} appear={14} queryDone={44} resultsFrom={40} fragment={fragment} />
+          <PhoneSearchUI x={455} y={135} width={590} height={1370} appear={8} queryDone={26} resultsFrom={26} fragment={fragment} />
         </ParallaxLayer>
 
         {/* Text + panels */}

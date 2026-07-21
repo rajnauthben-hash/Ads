@@ -134,7 +134,7 @@ export const PhoneSearchUI: React.FC<Props> = ({ x, y, width: w, height: h, appe
           {/* Result cards */}
           <div style={{ padding: "10px 30px 0" }}>
             {RESULTS.map((r, i) => (
-              <SearchResultCard key={r.name} data={r} appear={resultsFrom + i * 8} width={screenW - 60} />
+              <SearchResultCard key={r.name} data={r} appear={resultsFrom + i * 6} width={screenW - 60} />
             ))}
             {/* More places */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 20px", borderRadius: 16, background: "rgba(12,20,30,0.6)", opacity: interpolate(frame, [resultsFrom + 36, resultsFrom + 46], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }) }}>
