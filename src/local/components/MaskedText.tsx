@@ -108,7 +108,9 @@ export const MaskedText: React.FC<Props> = ({
         if (t <= 0) {
           return <div key={li} style={{ height: fontSize * lineHeight }} />;
         }
-        const blur = 12 * (1 - t);
+        // Gentle: light blur, small settle — a clean mask reveal, not an
+        // AI-looking heavy defocus.
+        const blur = 6 * (1 - t);
         const dx = from.x * (1 - t);
         const dy = from.y * (1 - t);
         // Right inset drives the wipe. At rest it settles NEGATIVE so nowrap

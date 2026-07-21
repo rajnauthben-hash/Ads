@@ -67,14 +67,14 @@ export const GlassPanel: React.FC<Props> = ({
           ? `0 22px 60px rgba(0,0,0,0.5), 0 0 34px ${glowColor}, inset 0 1px 0 rgba(244,246,248,0.05)`
           : "0 18px 46px rgba(0,0,0,0.45), inset 0 1px 0 rgba(244,246,248,0.04)",
         opacity: t,
-        transform: `translate3d(0, ${(1 - t) * 22}px, 0)`,
-        clipPath: `inset(0 0 ${(1 - t) * 100}% 0 round ${radius}px)`,
+        transform: `translate3d(0, ${(1 - t) * 14}px, 0) scale(${0.99 + 0.01 * t})`,
+        transformOrigin: "50% 50%",
         padding,
         boxSizing: "border-box",
         ...style,
       }}
     >
-      <div style={{ opacity: interpolate(t, [0.4, 1], [0, 1], { extrapolateLeft: "clamp" }), width: "100%", height: "100%" }}>
+      <div style={{ opacity: interpolate(t, [0.25, 1], [0, 1], { extrapolateLeft: "clamp" }), width: "100%", height: "100%" }}>
         {children}
       </div>
     </div>
