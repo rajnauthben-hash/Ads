@@ -33,7 +33,7 @@ export const Scene3: React.FC<{ breakAt?: number; divert?: number }> = ({ breakA
     <SceneCamera duration={DUR} driftX={12} driftY={-10}>
       <AbsoluteFill>
         <ParallaxLayer depth={0.25}>
-          <CinematicMap seed={37} brightness={0.85} warm={0.45} driftX={frame * 0.04} />
+          <CinematicMap seed={37} brightness={0.85} warm={0.45} />
         </ParallaxLayer>
 
         {/* Cinematic photographic storefront in the tall right panel */}

@@ -22,8 +22,8 @@ import { COLORS } from "./theme";
 
 const GlobalCamera: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const frame = useCurrentFrame();
-  // Slow global push 1.00 -> 1.055 across the full film.
-  const scale = interpolate(frame, [0, 450], [1, 1.055], { extrapolateRight: "clamp" });
+  // Barely-perceptible global push 1.00 -> 1.022 across the full film.
+  const scale = interpolate(frame, [0, 450], [1, 1.022], { extrapolateRight: "clamp" });
   return (
     <AbsoluteFill style={{ transform: `scale(${scale})`, transformOrigin: "50% 46%" }}>{children}</AbsoluteFill>
   );

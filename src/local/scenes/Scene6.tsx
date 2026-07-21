@@ -61,7 +61,7 @@ export const Scene6: React.FC = () => {
     <SceneCamera duration={DUR} driftX={10} driftY={-8}>
       <AbsoluteFill>
         <ParallaxLayer depth={0.22}>
-          <CinematicMap seed={89} brightness={0.9} warm={0.55} driftX={frame * 0.04} />
+          <CinematicMap seed={89} brightness={0.9} warm={0.55} />
         </ParallaxLayer>
 
         {/* Storefront upper-right */}

@@ -45,11 +45,11 @@ export const SearchChip: React.FC<Props> = ({ x, y, label, appear, stem = 80, al
       {/* Stem + node */}
       <svg width="120" height={stem + 60} viewBox={`0 0 120 ${stem + 60}`} style={{ position: "absolute", left: align === "left" ? 40 : chipW - 80, top: 60, overflow: "visible" }}>
         <line x1="60" y1="0" x2="60" y2={stem} stroke={COLORS.cyan} strokeWidth="2" opacity={0.6} pathLength={100} strokeDasharray={100} strokeDashoffset={interpolate(frame, [appear + 8, appear + 18], [100, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })} />
-        {/* Node ripple */}
-        {[0, 1].map((i) => {
-          const ph = (frame * 0.016 + i / 2) % 1;
-          return <ellipse key={i} cx="60" cy={stem} rx={12 + ph * 44} ry={(12 + ph * 44) * 0.4} fill="none" stroke={COLORS.cyan} strokeWidth="1.4" opacity={(1 - ph) * 0.5} />;
-        })}
+        {/* One gentle node ripple */}
+        {(() => {
+          const ph = ((frame - appear) * 0.009 % 1 + 1) % 1;
+          return <ellipse cx="60" cy={stem} rx={14 + ph * 40} ry={(14 + ph * 40) * 0.4} fill="none" stroke={COLORS.cyan} strokeWidth="1.4" opacity={(1 - ph) * (1 - ph) * 0.42} />;
+        })()}
         <ellipse cx="60" cy={stem} rx="20" ry="8" fill={COLORS.cyan} opacity={0.16} />
         <circle cx="60" cy={stem} r="6" fill="#CFF4FF" />
       </svg>

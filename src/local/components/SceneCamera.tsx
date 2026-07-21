@@ -1,18 +1,21 @@
 import React, { createContext, useContext } from "react";
 import { Easing, interpolate, useCurrentFrame } from "remotion";
 
-// A subtle, continuous camera that pushes and drifts across the whole film.
-// The global push (scale 1.00 -> ~1.055) is applied once at the master
-// level; each scene adds a small lateral drift. Depth layers consume the
-// drift vector scaled by their own factor for parallax.
+// A restrained camera that settles once, early, then HOLDS still. The drift
+// eases out over the first ~40% of the scene and plateaus, so each scene
+// comes to rest on its reference composition instead of sliding throughout.
+// The global 1.00->~1.03 push lives at the master level.
 type CamVec = { driftX: number; driftY: number };
 const Ctx = createContext<CamVec>({ driftX: 0, driftY: 0 });
 
-const EASE = Easing.inOut(Easing.quad);
+// Ease-out cubic — fast settle, long hold.
+const EASE = Easing.out(Easing.cubic);
+// Global damping so per-scene drift stays gentle (max ~7px foreground).
+const DAMP = 0.45;
 
 type Props = {
   duration: number;
-  // Peak lateral drift for this scene (px), reached mid-scene.
+  // Peak lateral drift for this scene (px), reached early then held.
   driftX?: number;
   driftY?: number;
   children: React.ReactNode;
@@ -20,12 +23,13 @@ type Props = {
 
 export const SceneCamera: React.FC<Props> = ({ duration, driftX = 14, driftY = -10, children }) => {
   const frame = useCurrentFrame();
-  const t = interpolate(frame, [0, duration], [0, 1], {
+  // Reach full drift by ~45% of the scene, then hold.
+  const t = interpolate(frame, [0, duration * 0.45], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
     easing: EASE,
   });
-  return <Ctx.Provider value={{ driftX: driftX * t, driftY: driftY * t }}>{children}</Ctx.Provider>;
+  return <Ctx.Provider value={{ driftX: driftX * DAMP * t, driftY: driftY * DAMP * t }}>{children}</Ctx.Provider>;
 };
 
 type LayerProps = {

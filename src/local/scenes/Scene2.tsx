@@ -37,7 +37,7 @@ export const Scene2: React.FC<{ selectExpand?: number }> = ({ selectExpand = 0 }
     <SceneCamera duration={DUR} driftX={-16} driftY={10}>
       <AbsoluteFill>
         <ParallaxLayer depth={0.25}>
-          <CinematicMap seed={23} brightness={0.8} warm={0.4} driftX={frame * 0.05} />
+          <CinematicMap seed={23} brightness={0.8} warm={0.4} />
         </ParallaxLayer>
 
         {/* Network route + node ripples */}
@@ -49,13 +49,22 @@ export const Scene2: React.FC<{ selectExpand?: number }> = ({ selectExpand = 0 }
               if (on <= 0) return null;
               const selected = i === 2; // hardware
               const expand = selected ? selectExpand : 0;
+              // One gentle ripple per node, phase-offset so they don't pulse
+              // in unison — calm, not a stack of racing rings.
+              const rp = ((frame * 0.009 + i * 0.27) % 1 + 1) % 1;
               return (
                 <g key={i} opacity={on * (1 - (selected ? 0 : selectExpand * 0.7))}>
-                  {[0, 1, 2].map((r) => {
-                    const ph = (frame * 0.015 + r / 3) % 1;
-                    return <ellipse key={r} cx={n.x} cy={n.y} rx={(16 + ph * 60) * (1 + expand)} ry={(16 + ph * 60) * 0.42 * (1 + expand)} fill="none" stroke={COLORS.cyan} strokeWidth={1.5} opacity={(1 - ph) * 0.5 * on} />;
-                  })}
-                  <ellipse cx={n.x} cy={n.y} rx={26 * (1 + expand * 1.5)} ry={10 * (1 + expand * 1.5)} fill={COLORS.cyan} opacity={0.16 * on} />
+                  <ellipse
+                    cx={n.x}
+                    cy={n.y}
+                    rx={(18 + rp * 52) * (1 + expand)}
+                    ry={(18 + rp * 52) * 0.42 * (1 + expand)}
+                    fill="none"
+                    stroke={COLORS.cyan}
+                    strokeWidth={1.4}
+                    opacity={(1 - rp) * (1 - rp) * 0.42 * on}
+                  />
+                  <ellipse cx={n.x} cy={n.y} rx={26 * (1 + expand * 1.5)} ry={10 * (1 + expand * 1.5)} fill={COLORS.cyan} opacity={0.14 * on} />
                   <circle cx={n.x} cy={n.y} r={8 * (1 + expand)} fill="#CFF4FF" />
                 </g>
               );

@@ -58,7 +58,7 @@ export const Scene4: React.FC<{ compress?: number }> = ({ compress = 0 }) => {
     <SceneCamera duration={DUR} driftX={-12} driftY={8}>
       <AbsoluteFill>
         <ParallaxLayer depth={0.25}>
-          <CinematicMap seed={53} brightness={0.85} warm={0.4} driftX={-frame * 0.05} />
+          <CinematicMap seed={53} brightness={0.85} warm={0.4} />
         </ParallaxLayer>
 
         {/* Routes + stores */}

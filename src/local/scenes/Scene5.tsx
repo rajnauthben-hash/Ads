@@ -50,7 +50,7 @@ export const Scene5: React.FC<{ bend?: number }> = ({ bend = 0 }) => {
       <AbsoluteFill>
         <ParallaxLayer depth={0.2}>
           <div style={{ opacity: 0.7 }}>
-            <CinematicMap seed={71} brightness={0.75} warm={0.4} driftY={-frame * 0.03} />
+            <CinematicMap seed={71} brightness={0.75} warm={0.4} />
           </div>
         </ParallaxLayer>
 
