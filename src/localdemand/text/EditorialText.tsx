@@ -1,5 +1,5 @@
 import React from "react";
-import { FONT, COLOR } from "../theme";
+import { FONT, COLOR, HEAD_WEIGHT } from "../theme";
 import { clamp01, envelope } from "./anim";
 
 export type Seg = { t: string; c?: string };
@@ -21,7 +21,7 @@ export const EditorialHeadline: React.FC<{
   size?: number;
   lineHeight?: number;
   weight?: number;
-}> = ({ lines, groups, into, out = 0, size = 92, lineHeight = 1.02, weight = 700 }) => {
+}> = ({ lines, groups, into, out = 0, size = 92, lineHeight = 1.02, weight = HEAD_WEIGHT }) => {
   const groupCount = Math.max(...groups) + 1;
   return (
     <div

@@ -1,55 +1,63 @@
 import React from "react";
-import { interpolate, Easing } from "remotion";
-import { COLOR } from "../theme";
-import { S1_ROUTE } from "../layout";
-import { RoadRoute } from "../RoadRoute";
+import { AbsoluteFill, interpolate } from "remotion";
+import { COLOR, PLATE } from "../theme";
+import { ScenePlate, LeftScrim, SoftMatte, Vignette } from "../Plate";
+import { RouteOverlay, RouteDefs } from "../RouteOverlay";
+import { StoreGlow } from "../StoreGlow";
 import { EditorialHeadline, SupportingCopy } from "../text/EditorialText";
 import { CalloutBox } from "../text/Extras";
-import { clamp01 } from "../text/anim";
+import { S1_ROUTE, S1_STORE_GLOW } from "../layout";
 
-const ease = (t: number) => Math.max(0, Math.min(1, t));
+export const Scene1: React.FC<{ f: number }> = ({ f }) => {
+  const s = interpolate(f, [0, 134], [1.0, 1.02]);
+  const cx = interpolate(f, [0, 134], [0, -8]);
+  const cy = interpolate(f, [0, 134], [0, -6]);
+  const cam = `translate(${cx}px, ${cy}px) scale(${s})`;
 
-export const Scene1World: React.FC<{ f: number }> = ({ f }) => {
-  const progress = interpolate(f, [0, 68], [0.32, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.out(Easing.cubic) });
-  const pulse = (f % 70) / 70; // continuous travelling pulse
-  const out = clamp01((f - 128) / 22); // route hands off to Scene 2
-  return (
-    <g opacity={1 - out * 0.85}>
-      <RoadRoute points={S1_ROUTE} progress={progress} pulse={0.2 + pulse * 0.8} radius={26} />
-    </g>
-  );
-};
+  const reveal = interpolate(f, [0, 40], [0.4, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const pulse = (f % 80) / 80;
+  const warm = 0.5 + 0.5 * Math.sin((f / 40) * Math.PI);
 
-export const Scene1Overlay: React.FC<{ f: number }> = ({ f }) => {
-  const headIn = interpolate(f, [12, 42], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const supIn = interpolate(f, [35, 60], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const goldIn = interpolate(f, [52, 78], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const calloutIn = interpolate(f, [58, 92], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const out = ease((f - 122) / 14);
+  const headIn = interpolate(f, [10, 34], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const supIn = interpolate(f, [28, 52], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const goldIn = interpolate(f, [45, 68], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const calloutIn = interpolate(f, [52, 78], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
   return (
-    <div style={{ position: "absolute", inset: 0 }}>
-      <div style={{ position: "absolute", left: 64, top: 208, width: 560 }}>
+    <AbsoluteFill style={{ backgroundColor: COLOR.black }}>
+      <div style={{ position: "absolute", inset: 0, transform: cam, transformOrigin: "center center" }}>
+        <ScenePlate src={PLATE.scene1} />
+        <StoreGlow x={S1_STORE_GLOW.x} y={S1_STORE_GLOW.y} r={S1_STORE_GLOW.r} strength={0.04 + warm * 0.05} />
+        <svg width={1080} height={1920} viewBox="0 0 1080 1920" style={{ position: "absolute", inset: 0 }}>
+          <RouteDefs />
+          <RouteOverlay d={S1_ROUTE} reveal={reveal} pulse={pulse} reinforce={0.6} width={5} />
+        </svg>
+      </div>
+
+      <Vignette />
+      <LeftScrim width={470} feather={150} top={120} height={1050} />
+      <SoftMatte x={352} y={1356} w={324} h={196} />
+
+      <div style={{ position: "absolute", left: 68, top: 250, width: 440 }}>
         <EditorialHeadline
           into={headIn}
-          out={out}
-          size={84}
+          size={76}
+          lineHeight={1.03}
           groups={[0, 1, 2, 3, 4]}
           lines={[
             [{ t: "Search" }],
             [{ t: "demand" }],
-            [{ t: "is " }, { t: "already", c: COLOR.gold }],
+            [{ t: "is ", c: COLOR.white }, { t: "already", c: COLOR.gold }],
             [{ t: "moving", c: COLOR.gold }],
             [{ t: "around you.", c: COLOR.gold }],
           ]}
         />
       </div>
 
-      <div style={{ position: "absolute", left: 66, top: 700, width: 520 }}>
+      <div style={{ position: "absolute", left: 70, top: 712, width: 480 }}>
         <SupportingCopy
           into={supIn}
-          out={out}
-          size={31}
+          size={30}
           lines={[
             [{ t: "People nearby are searching" }],
             [{ t: "for what they need right now." }],
@@ -60,23 +68,20 @@ export const Scene1Overlay: React.FC<{ f: number }> = ({ f }) => {
         />
       </div>
 
-      <div style={{ position: "absolute", left: 66, top: 918, width: 520 }}>
+      <div style={{ position: "absolute", left: 70, top: 958, width: 480 }}>
         <SupportingCopy
           into={goldIn}
-          out={out}
           size={33}
           color={COLOR.gold}
-          weight={500}
           lines={[[{ t: "The opportunity is" }], [{ t: "already in motion." }]]}
         />
       </div>
 
-      <div style={{ position: "absolute", left: 360, top: 1150 }}>
+      <div style={{ position: "absolute", left: 366, top: 1396 }}>
         <CalloutBox
           into={calloutIn}
-          out={out}
           bordered={false}
-          size={30}
+          size={29}
           lines={[
             [{ t: "Nearby intent." }],
             [{ t: "Real customers." }],
@@ -84,6 +89,6 @@ export const Scene1Overlay: React.FC<{ f: number }> = ({ f }) => {
           ]}
         />
       </div>
-    </div>
+    </AbsoluteFill>
   );
 };

@@ -1,80 +1,68 @@
 import React from "react";
-import { interpolate, Easing } from "remotion";
-import { COLOR } from "../theme";
-import {
-  S3_CUSTOMER,
-  S3_COMPETITOR,
-  S3_COMP_DOOR,
-  S3_COMP_ROUTE,
-  S3_CROWN_ROUTE,
-  S3_MISSED,
-  crownXf,
-} from "../layout";
-import { RoadRoute, DestinationRing } from "../RoadRoute";
-import { CompetitorStore } from "../CompetitorStore";
-import { CustomerMarker, MissedConnectionMarker, MapLabel } from "../Markers";
+import { AbsoluteFill, interpolate } from "remotion";
+import { COLOR, PLATE } from "../theme";
+import { ScenePlate, LeftScrim, SoftMatte, Vignette } from "../Plate";
+import { RouteOverlay, RouteDefs, PulseRing } from "../RouteOverlay";
+import { StoreGlow, CyanGlow } from "../StoreGlow";
 import { EditorialHeadline, SupportingCopy } from "../text/EditorialText";
-import { clamp01 } from "../text/anim";
+import {
+  S3_MAIN_ROUTE,
+  S3_COMP_ROUTE,
+  S3_CUSTOMER,
+  S3_COMP_GLOW,
+  S3_COMP_DOOR,
+  S3_CROWN_GLOW,
+} from "../layout";
 
-export const Scene3World: React.FC<{ f: number }> = ({ f }) => {
-  const custIn = clamp01((f - 300) / 22);
-  const compProg = interpolate(f, [345, 428], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.inOut(Easing.cubic) });
-  const crownProg = interpolate(f, [348, 398], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.out(Easing.cubic) });
-  const missedIn = clamp01((f - 396) / 24);
-  const ringIn = clamp01((f - 416) / 18);
-  const compLit = interpolate(f, [388, 424], [0.45, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const pulse = 0.15 + ((f % 64) / 64) * 0.85;
+export const Scene3: React.FC<{ f: number }> = ({ f }) => {
+  const s = interpolate(f, [300, 449], [1.0, 1.02]);
+  const cx = interpolate(f, [300, 449], [0, 6]);
+  const cy = interpolate(f, [300, 449], [0, -6]);
+  const cam = `translate(${cx}px, ${cy}px) scale(${s})`;
 
-  // fade the whole layer in at the start, out into Scene 4
-  const fadeIn = clamp01((f - 300) / 18);
-  const fadeOut = 1 - clamp01((f - 450) / 12);
-  const layer = Math.min(fadeIn, fadeOut);
-  const labelIn = clamp01((f - 356) / 24);
+  const mainReveal = interpolate(f, [338, 402], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const mainPulse = 0.15 + ((f % 84) / 84) * 0.85;
+  const compReveal = interpolate(f, [350, 398], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const compPulse = (f % 50) / 50;
+  const compWarm = interpolate(f, [388, 424], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const custT = (f % 60) / 60;
 
-  const crown = crownXf(f);
-  const crownRoof = { x: crown.x, y: crown.y - 470 * crown.scale };
-
-  return (
-    <g opacity={layer}>
-      {/* competitor building (drawn before routes so route arrives at door) */}
-      <g transform={`translate(${S3_COMPETITOR.x} ${S3_COMPETITOR.y}) scale(${S3_COMPETITOR.scale})`}>
-        <CompetitorStore lit={compLit} />
-      </g>
-
-      {/* Crown branch — dotted, stops before Crown */}
-      <RoadRoute points={S3_CROWN_ROUTE} progress={crownProg} dotted radius={26} showPulse={false} />
-
-      {/* Competitor branch — solid, reaches competitor */}
-      <RoadRoute points={S3_COMP_ROUTE} progress={compProg} pulse={pulse} radius={26} />
-      {ringIn > 0 && <DestinationRing at={S3_COMP_DOOR} scale={ringIn} opacity={ringIn} />}
-
-      {/* markers */}
-      <CustomerMarker at={S3_CUSTOMER} opacity={custIn} pulse={(f % 60) / 60} />
-      {missedIn > 0 && <MissedConnectionMarker at={S3_MISSED} opacity={missedIn} />}
-
-      {/* labels */}
-      <MapLabel at={crownRoof} lines={["Crown Hardware"]} dx={-30} dy={-48} anchor="start" opacity={labelIn} />
-      <MapLabel at={S3_MISSED} lines={["Missed", "connection"]} dx={34} dy={-8} anchor="start" leader={false} opacity={missedIn} />
-      <MapLabel at={{ x: S3_COMPETITOR.x + 30, y: S3_COMPETITOR.y - S3_COMPETITOR.scale * 300 }} lines={["Competitor"]} dx={40} dy={-60} anchor="start" opacity={labelIn} />
-      <MapLabel at={S3_CUSTOMER} lines={["Your customer"]} dx={6} dy={-70} anchor="start" opacity={custIn} />
-    </g>
-  );
-};
-
-export const Scene3Overlay: React.FC<{ f: number }> = ({ f }) => {
-  const headIn = interpolate(f, [318, 350], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const supIn = interpolate(f, [332, 366], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const headIn = interpolate(f, [314, 348], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const supIn = interpolate(f, [330, 366], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const goldIn = interpolate(f, [352, 384], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const inMask = clamp01((f - 300) / 16);
-  const out = clamp01((f - 440) / 13);
 
   return (
-    <div style={{ position: "absolute", inset: 0, opacity: Math.min(inMask, 1) }}>
-      <div style={{ position: "absolute", left: 64, top: 190, width: 560 }}>
+    <AbsoluteFill style={{ backgroundColor: COLOR.black }}>
+      <div style={{ position: "absolute", inset: 0, transform: cam, transformOrigin: "center center" }}>
+        <ScenePlate src={PLATE.scene3} />
+        <StoreGlow x={S3_CROWN_GLOW.x} y={S3_CROWN_GLOW.y} r={S3_CROWN_GLOW.r} strength={0.035} />
+        <CyanGlow x={S3_COMP_GLOW.x} y={S3_COMP_GLOW.y} r={S3_COMP_GLOW.r} strength={compWarm * 0.26} />
+        <svg width={1080} height={1920} viewBox="0 0 1080 1920" style={{ position: "absolute", inset: 0 }}>
+          <RouteDefs />
+          {/* main pulse: keeps moving, fails near Crown */}
+          <RouteOverlay d={S3_MAIN_ROUTE} reveal={mainReveal} pulse={mainPulse} width={5} dying={0.35} />
+          {/* competitor branch: successful connection */}
+          <RouteOverlay d={S3_COMP_ROUTE} reveal={compReveal} pulse={compPulse} width={5} />
+          {compReveal > 0.9 && (
+            <>
+              <circle cx={S3_COMP_DOOR.x} cy={S3_COMP_DOOR.y} r={14} fill="none" stroke={COLOR.cyanCore} strokeWidth={2.4} filter="url(#roGlow)" />
+              <circle cx={S3_COMP_DOOR.x} cy={S3_COMP_DOOR.y} r={5} fill={COLOR.cyanCore} filter="url(#roGlow)" />
+            </>
+          )}
+          <PulseRing x={S3_CUSTOMER.x} y={S3_CUSTOMER.y} t={custT} base={20} />
+        </svg>
+      </div>
+
+      <Vignette />
+      <LeftScrim width={492} feather={130} top={110} height={1000} />
+      {/* cover baked headline that extends right (dark sky above Crown) */}
+      <SoftMatte x={470} y={230} w={220} h={290} />
+
+      <div style={{ position: "absolute", left: 68, top: 246, width: 600 }}>
         <EditorialHeadline
           into={headIn}
-          out={out}
-          size={71}
+          size={64}
+          lineHeight={1.06}
           groups={[0, 1, 2, 3]}
           lines={[
             [{ t: "The search" }],
@@ -85,10 +73,9 @@ export const Scene3Overlay: React.FC<{ f: number }> = ({ f }) => {
         />
       </div>
 
-      <div style={{ position: "absolute", left: 66, top: 560, width: 540 }}>
+      <div style={{ position: "absolute", left: 70, top: 600, width: 512 }}>
         <SupportingCopy
           into={supIn}
-          out={out}
           size={28}
           lines={[
             [{ t: "If your signals are weak," }],
@@ -101,16 +88,14 @@ export const Scene3Overlay: React.FC<{ f: number }> = ({ f }) => {
         />
       </div>
 
-      <div style={{ position: "absolute", left: 66, top: 824, width: 540 }}>
+      <div style={{ position: "absolute", left: 70, top: 928, width: 512 }}>
         <SupportingCopy
           into={goldIn}
-          out={out}
           size={31}
           color={COLOR.gold}
-          weight={500}
           lines={[[{ t: "Local demand doesn’t disappear." }], [{ t: "It lands somewhere else." }]]}
         />
       </div>
-    </div>
+    </AbsoluteFill>
   );
 };

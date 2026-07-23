@@ -1,75 +1,65 @@
 import React from "react";
-import { interpolate, Easing } from "remotion";
-import { COLOR } from "../theme";
-import { S4_ROUTE, S4_ORIGIN, S3_COMP_ROUTE, crownXf } from "../layout";
-import { RoadRoute } from "../RoadRoute";
-import { CustomerMarker } from "../Markers";
+import { AbsoluteFill, interpolate } from "remotion";
+import { COLOR, PLATE } from "../theme";
+import { ScenePlate, LeftScrim, SoftMatte, Vignette } from "../Plate";
+import { RouteOverlay, RouteDefs, PulseRing } from "../RouteOverlay";
+import { StoreGlow, CyanGlow } from "../StoreGlow";
 import { EditorialHeadline, SupportingCopy } from "../text/EditorialText";
 import { Checklist } from "../text/Extras";
-import { OmniFlowBrandLockup } from "../OmniFlowBrandLockup";
-import { clamp01 } from "../text/anim";
+import { S4_ROUTE, S4_DOOR, S4_ORIGIN, S4_STORE_GLOW } from "../layout";
 
-export const Scene4World: React.FC<{ f: number }> = ({ f }) => {
-  // competitor route loses emphasis (echo), backward pulse
-  const compEmph = interpolate(f, [450, 480], [0.5, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const backPulse = 1 - ((f % 40) / 40);
+export const Scene4: React.FC<{ f: number }> = ({ f }) => {
+  const s = interpolate(f, [450, 599], [1.0, 1.022]);
+  const cx = interpolate(f, [450, 599], [-4, 4]);
+  const cy = interpolate(f, [450, 599], [0, -8]);
+  const cam = `translate(${cx}px, ${cy}px) scale(${s})`;
 
-  // dotted "missed" path repairs (fades) as the solid route draws to Crown
-  const dottedEmph = interpolate(f, [450, 480], [0.8, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const solidProg = interpolate(f, [462, 540], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.inOut(Easing.cubic) });
-  const pulse = 0.15 + ((f % 58) / 58) * 0.85;
+  const reveal = interpolate(f, [462, 540], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const pulse = 0.1 + ((f % 70) / 70) * 0.9;
+  const warm = interpolate(f, [465, 505], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const doorArrive = interpolate(f, [524, 552], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const custT = (f % 60) / 60;
 
-  const crown = crownXf(f);
-  const doorArrive = clamp01((f - 520) / 30);
-  const doorX = crown.x - 22;
-  const doorY = crown.y - 40;
-  const layer = clamp01((f - 450) / 16);
-
-  return (
-    <g opacity={layer}>
-      {compEmph > 0.01 && (
-        <RoadRoute points={S3_COMP_ROUTE} progress={1} pulse={backPulse} emphasis={compEmph} radius={26} />
-      )}
-      {dottedEmph > 0.01 && (
-        <RoadRoute points={S4_ROUTE} progress={1} dotted emphasis={dottedEmph} radius={26} showPulse={false} />
-      )}
-
-      <RoadRoute points={S4_ROUTE} progress={solidProg} pulse={pulse} radius={26} />
-      <CustomerMarker at={S4_ORIGIN} opacity={1} pulse={(f % 60) / 60} />
-
-      {/* pulse/arrow entering the doorway */}
-      {doorArrive > 0 && (
-        <g opacity={doorArrive}>
-          <circle cx={doorX} cy={doorY} r={24 * doorArrive} fill={COLOR.cyanGlowSoft} filter="url(#cyanGlowWide)" />
-          <path
-            d={`M ${doorX - 14} ${doorY + 16} L ${doorX} ${doorY - 14} L ${doorX + 14} ${doorY + 16}`}
-            fill="none"
-            stroke={COLOR.cyanCore}
-            strokeWidth={5}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            filter="url(#cyanGlow)"
-          />
-        </g>
-      )}
-    </g>
-  );
-};
-
-export const Scene4Overlay: React.FC<{ f: number }> = ({ f }) => {
-  const headIn = interpolate(f, [465, 498], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const supIn = interpolate(f, [482, 516], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const listIn = interpolate(f, [490, 548], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const closeIn = interpolate(f, [545, 578], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const brandIn = interpolate(f, [556, 588], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const inMask = clamp01((f - 450) / 16);
+  const headIn = interpolate(f, [462, 495], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const supIn = interpolate(f, [480, 515], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const listIn = interpolate(f, [485, 532], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const closeIn = interpolate(f, [535, 570], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
   return (
-    <div style={{ position: "absolute", inset: 0, opacity: Math.min(inMask, 1) }}>
-      <div style={{ position: "absolute", left: 64, top: 226, width: 560 }}>
+    <AbsoluteFill style={{ backgroundColor: COLOR.black }}>
+      <div style={{ position: "absolute", inset: 0, transform: cam, transformOrigin: "center center" }}>
+        <ScenePlate src={PLATE.scene4} />
+        <StoreGlow x={S4_STORE_GLOW.x} y={S4_STORE_GLOW.y} r={S4_STORE_GLOW.r} strength={0.03 + warm * 0.06} />
+        <CyanGlow x={S4_DOOR.x} y={S4_DOOR.y} r={70} strength={doorArrive * 0.28} />
+        <svg width={1080} height={1920} viewBox="0 0 1080 1920" style={{ position: "absolute", inset: 0 }}>
+          <RouteDefs />
+          <RouteOverlay d={S4_ROUTE} reveal={reveal} pulse={pulse} reinforce={0.18} width={5} />
+          <PulseRing x={S4_ORIGIN.x} y={S4_ORIGIN.y} t={custT} base={16} />
+          {doorArrive > 0 && (
+            <path
+              d={`M ${S4_DOOR.x - 12} ${S4_DOOR.y + 14} L ${S4_DOOR.x} ${S4_DOOR.y - 12} L ${S4_DOOR.x + 12} ${S4_DOOR.y + 14}`}
+              fill="none"
+              stroke={COLOR.cyanCore}
+              strokeWidth={4}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity={doorArrive}
+              filter="url(#roGlow)"
+            />
+          )}
+        </svg>
+      </div>
+
+      <Vignette />
+      <LeftScrim width={482} feather={140} top={200} height={1200} />
+      {/* cover baked headline/support extending right (dark sky/city left of Crown) */}
+      <SoftMatte x={455} y={300} w={225} h={445} />
+
+      <div style={{ position: "absolute", left: 70, top: 315, width: 560 }}>
         <EditorialHeadline
           into={headIn}
-          size={65}
+          size={62}
+          lineHeight={1.06}
           groups={[0, 1, 2]}
           lines={[
             [{ t: "OmniFlow Digital" }],
@@ -79,10 +69,10 @@ export const Scene4Overlay: React.FC<{ f: number }> = ({ f }) => {
         />
       </div>
 
-      <div style={{ position: "absolute", left: 66, top: 440, width: 640 }}>
+      <div style={{ position: "absolute", left: 70, top: 588, width: 600 }}>
         <SupportingCopy
           into={supIn}
-          size={26}
+          size={25}
           lines={[
             [{ t: "We strengthen the signals that help customers" }],
             [{ t: "find, trust, and choose your business." }],
@@ -92,24 +82,18 @@ export const Scene4Overlay: React.FC<{ f: number }> = ({ f }) => {
         />
       </div>
 
-      <div style={{ position: "absolute", left: 66, top: 626 }}>
-        <Checklist into={listIn} size={30} />
+      <div style={{ position: "absolute", left: 70, top: 760 }}>
+        <Checklist into={listIn} size={29} />
       </div>
 
-      <div style={{ position: "absolute", left: 66, top: 1042, width: 540 }}>
+      <div style={{ position: "absolute", left: 70, top: 1190, width: 520 }}>
         <SupportingCopy
           into={closeIn}
-          size={40}
+          size={38}
           color={COLOR.gold}
-          weight={600}
           lines={[[{ t: "You get found." }], [{ t: "You get chosen." }]]}
         />
-        <div style={{ marginTop: 14, width: 150, height: 3, background: COLOR.cyan, opacity: 0.8 * clamp01(closeIn) }} />
       </div>
-
-      <div style={{ position: "absolute", left: 0, right: 0, top: 1648, display: "flex", justifyContent: "center" }}>
-        <OmniFlowBrandLockup into={brandIn} />
-      </div>
-    </div>
+    </AbsoluteFill>
   );
 };
