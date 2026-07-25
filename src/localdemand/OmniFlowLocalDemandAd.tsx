@@ -1,5 +1,5 @@
 import React from "react";
-import { AbsoluteFill, useCurrentFrame, continueRender, delayRender, interpolate } from "remotion";
+import { AbsoluteFill, useCurrentFrame, continueRender, delayRender, interpolate, Easing } from "remotion";
 import { COLOR } from "./theme";
 import { initInterFonts } from "../omniflow/fonts";
 import { WipeReveal, RefNumberCover } from "./Plate";
@@ -27,24 +27,25 @@ export const OmniFlowLocalDemandAd: React.FC = () => {
       .catch(() => continueRender(handle));
   }, [handle]);
 
-  const p1 = interpolate(f, [126, 140], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const p2 = interpolate(f, [292, 306], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const p3 = interpolate(f, [442, 456], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  // Object/camera-led overlaps (wider, feathered) — no full-screen crossfades.
+  const p1 = interpolate(f, [119, 150], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.inOut(Easing.cubic) });
+  const p2 = interpolate(f, [281, 315], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.inOut(Easing.cubic) });
+  const p3 = interpolate(f, [431, 470], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.inOut(Easing.cubic) });
 
   return (
     <AbsoluteFill style={{ backgroundColor: COLOR.black }}>
-      {f < 140 && <Scene1 f={f} />}
-      {f >= 126 && f < 306 && (
+      {f < 152 && <Scene1 f={f} />}
+      {f >= 119 && f < 318 && (
         <WipeReveal progress={p1} from="right">
           <Scene2 f={f} />
         </WipeReveal>
       )}
-      {f >= 292 && f < 456 && (
+      {f >= 281 && f < 472 && (
         <WipeReveal progress={p2} from="bottom">
           <Scene3 f={f} />
         </WipeReveal>
       )}
-      {f >= 442 && (
+      {f >= 431 && (
         <WipeReveal progress={p3} from="top">
           <Scene4 f={f} />
         </WipeReveal>

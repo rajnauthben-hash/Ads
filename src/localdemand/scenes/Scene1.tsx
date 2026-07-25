@@ -1,22 +1,24 @@
 import React from "react";
 import { AbsoluteFill, interpolate } from "remotion";
 import { COLOR, PLATE } from "../theme";
-import { ScenePlate, LeftScrim, SoftMatte, Vignette } from "../Plate";
+import { ScenePlate, LeftScrim, SoftMatte, Vignette, AtmosphericHaze } from "../Plate";
 import { RouteOverlay, RouteDefs } from "../RouteOverlay";
 import { StoreGlow } from "../StoreGlow";
 import { EditorialHeadline, SupportingCopy } from "../text/EditorialText";
 import { CalloutBox } from "../text/Extras";
+import { camTransform, sceneCam } from "../camera";
 import { S1_ROUTE, S1_STORE_GLOW } from "../layout";
 
 export const Scene1: React.FC<{ f: number }> = ({ f }) => {
-  const s = interpolate(f, [0, 134], [1.0, 1.02]);
-  const cx = interpolate(f, [0, 134], [0, -8]);
-  const cy = interpolate(f, [0, 134], [0, -6]);
-  const cam = `translate(${cx}px, ${cy}px) scale(${s})`;
+  const c = sceneCam(f, 0, 135, 12, -14);
+  const cam = camTransform(c.scale, c.tx, c.ty, c.rot);
 
-  const reveal = interpolate(f, [0, 40], [0.4, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const pulse = (f % 80) / 80;
-  const warm = 0.5 + 0.5 * Math.sin((f / 40) * Math.PI);
+  // route reads as already active; pulse travels continuously
+  const reveal = interpolate(f, [0, 34], [0.55, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const pulse = ((f % 62) / 62);
+  const warm = 0.5 + 0.5 * Math.sin((f / 38) * Math.PI);
+  const breathe = (f % 46) / 46;
+  const haze = Math.sin(f / 120) * 26;
 
   const headIn = interpolate(f, [10, 34], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const supIn = interpolate(f, [28, 52], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
@@ -27,16 +29,17 @@ export const Scene1: React.FC<{ f: number }> = ({ f }) => {
     <AbsoluteFill style={{ backgroundColor: COLOR.black }}>
       <div style={{ position: "absolute", inset: 0, transform: cam, transformOrigin: "center center" }}>
         <ScenePlate src={PLATE.scene1} />
-        <StoreGlow x={S1_STORE_GLOW.x} y={S1_STORE_GLOW.y} r={S1_STORE_GLOW.r} strength={0.04 + warm * 0.05} />
+        <AtmosphericHaze drift={haze} y={40} />
+        <LeftScrim width={470} feather={150} top={120} height={1050} />
+        <SoftMatte x={350} y={1330} w={330} h={238} />
+        <StoreGlow x={S1_STORE_GLOW.x} y={S1_STORE_GLOW.y} r={S1_STORE_GLOW.r} strength={0.045 + warm * 0.05} />
         <svg width={1080} height={1920} viewBox="0 0 1080 1920" style={{ position: "absolute", inset: 0 }}>
           <RouteDefs />
-          <RouteOverlay d={S1_ROUTE} reveal={reveal} pulse={pulse} reinforce={0.6} width={5} />
+          <RouteOverlay d={S1_ROUTE} reveal={reveal} pulse={pulse} reinforce={0.6} width={5} breathe={breathe} />
         </svg>
       </div>
 
       <Vignette />
-      <LeftScrim width={470} feather={150} top={120} height={1050} />
-      <SoftMatte x={352} y={1356} w={324} h={196} />
 
       <div style={{ position: "absolute", left: 68, top: 250, width: 440 }}>
         <EditorialHeadline
@@ -77,7 +80,7 @@ export const Scene1: React.FC<{ f: number }> = ({ f }) => {
         />
       </div>
 
-      <div style={{ position: "absolute", left: 366, top: 1396 }}>
+      <div style={{ position: "absolute", left: 366, top: 1372 }}>
         <CalloutBox
           into={calloutIn}
           bordered={false}

@@ -1,22 +1,24 @@
 import React from "react";
 import { AbsoluteFill, interpolate } from "remotion";
 import { COLOR, PLATE } from "../theme";
-import { ScenePlate, LeftScrim, SoftMatte, Vignette } from "../Plate";
+import { ScenePlate, LeftScrim, SoftMatte, Vignette, AtmosphericHaze, PhoneScreenReflection } from "../Plate";
 import { RouteOverlay, RouteDefs, PulseRing } from "../RouteOverlay";
 import { StoreGlow } from "../StoreGlow";
 import { EditorialHeadline, SupportingCopy } from "../text/EditorialText";
 import { CalloutBox } from "../text/Extras";
+import { camTransform, sceneCam } from "../camera";
 import { S2_ROUTE, S2_SEARCH_NODE, S2_STORE_GLOW } from "../layout";
 
 export const Scene2: React.FC<{ f: number }> = ({ f }) => {
-  const s = interpolate(f, [135, 299], [1.0, 1.02]);
-  const cx = interpolate(f, [135, 299], [6, -6]);
-  const cy = interpolate(f, [135, 299], [0, -8]);
-  const cam = `translate(${cx}px, ${cy}px) scale(${s})`;
+  const c = sceneCam(f, 135, 300, -12, -10);
+  const cam = camTransform(c.scale, c.tx, c.ty, c.rot);
 
   const reveal = interpolate(f, [205, 265], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  const pulse = (f % 62) / 62;
+  const pulse = (f % 58) / 58;
+  const breathe = (f % 44) / 44;
   const nodeT = (f % 46) / 46;
+  const screenSweep = (f % 150) / 150;
+  const haze = Math.sin(f / 130) * 24;
   const nodeOn = interpolate(f, [190, 215], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const warm = interpolate(f, [255, 285], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
@@ -28,10 +30,15 @@ export const Scene2: React.FC<{ f: number }> = ({ f }) => {
     <AbsoluteFill style={{ backgroundColor: COLOR.black }}>
       <div style={{ position: "absolute", inset: 0, transform: cam, transformOrigin: "center center" }}>
         <ScenePlate src={PLATE.scene2} />
+        <AtmosphericHaze drift={haze} y={20} />
+        <PhoneScreenReflection sweep={screenSweep} opacity={0.55} />
+        <LeftScrim width={470} feather={150} top={90} height={720} />
+        {/* cover baked headline + support that extend right toward the phone */}
+        <SoftMatte x={430} y={210} w={255} h={450} />
         <StoreGlow x={S2_STORE_GLOW.x} y={S2_STORE_GLOW.y} r={S2_STORE_GLOW.r} strength={0.05 + warm * 0.07} />
         <svg width={1080} height={1920} viewBox="0 0 1080 1920" style={{ position: "absolute", inset: 0 }}>
           <RouteDefs />
-          <RouteOverlay d={S2_ROUTE} reveal={reveal} pulse={pulse} reinforce={0.5} width={5} />
+          <RouteOverlay d={S2_ROUTE} reveal={reveal} pulse={pulse} reinforce={0.5} width={5} breathe={breathe} />
           <g opacity={nodeOn}>
             <PulseRing x={S2_SEARCH_NODE.x} y={S2_SEARCH_NODE.y} t={nodeT} base={30} />
           </g>
@@ -39,9 +46,6 @@ export const Scene2: React.FC<{ f: number }> = ({ f }) => {
       </div>
 
       <Vignette />
-      <LeftScrim width={470} feather={150} top={90} height={720} />
-      {/* cover baked headline + support that extend right toward the phone */}
-      <SoftMatte x={430} y={210} w={255} h={450} />
 
       <div style={{ position: "absolute", left: 60, top: 235, width: 600 }}>
         <EditorialHeadline

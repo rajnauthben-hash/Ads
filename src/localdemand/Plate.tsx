@@ -116,7 +116,7 @@ export const WipeReveal: React.FC<{
   from: "right" | "left" | "bottom" | "top";
   feather?: number;
   children: React.ReactNode;
-}> = ({ progress, from, feather = 14, children }) => {
+}> = ({ progress, from, feather = 22, children }) => {
   const p = Math.max(0, Math.min(1, progress));
   if (p >= 1) return <>{children}</>;
   const P = p * (100 + feather);
@@ -132,6 +132,63 @@ export const WipeReveal: React.FC<{
       }}
     >
       {children}
+    </div>
+  );
+};
+
+/**
+ * Very slow drifting atmospheric haze near the horizon — nearly invisible when
+ * paused, alive during playback. Additive so it only lifts the darks.
+ */
+export const AtmosphericHaze: React.FC<{ drift: number; opacity?: number; y?: number }> = ({
+  drift,
+  opacity = 0.5,
+  y = 0,
+}) => (
+  <div
+    style={{
+      position: "absolute",
+      left: -120,
+      top: y,
+      width: 1320,
+      height: 900,
+      transform: `translateX(${drift}px)`,
+      background:
+        "radial-gradient(60% 70% at 55% 30%, rgba(60,110,150,0.10) 0%, rgba(40,80,120,0.05) 40%, rgba(0,0,0,0) 72%)",
+      mixBlendMode: "screen",
+      opacity,
+      pointerEvents: "none",
+    }}
+  />
+);
+
+/**
+ * Restrained moving screen reflection for the phone (Scene 2). A soft diagonal
+ * highlight sweeping across the glass, clipped to the screen quad.
+ */
+export const PhoneScreenReflection: React.FC<{ sweep: number; opacity?: number }> = ({ sweep, opacity = 0.5 }) => {
+  const x = -300 + sweep * 900;
+  return (
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        clipPath: "polygon(58% 23%, 95% 25%, 90% 69%, 54% 65%)",
+        WebkitClipPath: "polygon(58% 23%, 95% 25%, 90% 69%, 54% 65%)",
+        pointerEvents: "none",
+        opacity,
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          transform: `translateX(${x}px) rotate(8deg)`,
+          background:
+            "linear-gradient(105deg, rgba(255,255,255,0) 42%, rgba(190,220,255,0.10) 50%, rgba(255,255,255,0) 58%)",
+          mixBlendMode: "screen",
+        }}
+      />
     </div>
   );
 };
