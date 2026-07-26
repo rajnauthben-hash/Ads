@@ -5,10 +5,21 @@ import { OmniFlowPremiumAd } from "./omniflow/OmniFlowPremiumAd";
 import { HeroDesktop, TOTAL_FRAMES } from "./hero/HeroDesktop";
 import { TikTokPreview, PREVIEW_FRAMES } from "./tiktok/TikTokPreview";
 import { TikTokAd } from "./tiktok/TikTokAd";
+import { InvisibleShortlist } from "./compositions/InvisibleShortlist";
+import { CANVAS } from "./styles/tokens";
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition
+        id="InvisibleShortlist"
+        component={InvisibleShortlist}
+        durationInFrames={CANVAS.durationInFrames}
+        fps={CANVAS.fps}
+        width={CANVAS.width}
+        height={CANVAS.height}
+        defaultProps={{ dev: false }}
+      />
       <Composition
         id="MyComp"
         component={MyComposition}
