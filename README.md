@@ -11,7 +11,7 @@
 
 Welcome to your Remotion project!
 
-## OmniFlow — "Invisible Shortlist" ad (`InvisibleShortlist`)
+## OmniFlow — "Invisible Shortlist" ad (`OmniFlowInvisibleShortlist`)
 
 A strictly frame-controlled 26s vertical ad (1080×1920, 30fps, 780 frames).
 Every visual property is derived from `useCurrentFrame()` — there are no CSS
@@ -22,7 +22,7 @@ scene into the first object of the next.
 
 Key files:
 
-- `src/compositions/InvisibleShortlist.tsx` — top-level composition
+- `src/compositions/OmniFlowInvisibleShortlist.tsx` — top-level composition
 - `src/timeline/framePlan.ts` — all frame ranges, timing helpers, camera + storefront state
 - `src/scenes/Scene0{1..6}*.tsx` — the six scenes
 - `src/components/*` — reusable city / UI / route / text components
@@ -35,7 +35,7 @@ renders are fully deterministic and never touch the network.
 **Render the ad:**
 
 ```console
-npx remotion render src/index.ts InvisibleShortlist out/omniflow-invisible-shortlist.mp4 --codec=h264 --crf=16
+npx remotion render src/index.ts OmniFlowInvisibleShortlist out/omniflow-invisible-shortlist.mp4 --codec=h264 --crf=16
 ```
 
 **Frame audit + contact sheet (internal dev only):**
