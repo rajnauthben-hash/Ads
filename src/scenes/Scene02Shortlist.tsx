@@ -41,20 +41,20 @@ export const Scene02Shortlist: React.FC = () => {
   if (frame < S.start || frame > S.end + 1) return null;
 
   // Node continues from Scene 1 merge (470,980) and settles at NODE.
-  const settle = revealProgress(frame, 120, 137);
+  const settle = revealProgress(frame, 120, 130);
   const nodePos: Pt = { x: 470 + (NODE.x - 470) * settle, y: 980 + (NODE.y - 980) * settle };
-  const spine = mapRange(frame, 120, 137, 0, 1); // widen into interface spine
+  const spine = mapRange(frame, 120, 130, 0, 1); // widen into interface spine
 
-  const feedDraw = revealProgress(frame, 128, 160);
+  const feedDraw = revealProgress(frame, 166, 183);
 
-  const outline = revealProgress(frame, 180, 185);
+  const outline = revealProgress(frame, 185, 192);
   const query = "best dentist near me";
-  const chars = mapRange(frame, 186, 202, 0, query.length);
+  const chars = mapRange(frame, 192, 199, 0, query.length);
 
-  const iconPulse = pulsePosition(frame, 203, 30);
+  const iconPulse = pulsePosition(frame, 200, 30);
   const marketDim = mapRange(frame, 231, 236, 1, 0.28);
-  const labelReveal = revealProgress(frame, 236, 241);
-  const compress = revealProgress(frame, 240, 245);
+  const labelReveal = revealProgress(frame, 231, 239);
+  const compress = revealProgress(frame, 242, 249);
 
   const cardReveal = (a: number, b: number) => clamp01(revealProgress(frame, a, b) * (1 - compress));
 
@@ -93,11 +93,11 @@ export const Scene02Shortlist: React.FC = () => {
           ))}
           <SignalRoute
             points={[nodePos, { x: nodePos.x, y: 980 }, { x: 320, y: 1010 }, { x: 320, y: 1040 }]}
-            progress={revealProgress(frame, 186, 210)}
+            progress={revealProgress(frame, 178, 199)}
             core={3}
             glow={9}
           />
-          {frame >= 203 && frame < 240 && (
+          {frame >= 200 && frame < 242 && (
             <MovingPulse
               points={[{ x: nodePos.x, y: nodePos.y }, { x: 320, y: 1010 }, { x: 320, y: 1040 }]}
               t={iconPulse}
@@ -121,13 +121,13 @@ export const Scene02Shortlist: React.FC = () => {
             height: cardH + 24,
             borderRadius: 20,
             border: `1.5px solid rgba(18,211,238,${0.4 * (1 - compress)})`,
-            opacity: revealProgress(frame, 205, 215),
+            opacity: revealProgress(frame, 198, 210),
           }}
         />
 
         {RESULTS.map((r, i) => {
-          const start = 209 + i * 6;
-          const rev = cardReveal(start, start + 9);
+          const start = 204 + i * 7;
+          const rev = cardReveal(start, start + 12);
           const w = cardW * (1 - compress) + 4 * compress;
           const x = containerX + i * (cardW + 16) + (cardW - w) / 2;
           return compress > 0.01 ? (
@@ -192,8 +192,8 @@ export const Scene02Shortlist: React.FC = () => {
           width={745}
           size={52}
           groups={[
-            { lines: ["When customers search,"], color: COLORS.white, inStart: 132, inEnd: 143, outStart: 240, outEnd: 245, sliceDir: -1 },
-            { lines: ["they do not study every", "business nearby."], color: COLORS.cyan, inStart: 144, inEnd: 159, outStart: 240, outEnd: 245, sliceDir: 1 },
+            { lines: ["When customers search,"], color: COLORS.white, inStart: 128, inEnd: 143, outStart: 242, outEnd: 249, sliceDir: -1 },
+            { lines: ["they do not study every", "business nearby."], color: COLORS.cyan, inStart: 140, inEnd: 159, outStart: 242, outEnd: 249, sliceDir: 1 },
           ]}
         />
         <SupportingCopy
@@ -206,10 +206,10 @@ export const Scene02Shortlist: React.FC = () => {
             "Those results become the customer’s shortlist",
             "before they explore the rest of the market.",
           ]}
-          inStart={166}
-          inEnd={179}
-          outStart={240}
-          outEnd={245}
+          inStart={155}
+          inEnd={173}
+          outStart={242}
+          outEnd={249}
         />
       </ParallaxLayer>
     </>

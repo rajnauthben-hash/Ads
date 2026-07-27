@@ -21,12 +21,12 @@ const HUB: Pt = { x: 445, y: 900 };
 
 // Card frames: left column x82, right column x=515. Three rows.
 const CARDS = [
-  { col: 0, row: 0, in: 544, conn: 550 },
-  { col: 1, row: 0, in: 550, conn: 556 },
-  { col: 0, row: 1, in: 558, conn: 564 },
-  { col: 1, row: 1, in: 565, conn: 571 },
-  { col: 0, row: 2, in: 574, conn: 580 },
-  { col: 1, row: 2, in: 582, conn: 588 },
+  { col: 0, row: 0, in: 540, conn: 547 },
+  { col: 1, row: 0, in: 547, conn: 554 },
+  { col: 0, row: 1, in: 555, conn: 562 },
+  { col: 1, row: 1, in: 562, conn: 569 },
+  { col: 0, row: 2, in: 570, conn: 577 },
+  { col: 1, row: 2, in: 578, conn: 588 },
 ];
 const COL_X = [82, 515];
 const ROW_Y = [560, 828, 1096];
@@ -43,9 +43,9 @@ export const Scene05VisibilitySystem: React.FC = () => {
   const frame = useCurrentFrame();
   if (frame < S.start || frame > S.end + 1) return null;
 
-  const payoff = revealProgress(frame, 604, 615);
-  const merge = revealProgress(frame, 628, 644);
-  const exitMask = revealProgress(frame, 636, 644);
+  const payoff = revealProgress(frame, 606, 620);
+  const merge = revealProgress(frame, 636, 649);
+  const exitMask = revealProgress(frame, 637, 649);
 
   return (
     <>
@@ -60,7 +60,7 @@ export const Scene05VisibilitySystem: React.FC = () => {
             return (
               <g key={i}>
                 <SignalRoute points={pts} progress={draw} core={2.6} glow={8} radius={20} />
-                {frame >= 616 && frame < 636 && <MovingPulse points={pts} t={pulsePosition(frame, 616, 26)} size={5} maxProgress={draw} />}
+                {frame >= 618 && frame < 636 && <MovingPulse points={pts} t={pulsePosition(frame, 618, 26)} size={5} maxProgress={draw} />}
               </g>
             );
           })}
@@ -111,6 +111,7 @@ export const Scene05VisibilitySystem: React.FC = () => {
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <span style={{ fontFamily: FONT_UI, fontSize: 24, color: COLORS.white }}>4.8</span>
                   <span style={{ color: COLORS.gold, fontSize: 18 }}>★★★★★</span>
+                  <span style={{ fontFamily: FONT_UI, fontSize: 16, color: COLORS.grey }}>(256)</span>
                 </div>
                 <div style={{ fontFamily: FONT_UI, fontSize: 17, color: COLORS.grey, marginTop: 6, lineHeight: 1.3 }}>
                   “Amazing service and friendly staff. Highly recommended!”
@@ -188,8 +189,8 @@ export const Scene05VisibilitySystem: React.FC = () => {
           width={745}
           size={52}
           groups={[
-            { lines: ["Visibility is not controlled"], color: COLORS.white, inStart: 512, inEnd: 523, outStart: 636, outEnd: 644, sliceDir: -1 },
-            { lines: ["by one switch."], color: COLORS.cyan, inStart: 524, inEnd: 535, outStart: 636, outEnd: 644, sliceDir: 1 },
+            { lines: ["Visibility is not controlled"], color: COLORS.white, inStart: 512, inEnd: 525, outStart: 637, outEnd: 649, sliceDir: -1 },
+            { lines: ["by one switch."], color: COLORS.cyan, inStart: 522, inEnd: 537, outStart: 637, outEnd: 649, sliceDir: 1 },
           ]}
         />
         <SupportingCopy
@@ -203,8 +204,8 @@ export const Scene05VisibilitySystem: React.FC = () => {
             "credible reviews, clear services and a",
             "website that confirms trust.",
           ]}
-          inStart={542}
-          inEnd={553}
+          inStart={533}
+          inEnd={549}
         />
       </ParallaxLayer>
     </>

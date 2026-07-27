@@ -18,7 +18,7 @@ export const SearchNode: React.FC<{
   labelColor?: string;
   labelDx?: number;
   labelDy?: number;
-  labelAnchor?: "start" | "end";
+  labelAnchor?: "start" | "middle" | "end";
 }> = ({
   at,
   scale = 1,

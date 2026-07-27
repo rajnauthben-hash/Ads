@@ -25,13 +25,13 @@ interface Diag {
   in: number;
 }
 const DIAGS: Diag[] = [
-  { icon: "hours", title: "HOURS", subtitle: "Not updated", status: "INCOMPLETE", in: 296 },
-  { icon: "reviews", title: "REVIEWS", subtitle: "Few reviews", status: "WEAK", in: 302 },
-  { icon: "services", title: "SERVICES", status: "INCOMPLETE", in: 308 },
-  { icon: "website", title: "WEBSITE CLARITY", subtitle: "Unclear or missing", status: "MISSING", in: 314 },
-  { icon: "profile", title: "PROFILE COMPLETENESS", subtitle: "40% complete", status: "INCOMPLETE", in: 320 },
-  { icon: "category", title: "CATEGORY", subtitle: "Not specific", status: "UNCLEAR", in: 326 },
-  { icon: "photos", title: "PHOTOS & VIDEOS", subtitle: "Very few", status: "MISSING", in: 332 },
+  { icon: "hours", title: "HOURS", subtitle: "Not updated", status: "INCOMPLETE", in: 306 },
+  { icon: "reviews", title: "REVIEWS", subtitle: "Few reviews", status: "WEAK", in: 313 },
+  { icon: "services", title: "SERVICES", status: "INCOMPLETE", in: 320 },
+  { icon: "website", title: "WEBSITE CLARITY", subtitle: "Unclear or missing", status: "MISSING", in: 327 },
+  { icon: "profile", title: "PROFILE COMPLETENESS", subtitle: "40% complete", status: "INCOMPLETE", in: 334 },
+  { icon: "category", title: "CATEGORY", subtitle: "Not specific", status: "UNCLEAR", in: 341 },
+  { icon: "photos", title: "PHOTOS & VIDEOS", subtitle: "Very few", status: "MISSING", in: 348 },
 ];
 
 const SEAM_X = 505;
@@ -40,17 +40,17 @@ export const Scene03PhysicalDigital: React.FC = () => {
   const frame = useCurrentFrame();
   if (frame < S.start || frame > S.end + 1) return null;
 
-  const seamGrow = revealProgress(frame, 246, 253);
+  const seamGrow = revealProgress(frame, 250, 260);
   const seamTop = 700;
   const seamBottom = seamTop + (610 * seamGrow) - 0;
-  const vsRotate = mapRange(frame, 364, 371, 0, 90);
+  const vsRotate = mapRange(frame, 369, 379, 0, 90);
 
   // storefront -> seam route, becomes dotted at the barrier
-  const routeDraw = revealProgress(frame, 342, 357);
-  const barrierDim = mapRange(frame, 350, 357, 1, 0.48);
-  const warnReveal = revealProgress(frame, 350, 357);
+  const routeDraw = revealProgress(frame, 352, 363);
+  const barrierDim = mapRange(frame, 355, 363, 1, 0.48);
+  const warnReveal = revealProgress(frame, 355, 363);
 
-  const exitFade = revealProgress(frame, 364, 371);
+  const exitFade = revealProgress(frame, 369, 379);
 
   return (
     <>
@@ -86,7 +86,7 @@ export const Scene03PhysicalDigital: React.FC = () => {
               { x: 505, y: 1290 },
               { x: 505, y: 1180 },
             ]}
-            progress={clamp01(mapRange(frame, 350, 357, 0, 1))}
+            progress={clamp01(mapRange(frame, 355, 363, 0, 1))}
             dotted
             core={3}
             glow={7}
@@ -94,7 +94,7 @@ export const Scene03PhysicalDigital: React.FC = () => {
           />
           {/* warning marker at barrier */}
           {warnReveal > 0 && (
-            <g opacity={warnReveal} transform={`translate(505 1180) scale(${mapRange(frame, 350, 359, 0.92, 1)})`}>
+            <g opacity={warnReveal} transform={`translate(505 1180) scale(${mapRange(frame, 355, 365, 0.92, 1)})`}>
               <circle cx={0} cy={0} r={16} fill="rgba(9,12,17,0.9)" stroke={COLORS.red} strokeWidth={2} />
               <g stroke={COLORS.red} strokeWidth={2.4} strokeLinecap="round">
                 <line x1={-6} y1={-6} x2={6} y2={6} />
@@ -103,7 +103,7 @@ export const Scene03PhysicalDigital: React.FC = () => {
             </g>
           )}
           {/* VS. circle */}
-          <g transform={`translate(${SEAM_X} 690) rotate(${vsRotate})`} opacity={revealProgress(frame, 254, 262)}>
+          <g transform={`translate(${SEAM_X} 690) rotate(${vsRotate})`} opacity={revealProgress(frame, 310, 318)}>
             <circle cx={0} cy={0} r={30} fill="rgba(9,12,17,0.95)" stroke={COLORS.cyan} strokeWidth={2.2} />
             <text
               x={0}
@@ -149,9 +149,9 @@ export const Scene03PhysicalDigital: React.FC = () => {
           width={745}
           size={46}
           groups={[
-            { lines: ["Your doors can be open."], color: COLORS.white, inStart: 254, inEnd: 263, outStart: 364, outEnd: 371, sliceDir: -1 },
-            { lines: ["Your team can be ready."], color: COLORS.white, inStart: 264, inEnd: 273, outStart: 364, outEnd: 371, sliceDir: 1 },
-            { lines: ["Your service can be excellent."], color: COLORS.cyan, inStart: 274, inEnd: 285, outStart: 364, outEnd: 371, sliceDir: -1 },
+            { lines: ["Your doors can be open."], color: COLORS.white, inStart: 257, inEnd: 270, outStart: 369, outEnd: 379, sliceDir: -1 },
+            { lines: ["Your team can be ready."], color: COLORS.white, inStart: 267, inEnd: 280, outStart: 369, outEnd: 379, sliceDir: 1 },
+            { lines: ["Your service can be excellent."], color: COLORS.cyan, inStart: 277, inEnd: 291, outStart: 369, outEnd: 379, sliceDir: -1 },
           ]}
           gap={6}
         />
@@ -165,13 +165,13 @@ export const Scene03PhysicalDigital: React.FC = () => {
             "and unclear profile signals can prevent",
             "customers from reaching that part of your story.",
           ]}
-          inStart={292}
+          inStart={288}
           inEnd={305}
         />
 
         {/* Left label: IN REAL LIFE */}
         <div style={{ position: "absolute", left: 92, top: 640, width: 380 }}>
-          <PhraseReveal inStart={300} inEnd={308}>
+          <PhraseReveal inStart={298} inEnd={308}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <svg width={30} height={30} viewBox="0 0 24 24" fill="none" stroke={COLORS.gold} strokeWidth={2} strokeLinejoin="round">
                 <path d="M4 9 L5 5 L19 5 L20 9 Z" />
@@ -182,7 +182,7 @@ export const Scene03PhysicalDigital: React.FC = () => {
               </span>
             </div>
           </PhraseReveal>
-          <PhraseReveal inStart={306} inEnd={314} style={{ marginTop: 6 }}>
+          <PhraseReveal inStart={304} inEnd={314} style={{ marginTop: 6 }}>
             <div style={{ fontFamily: FONT_UI, fontSize: 19, color: COLORS.grey, lineHeight: 1.3 }}>
               Complete. Ready.
               <br />
@@ -193,7 +193,7 @@ export const Scene03PhysicalDigital: React.FC = () => {
 
         {/* Right label: DIGITALLY */}
         <div style={{ position: "absolute", left: 535, top: 640, width: 290 }}>
-          <PhraseReveal inStart={312} inEnd={320}>
+          <PhraseReveal inStart={305} inEnd={315}>
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <svg width={24} height={30} viewBox="0 0 20 26" fill="none" stroke={COLORS.cyan} strokeWidth={2}>
                 <rect x={3} y={2} width={14} height={22} rx={3} />
@@ -204,7 +204,7 @@ export const Scene03PhysicalDigital: React.FC = () => {
               </span>
             </div>
           </PhraseReveal>
-          <PhraseReveal inStart={318} inEnd={326} style={{ marginTop: 6 }}>
+          <PhraseReveal inStart={311} inEnd={321} style={{ marginTop: 6 }}>
             <div style={{ fontFamily: FONT_UI, fontSize: 19, color: COLORS.grey, lineHeight: 1.3 }}>
               Incomplete. Hidden.
               <br />

@@ -18,11 +18,11 @@ export const TOTAL_FRAMES = 780;
 // ---------------------------------------------------------------------------
 export const SCENES = {
   s1: { start: 0, end: 119 },
-  s2: { start: 120, end: 245 },
-  s3: { start: 246, end: 371 },
-  s4: { start: 372, end: 503 },
-  s5: { start: 504, end: 644 },
-  s6: { start: 645, end: 779 },
+  s2: { start: 120, end: 249 },
+  s3: { start: 250, end: 379 },
+  s4: { start: 380, end: 504 },
+  s5: { start: 505, end: 649 },
+  s6: { start: 650, end: 779 },
 } as const;
 
 export type SceneKey = keyof typeof SCENES;
@@ -199,8 +199,10 @@ export interface CameraState {
   cameraRotateZ: number;
 }
 
-// Keyframes are monotone-ish and continuous across the full timeline.
-const CAM_FRAMES = [0, 39, 87, 119, 160, 245, 291, 371, 411, 483, 503, 541, 616, 644, 685, 766, 779];
+// Keyframes are monotone-ish and continuous across the full timeline. All
+// values stay strictly within the spec limits: X ±24, Y ±30, rotZ ±1.2,
+// rotX ±1, scale 1.00–1.055.
+const CAM_FRAMES = [0, 39, 87, 119, 165, 249, 305, 379, 430, 495, 504, 545, 620, 649, 695, 766, 779];
 const CAM_SCALE = [
   1.0, 1.015, 1.019, 1.019, 1.024, 1.03, 1.033, 1.035, 1.036, 1.038, 1.038, 1.043, 1.046, 1.046,
   1.049, 1.054, 1.055,
@@ -253,12 +255,12 @@ export interface StorefrontState {
 }
 
 const SF_FRAMES = [
-  0, 100, 130, // s1 settle -> move
-  235, 252, // s2 settle -> move
-  290, 356, 380, // s3
-  440, 490, 512, // s4 -> move -> s5 arrive
-  536, 565, 579, 596, 606, 630, 650, // s5 lighting steps -> move
-  700, 743, 766, 779, // s6
+  0, 100, 132, // s1 settle -> move
+  240, 258, // s2 settle -> move
+  300, 364, 390, // s3
+  450, 495, 516, // s4 -> move -> s5 arrive
+  540, 570, 584, 600, 615, 636, 655, // s5 lighting steps -> move
+  705, 745, 766, 779, // s6
 ];
 const SF_X = [
   600, 600, 640, // s1->s2

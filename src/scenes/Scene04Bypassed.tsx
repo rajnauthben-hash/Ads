@@ -49,26 +49,26 @@ export const Scene04Bypassed: React.FC = () => {
   const frame = useCurrentFrame();
   if (frame < S.start || frame > S.end + 1) return null;
 
-  const callDraw = clamp01(frame < 423 ? mapRange(frame, 410, 422, 0, 0.42) : mapRange(frame, 423, 438, 0.42, 1));
-  const dirDraw = clamp01(frame < 432 ? mapRange(frame, 416, 431, 0, 0.52) : mapRange(frame, 432, 447, 0.52, 1));
-  const visitDraw = clamp01(frame < 442 ? mapRange(frame, 424, 441, 0, 0.55) : mapRange(frame, 442, 458, 0.55, 1));
+  const callDraw = clamp01(mapRange(frame, 408, 452, 0, 1, "ROUTE"));
+  const dirDraw = clamp01(mapRange(frame, 420, 452, 0, 1, "ROUTE"));
+  const visitDraw = clamp01(mapRange(frame, 430, 452, 0, 1, "ROUTE"));
 
-  const compReveal = revealProgress(frame, 436, 447);
-  const compLight = mapRange(frame, 444, 455, 0.78, 0.9);
-  const compLightExit = mapRange(frame, 484, 503, 0.9, 0.82);
-  const light = frame >= 484 ? compLightExit : compLight;
+  const compReveal = revealProgress(frame, 440, 456);
+  const compLight = mapRange(frame, 450, 464, 0.78, 0.9);
+  const compLightExit = mapRange(frame, 491, 504, 0.9, 0.82);
+  const light = frame >= 491 ? compLightExit : compLight;
 
-  const failedDraw = clamp01(mapRange(frame, 446, 458, 0, 0.63) * (1 - revealProgress(frame, 492, 503)));
+  const failedDraw = clamp01(mapRange(frame, 446, 466, 0, 0.63) * (1 - revealProgress(frame, 492, 504)));
   // repairing branch during transition
-  const repair = revealProgress(frame, 492, 503);
-  const warnReveal = clamp01(revealProgress(frame, 459, 466) * (1 - repair));
-  const warnScale = mapRange(frame, 459, 466, 0.92, 1);
+  const repair = revealProgress(frame, 492, 504);
+  const warnReveal = clamp01(revealProgress(frame, 460, 470) * (1 - repair));
+  const warnScale = mapRange(frame, 460, 470, 0.92, 1);
 
-  const iconsCondense = revealProgress(frame, 492, 503);
+  const iconsCondense = revealProgress(frame, 491, 504);
   const iconDraw = (t: number) => clamp01(t * (1 - iconsCondense));
 
-  const compPulse = pulsePosition(frame, 471, 50);
-  const reversePulse = 1 - pulsePosition(frame, 484, 40);
+  const compPulse = pulsePosition(frame, 474, 50);
+  const reversePulse = 1 - pulsePosition(frame, 491, 40);
 
   return (
     <>
@@ -82,8 +82,8 @@ export const Scene04Bypassed: React.FC = () => {
           <SignalRoute points={VISIT} progress={visitDraw} core={3} glow={9} />
 
           {/* competitor slow pulse during hold */}
-          {frame >= 460 && frame < 492 && <MovingPulse points={CALL} t={compPulse} size={6} maxProgress={callDraw} />}
-          {frame >= 484 && frame < 503 && (
+          {frame >= 456 && frame < 491 && <MovingPulse points={CALL} t={compPulse} size={6} maxProgress={callDraw} />}
+          {frame >= 491 && frame < 504 && (
             <MovingPulse points={DIRECTIONS} t={reversePulse} size={6} maxProgress={dirDraw} color={COLORS.cyan} />
           )}
 
@@ -108,9 +108,9 @@ export const Scene04Bypassed: React.FC = () => {
 
       {/* Action icons + competitor card + takeaway */}
       <ParallaxLayer depth="foregroundUI" zIndex={LAYER.ui} shareScale={false}>
-        <ActionIcon cx={150} cy={972} type="call" label="CALL" draw={iconDraw(revealProgress(frame, 392, 405))} />
-        <ActionIcon cx={150} cy={1088} type="directions" label="DIRECTIONS" draw={iconDraw(revealProgress(frame, 412, 424))} />
-        <ActionIcon cx={150} cy={1204} type="visit" label="VISIT" draw={iconDraw(revealProgress(frame, 424, 436))} />
+        <ActionIcon cx={150} cy={972} type="call" label="CALL" draw={iconDraw(revealProgress(frame, 405, 418))} />
+        <ActionIcon cx={150} cy={1088} type="directions" label="DIRECTIONS" draw={iconDraw(revealProgress(frame, 414, 428))} />
+        <ActionIcon cx={150} cy={1204} type="visit" label="VISIT" draw={iconDraw(revealProgress(frame, 423, 438))} />
 
         {/* Competitor card */}
         <div
@@ -119,7 +119,7 @@ export const Scene04Bypassed: React.FC = () => {
             left: 540,
             top: 690,
             width: 280,
-            opacity: compReveal * (1 - revealProgress(frame, 484, 503)),
+            opacity: compReveal * (1 - revealProgress(frame, 491, 504)),
             transform: `translateY(${(1 - compReveal) * 12}px)`,
           }}
         >
@@ -152,7 +152,7 @@ export const Scene04Bypassed: React.FC = () => {
             left: 82,
             top: 1370,
             width: 430,
-            opacity: revealProgress(frame, 463, 470),
+            opacity: revealProgress(frame, 464, 478),
           }}
         >
           <div
@@ -187,9 +187,9 @@ export const Scene04Bypassed: React.FC = () => {
           y={195}
           width={640}
           size={26}
-          lines={["The customer does not think,", "“I rejected that business.”"]}
-          inStart={380}
-          inEnd={391}
+          lines={["The customer does not think,", "‘I rejected that business.’"]}
+          inStart={388}
+          inEnd={400}
         />
         <EditorialHeadline
           x={82}
@@ -198,9 +198,9 @@ export const Scene04Bypassed: React.FC = () => {
           size={40}
           gap={10}
           groups={[
-            { lines: ["They call the business they saw."], color: COLORS.white, inStart: 400, inEnd: 411 },
-            { lines: ["They trust the information", "that looked clearer."], color: COLORS.white, inStart: 412, inEnd: 423 },
-            { lines: ["They visit the option", "that made the next step easier."], color: COLORS.white, inStart: 424, inEnd: 435 },
+            { lines: ["They call the business they saw."], color: COLORS.white, inStart: 397, inEnd: 408 },
+            { lines: ["They trust the information", "that looked clearer."], color: COLORS.white, inStart: 405, inEnd: 418 },
+            { lines: ["They visit the option", "that made the next step easier."], color: COLORS.white, inStart: 415, inEnd: 429 },
           ]}
         />
         <EditorialHeadline
@@ -210,7 +210,7 @@ export const Scene04Bypassed: React.FC = () => {
           size={44}
           gap={2}
           groups={[
-            { lines: ["You were not compared.", "You were bypassed."], color: COLORS.cyan, inStart: 447, inEnd: 462 },
+            { lines: ["You were not compared.", "You were bypassed."], color: COLORS.cyan, inStart: 425, inEnd: 441 },
           ]}
         />
       </ParallaxLayer>
