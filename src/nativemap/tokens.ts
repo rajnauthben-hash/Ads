@@ -1,47 +1,48 @@
 /**
- * Design tokens for the OmniFlow native motion-design build.
- * Stylised 2.5D navigation-map aesthetic — deep matte night, electric cyan
- * signal, restrained warm gold destinations, editorial white text.
+ * Global design tokens — OmniFlow native motion-design build (spec §9).
+ * No additional semantic colours beyond these.
  */
 export const T = {
-  // background / map
-  bg0: "#05070C",
-  bg1: "#080C16",
-  bg2: "#0B1220",
-  block: "#0C1322",
-  blockTop: "#111A2C",
-  blockEdge: "#182338",
-  street: "rgba(90,150,210,0.10)",
-  streetBright: "rgba(70,190,255,0.20)",
+  bg: "#05080C",
+  bg2: "#09111A",
+  mapSurface: "#0C141D",
+  raised: "#111B25",
+  mapLine: "#18303E",
+  mapLineBright: "#244858",
 
-  // signal / accents
-  cyan: "#2FB4FF",
-  cyanCore: "#BFEBFF",
-  cyanDeep: "#0C6FB0",
-  cyanGlow: "rgba(47,180,255,0.55)",
-  cyanSoft: "rgba(47,180,255,0.16)",
+  white: "#F4F6F8",
+  gray: "#A0A8B0",
+  grayMuted: "#747E88",
 
-  gold: "#E3A94E",
-  goldSoft: "#C8924A",
-  goldDim: "rgba(227,169,78,0.5)",
-  windowWarm: "#F2B45B",
+  gold: "#D7A04D",
+  goldDark: "#8F6631",
 
-  // text
-  white: "#F4F6FA",
-  gray: "#9BA6B6",
-  grayDim: "#6D7889",
+  cyan: "#22D3EE",
+  cyanCore: "#9AF5FF",
+  cyanGlowLow: "rgba(34, 211, 238, 0.18)",
+  cyanGlowMed: "rgba(34, 211, 238, 0.34)",
+  cyanGlowHigh: "rgba(34, 211, 238, 0.48)",
 
-  // surfaces
-  panel: "rgba(10,16,28,0.72)",
-  panelBorder: "rgba(120,180,230,0.22)",
+  failed: "#78838C",
+
+  phoneSurface: "#0E151D",
+  phoneCard: "#17212B",
+  phoneBorder: "#354653",
+
+  windowWarm: "#E6A44E",
 } as const;
 
-export const FONT = "Inter, system-ui, sans-serif";
+// Fonts — Inter Tight (headline/brand) + Geist (body/ui) requested; local
+// Inter is the available stand-in. Weights kept ≤ 500 (spec §10).
+export const FONT_HEAD = "Inter, system-ui, sans-serif";
+export const FONT_BODY = "Inter, system-ui, sans-serif";
+export const HEAD_W = 500;
+export const BODY_W = 400;
 
-export const EASE = {
-  out: [0.22, 1, 0.36, 1] as [number, number, number, number],
-  inOut: [0.65, 0, 0.35, 1] as [number, number, number, number],
-};
+// Easing (spec §7)
+export const PREMIUM_OUT: [number, number, number, number] = [0.22, 1, 0.36, 1];
+export const PREMIUM_IN_OUT: [number, number, number, number] = [0.65, 0, 0.35, 1];
+export const SOFT_OUT: [number, number, number, number] = [0.16, 1, 0.3, 1];
 
 export const WIDTH = 1080;
 export const HEIGHT = 1920;

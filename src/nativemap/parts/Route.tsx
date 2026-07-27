@@ -29,8 +29,8 @@ export const Route: React.FC<{
 
   if (dotted) {
     return (
-      <g opacity={emphasis * (0.35 + 0.65 * Math.min(1, reveal))}>
-        <path d={d} fill="none" stroke={color} strokeWidth={width} strokeLinecap="round" pathLength={1} strokeDasharray="0.006 0.018" strokeDashoffset={off * 0} opacity={0.95} filter="url(#rGlow)" />
+      <g opacity={emphasis * (0.4 + 0.6 * Math.min(1, reveal))}>
+        <path d={d} fill="none" stroke={color} strokeWidth={width} strokeLinecap="round" strokeDasharray="1 15" opacity={0.95} filter="url(#rGlow)" />
       </g>
     );
   }
@@ -50,6 +50,18 @@ export const Route: React.FC<{
         </>
       )}
       {arrow && reveal > 0.985 && <ArrowHead d={d} color={core} />}
+    </g>
+  );
+};
+
+/** Cyan doorway response — a soft edge glow + inward arrow at arrival. */
+export const CyanDoor: React.FC<{ x: number; y: number; p?: number }> = ({ x, y, p = 0 }) => {
+  const t = Math.max(0, Math.min(1, p));
+  if (t <= 0.01) return null;
+  return (
+    <g transform={`translate(${x},${y})`} opacity={t}>
+      <circle r={34} fill={T.cyanGlowMed} filter="url(#rGlowWide)" />
+      <path d="M -12 14 L 0 -12 L 12 14" fill="none" stroke={T.cyanCore} strokeWidth={4} strokeLinecap="round" strokeLinejoin="round" filter="url(#rGlow)" />
     </g>
   );
 };

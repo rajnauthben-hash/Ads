@@ -3,7 +3,7 @@ import { Composition } from "remotion";
 import { MyComposition } from "./Composition";
 import { OmniFlowPremiumAd } from "./omniflow/OmniFlowPremiumAd";
 import { OmniFlowLocalDemandAd } from "./localdemand/OmniFlowLocalDemandAd";
-import { NativeMapPreview } from "./nativemap/NativeMapPreview";
+import { OmniFlowMotionAd } from "./nativemap/OmniFlowMotionAd";
 import { HeroDesktop, TOTAL_FRAMES } from "./hero/HeroDesktop";
 import { TikTokPreview, PREVIEW_FRAMES } from "./tiktok/TikTokPreview";
 import { TikTokAd } from "./tiktok/TikTokAd";
@@ -20,9 +20,9 @@ export const RemotionRoot: React.FC = () => {
         height={720}
       />
       <Composition
-        id="NativeMapPreview"
-        component={NativeMapPreview}
-        durationInFrames={135}
+        id="OmniFlowMotionAd"
+        component={OmniFlowMotionAd}
+        durationInFrames={600}
         fps={30}
         width={1080}
         height={1920}
