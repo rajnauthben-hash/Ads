@@ -18,7 +18,10 @@ export const VectorPhone: React.FC<{
   return (
     <g>
       {/* body */}
-      <rect x={0} y={0} width={W} height={H} rx={54} fill={T.phoneSurface} fillOpacity={surface} stroke={T.phoneBorder} strokeWidth={2.5} pathLength={1} strokeDasharray={1} strokeDashoffset={1 - outline} />
+      <rect x={-3} y={-3} width={W + 6} height={H + 6} rx={57} fill="none" stroke="#1B2833" strokeWidth={5} opacity={surface * 0.7} />
+      <rect x={0} y={0} width={W} height={H} rx={54} fill="url(#phoneScreen)" fillOpacity={surface} stroke={T.phoneBorder} strokeWidth={2.5} pathLength={1} strokeDasharray={1} strokeDashoffset={1 - outline} />
+      {/* glass reflection sheen */}
+      <path d={`M 0 60 Q ${W * 0.5} 200 ${W} 40 L ${W} 0 L 0 0 Z`} fill="url(#phoneSheen)" opacity={surface * 0.5} />
       <rect x={W / 2 - 46} y={26} width={92} height={26} rx={13} fill="#000" opacity={surface} />
       {/* status bar */}
       <text x={40} y={40} fontFamily={FONT_BODY} fontSize={20} fontWeight={500} fill={T.white} opacity={surface}>9:41</text>
@@ -92,5 +95,7 @@ export const SearchNode: React.FC<{ x: number; y: number; d?: number; active?: n
 export const PhoneDefs: React.FC = () => (
   <defs>
     <radialGradient id="nodeGrad" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stopColor={T.cyanCore} /><stop offset="1" stopColor={T.cyan} /></radialGradient>
+    <linearGradient id="phoneScreen" x1="0" y1="0" x2="0.3" y2="1"><stop offset="0" stopColor="#131C26" /><stop offset="1" stopColor="#0A0F17" /></linearGradient>
+    <linearGradient id="phoneSheen" x1="0" y1="0" x2="0.4" y2="1"><stop offset="0" stopColor="rgba(120,170,210,0.14)" /><stop offset="1" stopColor="rgba(120,170,210,0)" /></linearGradient>
   </defs>
 );

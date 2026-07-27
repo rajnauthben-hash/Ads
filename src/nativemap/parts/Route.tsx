@@ -37,6 +37,8 @@ export const Route: React.FC<{
 
   return (
     <g opacity={emphasis}>
+      {/* wet-road light response — broad soft glow the route casts on the map */}
+      <path d={d} fill="none" stroke={color} strokeWidth={width * 5} strokeLinecap="round" strokeLinejoin="round" pathLength={1} strokeDasharray={1} strokeDashoffset={off} opacity={0.12 * br} filter="url(#rGlowWide)" />
       <path d={d} fill="none" stroke={color} strokeWidth={width * 2.4} strokeLinecap="round" strokeLinejoin="round" pathLength={1} strokeDasharray={1} strokeDashoffset={off} opacity={0.26 * br} filter="url(#rGlowWide)" />
       <path d={d} fill="none" stroke={color} strokeWidth={width} strokeLinecap="round" strokeLinejoin="round" pathLength={1} strokeDasharray={1} strokeDashoffset={off} opacity={0.9 * br} filter="url(#rGlow)" />
       <path d={d} fill="none" stroke={core} strokeWidth={Math.max(1.4, width * 0.42)} strokeLinecap="round" strokeLinejoin="round" pathLength={1} strokeDasharray={1} strokeDashoffset={off} opacity={0.95} />

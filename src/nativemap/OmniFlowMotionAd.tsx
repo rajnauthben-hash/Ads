@@ -2,10 +2,11 @@ import React from "react";
 import { AbsoluteFill, useCurrentFrame, continueRender, delayRender, interpolate } from "remotion";
 import { T } from "./tokens";
 import { initInterFonts } from "../omniflow/fonts";
-import { MapField } from "./parts/MapField";
+import { MapField, MapDefs } from "./parts/MapField";
 import { CrownStore, CrownDefs } from "./parts/CrownStore";
 import { RouteDefs } from "./parts/Route";
 import { PhoneDefs } from "./parts/Phone";
+import { GlobalGrade } from "./parts/Grade";
 import { crownXf, camera, camStr } from "./world";
 import { S1World, S1Overlay } from "./scenes/S1";
 import { S2World, S2Overlay } from "./scenes/S2";
@@ -54,6 +55,7 @@ export const OmniFlowMotionAd: React.FC = () => {
           <CrownDefs />
           <RouteDefs />
           <PhoneDefs />
+          <MapDefs />
           <MapField />
 
           {/* persistent Crown Hardware (drawn before routes so arrivals show) */}
@@ -67,6 +69,9 @@ export const OmniFlowMotionAd: React.FC = () => {
           {f >= 450 && <S4World f={f} />}
         </svg>
       </div>
+
+      {/* cinematic grade (transparent centre keeps text crisp) */}
+      <GlobalGrade />
 
       {/* editorial text (screen space → parallax vs world) */}
       {f < 138 && <S1Overlay f={f} />}
