@@ -17,7 +17,6 @@ import { Pt } from "../utils/routeGeometry";
  */
 const S = SCENES.s5;
 
-const HUB: Pt = { x: 445, y: 900 };
 
 // Card frames: left column x82, right column x=515. Three rows.
 const CARDS = [
@@ -32,12 +31,26 @@ const COL_X = [82, 515];
 const ROW_Y = [560, 828, 1096];
 const CARD_W = 300;
 
-// connector anchor points (inner edge of each card, toward HUB)
-function anchor(col: number, row: number): Pt {
-  const x = col === 0 ? COL_X[0] + CARD_W : COL_X[1];
-  const y = ROW_Y[row] + 70;
-  return { x, y };
-}
+// Store perimeter connection dots (screen space), matching 7766: connectors
+// route orthogonally (circuit-style) from each card to a dot on the store side.
+const STORE = {
+  topLeft: { x: 405, y: 812 },
+  topRight: { x: 498, y: 812 },
+  left: { x: 322, y: 942 },
+  right: { x: 568, y: 942 },
+  botLeft: { x: 408, y: 1052 },
+  botRight: { x: 498, y: 1052 },
+};
+
+// Per-card connector polylines (orthogonal L-paths) in CARDS order.
+const CONNECTORS: Pt[][] = [
+  [{ x: 238, y: 758 }, { x: 238, y: 800 }, { x: 405, y: 800 }, STORE.topLeft], // 1 categories
+  [{ x: 662, y: 758 }, { x: 662, y: 800 }, { x: 498, y: 800 }, STORE.topRight], // 2 hours
+  [{ x: 382, y: 942 }, { x: 352, y: 942 }, STORE.left], // 3 photos
+  [{ x: 515, y: 942 }, { x: 545, y: 942 }, STORE.right], // 4 reviews
+  [{ x: 238, y: 1090 }, { x: 238, y: 1052 }, { x: 408, y: 1052 }, STORE.botLeft], // 5 services
+  [{ x: 662, y: 1090 }, { x: 662, y: 1052 }, { x: 498, y: 1052 }, STORE.botRight], // 6 website
+];
 
 export const Scene05VisibilitySystem: React.FC = () => {
   const frame = useCurrentFrame();
@@ -53,14 +66,20 @@ export const Scene05VisibilitySystem: React.FC = () => {
       <ParallaxLayer depth="foregroundUI" zIndex={LAYER.routes}>
         <svg width={1080} height={1920} style={{ position: "absolute", inset: 0 }}>
           {CARDS.map((c, i) => {
-            const a = anchor(c.col, c.row);
-            const mid: Pt = { x: (a.x + HUB.x) / 2, y: a.y };
-            const pts = [a, mid, HUB];
+            const pts = CONNECTORS[i];
             const draw = routeDrawProgress(frame, c.conn, c.conn + 15);
+            const endDot = pts[pts.length - 1];
             return (
               <g key={i}>
-                <SignalRoute points={pts} progress={draw} core={2.6} glow={8} radius={20} />
+                <SignalRoute points={pts} progress={draw} core={2.6} glow={8} radius={10} />
                 {frame >= 618 && frame < 636 && <MovingPulse points={pts} t={pulsePosition(frame, 618, 26)} size={5} maxProgress={draw} />}
+                {/* perimeter node-dot lights up once the connector reaches it */}
+                {draw > 0.95 && (
+                  <g>
+                    <circle cx={endDot.x} cy={endDot.y} r={7} fill={COLORS.cyan} opacity={0.25} style={{ filter: "blur(3px)" }} />
+                    <circle cx={endDot.x} cy={endDot.y} r={4} fill={COLORS.cyan} />
+                  </g>
+                )}
               </g>
             );
           })}
@@ -68,14 +87,32 @@ export const Scene05VisibilitySystem: React.FC = () => {
           {merge > 0 && (
             <SignalRoute
               points={[
-                { x: HUB.x, y: HUB.y + 60 },
-                { x: HUB.x, y: 1300 },
+                { x: 452, y: 1055 },
+                { x: 452, y: 1300 },
               ]}
               progress={merge}
               core={3.4}
               glow={11}
             />
           )}
+          {/* three upward chevrons below the store (7766) */}
+          {[0, 1, 2].map((k) => {
+            const ch = revealProgress(frame, 596 + k * 4, 606 + k * 4);
+            const cy = 1150 + k * 30;
+            return (
+              <path
+                key={k}
+                d={`M ${452 - 26} ${cy + 14} L 452 ${cy} L ${452 + 26} ${cy + 14}`}
+                fill="none"
+                stroke={COLORS.cyan}
+                strokeWidth={4}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity={ch * 0.9}
+                style={{ filter: "drop-shadow(0 0 4px rgba(18,211,238,0.4))" }}
+              />
+            );
+          })}
         </svg>
       </ParallaxLayer>
 

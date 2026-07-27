@@ -12,9 +12,44 @@ import { Pt } from "../utils/routeGeometry";
 
 /**
  * SCENE 1 — INVISIBLE DEMAND (frames 0–119). Reference: 7769.png.
- * Five nearby customer searches move through the streets but pass YOUR BUSINESS.
+ *
+ * The cyan signal traces the reference line-map exactly: one connected network
+ * — a central S-spine dropping from the HAIR SALON node, the DENTIST branch
+ * merging into it, a NEARBY spur, then a split into a CAFÉ branch (left) and a
+ * long PIZZA diagonal that runs in front of YOUR BUSINESS toward the lower-right.
+ * None of it touches the storefront entrance.
  */
 const S = SCENES.s1;
+
+const N_HAIR: Pt = { x: 175, y: 782 };
+const N_DENT: Pt = { x: 590, y: 812 };
+const N_NEAR: Pt = { x: 235, y: 1150 };
+const N_CAFE: Pt = { x: 255, y: 1385 };
+const N_PIZZA: Pt = { x: 792, y: 1345 };
+const SPLIT: Pt = { x: 345, y: 1258 };
+const MERGE: Pt = { x: 430, y: 1010 };
+
+// Connected route network (screen space), tracing 7769.
+const SPINE: Pt[] = [
+  { x: 178, y: 808 },
+  { x: 272, y: 892 },
+  { x: 246, y: 992 },
+  { x: 312, y: 1082 },
+  { x: 286, y: 1176 },
+  SPLIT,
+];
+const DENT_BR: Pt[] = [
+  { x: 588, y: 836 },
+  { x: 466, y: 884 },
+  { x: 360, y: 940 },
+  { x: 268, y: 994 },
+];
+const NEAR_BR: Pt[] = [
+  { x: 262, y: 1150 },
+  { x: 300, y: 1168 },
+];
+const CAFE_BR: Pt[] = [SPLIT, { x: 300, y: 1332 }, { x: 258, y: 1382 }];
+const PIZZA_BR: Pt[] = [SPLIT, { x: 470, y: 1300 }, { x: 610, y: 1342 }, { x: 720, y: 1356 }, { x: 786, y: 1348 }];
 
 interface Node {
   at: Pt;
@@ -26,66 +61,70 @@ interface Node {
   labelDy: number;
 }
 const NODES: Node[] = [
-  { at: { x: 200, y: 770 }, label: "Looking for\nhair salon", variant: "search", in: 57, labelAnchor: "start", labelDx: 36, labelDy: 0 },
-  { at: { x: 505, y: 815 }, label: "Searching\nfor dentist", variant: "search", in: 64, labelAnchor: "start", labelDx: 36, labelDy: 0 },
-  { at: { x: 235, y: 1120 }, label: "Nearby &\nready to go", variant: "person", in: 71, labelAnchor: "middle", labelDx: 0, labelDy: 44 },
-  { at: { x: 255, y: 1360 }, label: "Looking for\ncafé", variant: "search", in: 78, labelAnchor: "middle", labelDx: 0, labelDy: 44 },
-  { at: { x: 780, y: 1330 }, label: "Searching\nfor pizza", variant: "search", in: 85, labelAnchor: "end", labelDx: -36, labelDy: 0 },
-];
-
-const MERGE: Pt = { x: 470, y: 980 };
-
-// One continuous winding cyan route down the city that passes close to YOUR
-// BUSINESS (~x600,y912) but never reaches its entrance.
-const MAIN: Pt[] = [
-  { x: 200, y: 800 },
-  { x: 320, y: 905 },
-  { x: 300, y: 1035 },
-  { x: 365, y: 1150 },
-  { x: 335, y: 1285 },
-  { x: 300, y: 1410 },
+  { at: N_HAIR, label: "Looking for\nhair salon", variant: "search", in: 57, labelAnchor: "start", labelDx: 36, labelDy: 0 },
+  { at: N_DENT, label: "Searching\nfor dentist", variant: "search", in: 64, labelAnchor: "start", labelDx: 36, labelDy: 0 },
+  { at: N_NEAR, label: "Nearby &\nready to go", variant: "person", in: 71, labelAnchor: "middle", labelDx: 0, labelDy: 44 },
+  { at: N_CAFE, label: "Looking for\ncafé", variant: "search", in: 78, labelAnchor: "middle", labelDx: 0, labelDy: 44 },
+  { at: N_PIZZA, label: "Searching\nfor pizza", variant: "search", in: 85, labelAnchor: "end", labelDx: -36, labelDy: 0 },
 ];
 
 export const Scene01Recognition: React.FC = () => {
   const frame = useCurrentFrame();
   if (frame < S.start || frame > S.end + 1) return null;
 
-  const mainProgress = clamp01(mapRange(frame, 0, 95, 0.08, 1));
-  const pulseA = pulsePosition(frame, 0, 70);
+  // Network draws progressively; branches follow their node activation.
+  const spineDraw = clamp01(mapRange(frame, 0, 70, 0.1, 1, "ROUTE"));
+  const dentDraw = clamp01(mapRange(frame, 62, 88, 0, 1, "ROUTE"));
+  const nearDraw = clamp01(mapRange(frame, 69, 84, 0, 1, "ROUTE"));
+  const cafeDraw = clamp01(mapRange(frame, 78, 96, 0, 1, "ROUTE"));
+  const pizzaDraw = clamp01(mapRange(frame, 80, 100, 0, 1, "ROUTE"));
 
-  // Transition 106–119: nodes converge to MERGE and merge into one node.
+  // Transition 106–119: network retracts, nodes converge and merge.
   const converge = revealProgress(frame, 106, 116);
   const merged = frame >= 116;
   const mergeScale = mapRange(frame, 116, 119, 1.0, 1.22);
-  const tail = clamp01(mainProgress * (1 - converge));
+  const netOpacity = 1 - converge;
+
+  // Continuous travelling pulses (fluid motion, not a static hold).
+  const p1 = pulsePosition(frame, 0, 64);
+  const p2 = pulsePosition(frame, 12, 78);
+  const pDent = pulsePosition(frame, 62, 52);
 
   return (
     <>
-      {/* Routes + nodes */}
       <ParallaxLayer depth="foregroundUI" zIndex={LAYER.routes}>
         <svg width={1080} height={1920} style={{ position: "absolute", inset: 0 }}>
-          {!merged && (
-            <>
-              <SignalRoute points={MAIN} progress={tail} core={3} glow={10} />
-              {tail > 0.2 && <RouteArrow points={MAIN} t={Math.min(tail, 0.85)} />}
-              {tail > 0.05 && <MovingPulse points={MAIN} t={pulseA} maxProgress={tail} size={6} />}
-            </>
+          {!merged ? (
+            <g opacity={netOpacity}>
+              <SignalRoute points={DENT_BR} progress={dentDraw} core={3} glow={9} />
+              <SignalRoute points={NEAR_BR} progress={nearDraw} core={2.6} glow={7} />
+              <SignalRoute points={SPINE} progress={spineDraw} core={3.2} glow={10} />
+              <SignalRoute points={CAFE_BR} progress={cafeDraw} core={3} glow={9} />
+              <SignalRoute points={PIZZA_BR} progress={pizzaDraw} core={3.2} glow={10} />
+
+              {/* directional arrows along the map */}
+              {spineDraw > 0.4 && <RouteArrow points={SPINE} t={0.42} />}
+              {dentDraw > 0.5 && <RouteArrow points={DENT_BR} t={0.55} />}
+              {cafeDraw > 0.6 && <RouteArrow points={CAFE_BR} t={0.6} />}
+              {pizzaDraw > 0.4 && <RouteArrow points={PIZZA_BR} t={0.5} />}
+              {pizzaDraw > 0.8 && <RouteArrow points={PIZZA_BR} t={0.85} />}
+
+              {/* continuous pulses */}
+              <MovingPulse points={SPINE} t={p1} maxProgress={spineDraw} size={6} />
+              <MovingPulse points={PIZZA_BR} t={p2} maxProgress={pizzaDraw} size={6} />
+              {dentDraw > 0.05 && <MovingPulse points={DENT_BR} t={pDent} maxProgress={dentDraw} size={5} />}
+            </g>
+          ) : (
+            <SearchNode at={MERGE} scale={mergeScale} r={30} opacity={1} pulse={pulsePosition(frame, 116, 30)} />
           )}
 
-          {merged ? (
-            <SearchNode at={MERGE} scale={mergeScale} r={30} opacity={1} pulse={pulsePosition(frame, 116, 30)} />
-          ) : (
+          {/* nodes */}
+          {!merged &&
             NODES.map((n, i) => {
               const p = revealProgress(frame, n.in, n.in + 11);
               const mid = n.in + 5.5;
               const scale =
-                frame <= n.in
-                  ? 0.94
-                  : frame >= n.in + 11
-                    ? 1.0
-                    : frame < mid
-                      ? mapRange(frame, n.in, mid, 0.94, 1.05)
-                      : mapRange(frame, mid, n.in + 11, 1.05, 1.0);
+                frame <= n.in ? 0.94 : frame >= n.in + 11 ? 1.0 : frame < mid ? mapRange(frame, n.in, mid, 0.94, 1.05) : mapRange(frame, mid, n.in + 11, 1.05, 1.0);
               const pos: Pt = {
                 x: n.at.x + (MERGE.x - n.at.x) * converge,
                 y: n.at.y + (MERGE.y - n.at.y) * converge,
@@ -106,8 +145,7 @@ export const Scene01Recognition: React.FC = () => {
                   labelDy={n.labelDy}
                 />
               );
-            })
-          )}
+            })}
         </svg>
       </ParallaxLayer>
 

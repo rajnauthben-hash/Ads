@@ -3,7 +3,7 @@ import { useCurrentFrame } from "remotion";
 import { ParallaxLayer } from "../components/CameraRig";
 import { SupportingCopy } from "../components/SupportingCopy";
 import { SearchNode } from "../components/SearchNode";
-import { SignalRoute, MovingPulse } from "../components/SignalRoute";
+import { SignalRoute, MovingPulse, RouteArrow } from "../components/SignalRoute";
 import { DestinationMarker } from "../components/DestinationMarker";
 import { BrandLockup } from "../components/BrandLockup";
 import { PhraseReveal } from "../components/PhraseReveal";
@@ -19,30 +19,42 @@ import { Pt } from "../utils/routeGeometry";
  */
 const S = SCENES.s6;
 
-const ENTRANCE: Pt = { x: 655, y: 1060 };
-const JUNCTION: Pt = { x: 610, y: 1180 };
+const ENTRANCE: Pt = { x: 662, y: 1070 };
+const JUNCTION: Pt = { x: 585, y: 1258 };
+
+// The main winding customer route down the centre-left, tracing 7767, then a
+// bright turn up into the storefront entrance. Nodes 1 & 3 are waypoints on it.
 const MAIN: Pt[] = [
-  { x: 470, y: 1350 },
-  { x: 520, y: 1270 },
+  { x: 92, y: 702 },
+  { x: 172, y: 700 },
+  { x: 268, y: 766 },
+  { x: 342, y: 806 },
+  { x: 356, y: 884 },
+  { x: 314, y: 962 },
+  { x: 286, y: 1052 },
+  { x: 298, y: 1140 },
+  { x: 352, y: 1214 },
+  { x: 462, y: 1256 },
   JUNCTION,
-  { x: 640, y: 1110 },
+  { x: 648, y: 1176 },
   ENTRANCE,
 ];
 
 interface Node {
   at: Pt;
-  join: Pt;
+  branch: Pt[]; // short branch that merges toward the main route / junction
   in: number;
   route: number;
   labelAnchor: "start" | "end";
   labelDx: number;
 }
-// Nodes sit around/above the storefront, clear of the lower-left CTA + brand.
+// Four "Shortlisted by customer" nodes. 1 & 3 sit on the main route; 2 & 4 feed
+// short branches that merge into it — matching the reference line-map.
 const NODES: Node[] = [
-  { at: { x: 165, y: 860 }, join: { x: 520, y: 1250 }, in: 686, route: 690, labelAnchor: "start", labelDx: 34 },
-  { at: { x: 205, y: 1050 }, join: { x: 540, y: 1230 }, in: 695, route: 699, labelAnchor: "start", labelDx: 34 },
-  { at: { x: 775, y: 930 }, join: { x: 690, y: 1120 }, in: 704, route: 708, labelAnchor: "end", labelDx: -34 },
-  { at: { x: 775, y: 1120 }, join: { x: 655, y: 1150 }, in: 713, route: 717, labelAnchor: "end", labelDx: -34 },
+  { at: { x: 172, y: 700 }, branch: [], in: 686, route: 690, labelAnchor: "start", labelDx: 34 },
+  { at: { x: 362, y: 668 }, branch: [{ x: 360, y: 692 }, { x: 352, y: 786 }, { x: 352, y: 872 }], in: 695, route: 699, labelAnchor: "start", labelDx: 34 },
+  { at: { x: 262, y: 1052 }, branch: [{ x: 288, y: 1052 }], in: 704, route: 708, labelAnchor: "start", labelDx: 34 },
+  { at: { x: 790, y: 1288 }, branch: [{ x: 726, y: 1276 }, { x: 640, y: 1262 }, JUNCTION], in: 713, route: 717, labelAnchor: "end", labelDx: -34 },
 ];
 
 export const Scene06Resolution: React.FC = () => {
@@ -72,16 +84,30 @@ export const Scene06Resolution: React.FC = () => {
       <ParallaxLayer depth="foregroundUI" zIndex={LAYER.routes}>
         <svg width={1080} height={1920} style={{ position: "absolute", inset: 0 }}>
           <SignalRoute points={MAIN} progress={mainProgress} core={3.6} glow={12} />
+          {/* directional arrows down the main route + up into the entrance */}
+          {mainProgress > 0.25 && <RouteArrow points={MAIN} t={0.22} />}
+          {mainProgress > 0.55 && <RouteArrow points={MAIN} t={0.5} />}
+          {mainProgress > 0.86 && <RouteArrow points={MAIN} t={0.82} />}
+          {mainProgress >= 0.99 && <RouteArrow points={MAIN} t={0.985} />}
+          {/* continuous travelling pulse for fluid motion */}
+          <MovingPulse points={MAIN} t={pulsePosition(frame, 650, 70)} maxProgress={mainProgress} size={6} />
           {mainProgress >= 0.99 && <MovingPulse points={MAIN} t={pulsePosition(frame, 740, 40)} size={7} />}
 
           {NODES.map((n, i) => {
+            if (n.branch.length === 0) return null;
+            const pts = [n.at, ...n.branch];
             const draw = revealProgress(frame, n.route, n.route + 16);
-            const pts = [n.at, { x: (n.at.x + n.join.x) / 2, y: (n.at.y + n.join.y) / 2 }, n.join];
-            return <SignalRoute key={i} points={pts} progress={draw} core={2.6} glow={8} />;
+            return (
+              <g key={i}>
+                <SignalRoute points={pts} progress={draw} core={2.8} glow={8} />
+                {draw > 0.6 && <RouteArrow points={pts} t={0.6} />}
+                <MovingPulse points={pts} t={pulsePosition(frame, n.route, 40)} maxProgress={draw} size={5} />
+              </g>
+            );
           })}
 
           {showDoorPulse && (
-            <MovingPulse points={[{ x: 620, y: 1120 }, ENTRANCE, { x: 680, y: 1030 }]} t={doorPulse} size={7} />
+            <MovingPulse points={[{ x: 600, y: 1200 }, ENTRANCE, { x: 690, y: 1020 }]} t={doorPulse} size={7} />
           )}
         </svg>
       </ParallaxLayer>
