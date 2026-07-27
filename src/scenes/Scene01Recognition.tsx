@@ -22,7 +22,7 @@ import { Pt } from "../utils/routeGeometry";
 const S = SCENES.s1;
 
 const N_HAIR: Pt = { x: 175, y: 782 };
-const N_DENT: Pt = { x: 590, y: 812 };
+const N_DENT: Pt = { x: 495, y: 800 };
 const N_NEAR: Pt = { x: 235, y: 1150 };
 const N_CAFE: Pt = { x: 255, y: 1385 };
 const N_PIZZA: Pt = { x: 792, y: 1345 };
@@ -39,10 +39,10 @@ const SPINE: Pt[] = [
   SPLIT,
 ];
 const DENT_BR: Pt[] = [
-  { x: 588, y: 836 },
-  { x: 466, y: 884 },
-  { x: 360, y: 940 },
-  { x: 268, y: 994 },
+  { x: 493, y: 824 },
+  { x: 420, y: 878 },
+  { x: 344, y: 936 },
+  { x: 268, y: 992 },
 ];
 const NEAR_BR: Pt[] = [
   { x: 262, y: 1150 },

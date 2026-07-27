@@ -40,7 +40,7 @@ export const BusinessStorefront: React.FC<BusinessStorefrontProps> = ({
 }) => {
   const A = 2.5;
   const B_ = 1.9;
-  const H = 1.78;
+  const H = 2.02;
   const o = origin;
   const uid = React.useMemo(() => `sf${_uid++}`, []);
 

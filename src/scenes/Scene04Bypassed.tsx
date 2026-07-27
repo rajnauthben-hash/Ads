@@ -5,7 +5,7 @@ import { EditorialHeadline } from "../components/EditorialHeadline";
 import { SupportingCopy } from "../components/SupportingCopy";
 import { ActionIcon } from "../components/ActionIcon";
 import { CompetitorStore } from "../components/CompetitorStore";
-import { SignalRoute, MovingPulse } from "../components/SignalRoute";
+import { SignalRoute, MovingPulse, RouteArrow } from "../components/SignalRoute";
 import { BrandLockup } from "../components/BrandLockup";
 import { FONT_UI } from "../styles/fonts";
 import { clamp01, mapRange, pulsePosition, revealProgress, SCENES } from "../timeline/framePlan";
@@ -18,32 +18,40 @@ import { Pt } from "../utils/routeGeometry";
  */
 const S = SCENES.s4;
 
-// Routes rise up and over toward the competitor's left side, staying above the
-// YOUR BUSINESS roofline so they never cross the storefront volume.
+// The three action routes funnel from the left icons into a tight bundle and
+// reach the competitor (upper-right, lit). YOUR BUSINESS sits lower-right, dim.
+const CALL_CY = 1000;
+const DIR_CY = 1170;
+const VISIT_CY = 1290;
+const BUNDLE: Pt = { x: 585, y: 1035 };
+const COMP_ENTRANCE: Pt = { x: 690, y: 1010 };
 const CALL: Pt[] = [
-  { x: 150, y: 968 },
-  { x: 320, y: 930 },
-  { x: 450, y: 905 },
-  { x: 560, y: 900 },
+  { x: 150, y: CALL_CY },
+  { x: 340, y: 992 },
+  { x: 500, y: 1018 },
+  BUNDLE,
 ];
 const DIRECTIONS: Pt[] = [
-  { x: 150, y: 1086 },
-  { x: 300, y: 1000 },
-  { x: 420, y: 935 },
-  { x: 545, y: 918 },
+  { x: 150, y: DIR_CY },
+  { x: 350, y: 1120 },
+  { x: 500, y: 1050 },
+  BUNDLE,
 ];
 const VISIT: Pt[] = [
-  { x: 150, y: 1202 },
-  { x: 300, y: 1090 },
-  { x: 400, y: 985 },
-  { x: 530, y: 935 },
+  { x: 150, y: VISIT_CY },
+  { x: 350, y: 1300 },
+  { x: 490, y: 1110 },
+  BUNDLE,
 ];
+// bundle -> competitor entrance
+const BUNDLE_ROUTE: Pt[] = [BUNDLE, COMP_ENTRANCE];
+// failed grey route down toward YOUR BUSINESS (lower-right), stops at the X
 const FAILED: Pt[] = [
-  { x: 470, y: 1120 },
-  { x: 500, y: 1240 },
-  { x: 560, y: 1300 },
+  { x: 585, y: 1080 },
+  { x: 610, y: 1180 },
+  { x: 645, y: 1235 },
 ];
-const FAIL_MARK: Pt = { x: 560, y: 1300 };
+const FAIL_MARK: Pt = { x: 645, y: 1235 };
 
 export const Scene04Bypassed: React.FC = () => {
   const frame = useCurrentFrame();
@@ -75,11 +83,14 @@ export const Scene04Bypassed: React.FC = () => {
       {/* Routes + competitor + failure */}
       <ParallaxLayer depth="foregroundUI" zIndex={LAYER.routes}>
         <svg width={1080} height={1920} style={{ position: "absolute", inset: 0 }}>
-          <CompetitorStore origin={{ x: 590, y: 800 }} light={light} glow={compReveal} />
+          <CompetitorStore origin={{ x: 600, y: 830 }} light={Math.max(light, 0.86)} glow={Math.max(compReveal, 0.15)} scale={1.12} />
 
           <SignalRoute points={CALL} progress={callDraw} core={3} glow={9} />
           <SignalRoute points={DIRECTIONS} progress={dirDraw} core={3} glow={9} />
           <SignalRoute points={VISIT} progress={visitDraw} core={3} glow={9} />
+          {/* tight bundle into the competitor entrance */}
+          <SignalRoute points={BUNDLE_ROUTE} progress={Math.min(callDraw, dirDraw, visitDraw)} core={4} glow={12} />
+          {Math.min(callDraw, dirDraw, visitDraw) > 0.5 && <RouteArrow points={BUNDLE_ROUTE} t={0.7} />}
 
           {/* competitor slow pulse during hold */}
           {frame >= 456 && frame < 491 && <MovingPulse points={CALL} t={compPulse} size={6} maxProgress={callDraw} />}
@@ -108,16 +119,16 @@ export const Scene04Bypassed: React.FC = () => {
 
       {/* Action icons + competitor card + takeaway */}
       <ParallaxLayer depth="foregroundUI" zIndex={LAYER.ui} shareScale={false}>
-        <ActionIcon cx={150} cy={972} type="call" label="CALL" draw={iconDraw(revealProgress(frame, 405, 418))} />
-        <ActionIcon cx={150} cy={1088} type="directions" label="DIRECTIONS" draw={iconDraw(revealProgress(frame, 414, 428))} />
-        <ActionIcon cx={150} cy={1204} type="visit" label="VISIT" draw={iconDraw(revealProgress(frame, 423, 438))} />
+        <ActionIcon cx={150} cy={CALL_CY} type="call" label="CALL" draw={iconDraw(revealProgress(frame, 405, 418))} />
+        <ActionIcon cx={150} cy={DIR_CY} type="directions" label="DIRECTIONS" draw={iconDraw(revealProgress(frame, 414, 428))} />
+        <ActionIcon cx={150} cy={VISIT_CY} type="visit" label="VISIT" draw={iconDraw(revealProgress(frame, 423, 438))} />
 
         {/* Competitor card */}
         <div
           style={{
             position: "absolute",
-            left: 540,
-            top: 690,
+            left: 548,
+            top: 700,
             width: 280,
             opacity: compReveal * (1 - revealProgress(frame, 491, 504)),
             transform: `translateY(${(1 - compReveal) * 12}px)`,
