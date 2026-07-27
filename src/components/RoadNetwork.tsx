@@ -19,40 +19,35 @@ export const RoadNetwork: React.FC<{
   roads: RoadSeg[];
   color?: string;
   opacity?: number;
-}> = ({ origin, roads, color = "#0a0d11", opacity = 1 }) => {
+}> = ({ origin, roads, color = "#111823", opacity = 1 }) => {
   return (
     <g opacity={opacity}>
       {roads.map((r, i) => {
         const w = (r.width ?? 0.62) / 2;
+        const sw = w + 0.08;
         let corners: Pt[];
+        let edge: Pt[];
         let dashA: Pt, dashB: Pt;
         if (r.along === "x") {
-          corners = [
-            iso(origin, r.from, r.fixed - w),
-            iso(origin, r.to, r.fixed - w),
-            iso(origin, r.to, r.fixed + w),
-            iso(origin, r.from, r.fixed + w),
-          ];
+          edge = [iso(origin, r.from, r.fixed - sw), iso(origin, r.to, r.fixed - sw), iso(origin, r.to, r.fixed + sw), iso(origin, r.from, r.fixed + sw)];
+          corners = [iso(origin, r.from, r.fixed - w), iso(origin, r.to, r.fixed - w), iso(origin, r.to, r.fixed + w), iso(origin, r.from, r.fixed + w)];
           dashA = iso(origin, r.from, r.fixed);
           dashB = iso(origin, r.to, r.fixed);
         } else {
-          corners = [
-            iso(origin, r.fixed - w, r.from),
-            iso(origin, r.fixed - w, r.to),
-            iso(origin, r.fixed + w, r.to),
-            iso(origin, r.fixed + w, r.from),
-          ];
+          edge = [iso(origin, r.fixed - sw, r.from), iso(origin, r.fixed - sw, r.to), iso(origin, r.fixed + sw, r.to), iso(origin, r.fixed + sw, r.from)];
+          corners = [iso(origin, r.fixed - w, r.from), iso(origin, r.fixed - w, r.to), iso(origin, r.fixed + w, r.to), iso(origin, r.fixed + w, r.from)];
           dashA = iso(origin, r.fixed, r.from);
           dashB = iso(origin, r.fixed, r.to);
         }
         return (
           <g key={i}>
-            <path d={polyPath(corners) + " Z"} fill={color} stroke="rgba(255,255,255,0.03)" strokeWidth={1} />
+            <path d={polyPath(edge) + " Z"} fill="#1a212b" opacity={0.7} />
+            <path d={polyPath(corners) + " Z"} fill={color} stroke="rgba(160,175,190,0.06)" strokeWidth={1} />
             <path
               d={polyPath([dashA, dashB])}
-              stroke="rgba(139,148,158,0.22)"
-              strokeWidth={1.4}
-              strokeDasharray="10 14"
+              stroke="rgba(200,210,220,0.3)"
+              strokeWidth={2}
+              strokeDasharray="12 16"
               strokeLinecap="round"
             />
           </g>
