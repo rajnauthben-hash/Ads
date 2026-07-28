@@ -129,7 +129,36 @@ const SCENES: SceneCfg[] = [
   },
 ];
 
-const DISSOLVE = 12;
+const MOUNT_LEAD = 9; // frames a scene mounts before its start (for the flash)
+
+/**
+ * A near-opaque cyan "signal flash" that peaks right at a scene start, fully
+ * masking a fast image swap so transitions read as the customer-signal
+ * redrawing the scene rather than a photo cross-fade.
+ */
+const SignalFlash: React.FC<{ frame: number; start: number }> = ({ frame, start }) => {
+  if (start === 0) return null;
+  const op = interpolate(frame, [start - 7, start - 1, start + 6], [0, 0.94, 0], {
+    easing: Easing.inOut(Easing.ease),
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  if (op <= 0.001) return null;
+  return (
+    <AbsoluteFill style={{ opacity: op, pointerEvents: "none" }}>
+      <svg width={1080} height={1920} style={{ position: "absolute", inset: 0 }}>
+        <defs>
+          <radialGradient id="flash" cx="50%" cy="48%" r="85%">
+            <stop offset="0%" stopColor="rgba(70,220,245,1)" />
+            <stop offset="65%" stopColor="rgba(24,180,215,0.9)" />
+            <stop offset="100%" stopColor="rgba(10,70,95,0.6)" />
+          </radialGradient>
+        </defs>
+        <rect x={0} y={0} width={1080} height={1920} fill="url(#flash)" />
+      </svg>
+    </AbsoluteFill>
+  );
+};
 
 const NodePing: React.FC<{ at: Pt; frame: number; start: number }> = ({ at, frame, start }) => {
   const local = frame - start;
@@ -145,10 +174,10 @@ const NodePing: React.FC<{ at: Pt; frame: number; start: number }> = ({ at, fram
 
 const Scene: React.FC<{ cfg: SceneCfg }> = ({ cfg }) => {
   const frame = useCurrentFrame();
-  if (frame < cfg.start - DISSOLVE || frame > cfg.end + 1) return null;
+  if (frame < cfg.start - MOUNT_LEAD || frame > cfg.end + 1) return null;
 
-  // cross-dissolve in; stay opaque after
-  const opacity = interpolate(frame, [cfg.start - DISSOLVE, cfg.start], [0, 1], {
+  // fast swap (2 frames) fully hidden under the signal flash; stay opaque after
+  const opacity = cfg.start === 0 ? 1 : interpolate(frame, [cfg.start - 2, cfg.start], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -167,19 +196,22 @@ const Scene: React.FC<{ cfg: SceneCfg }> = ({ cfg }) => {
   const pulseT2 = ((frame - cfg.start + 30) % 60) / 60;
 
   return (
-    <AbsoluteFill style={{ opacity }}>
-      <ImagePlate src={cfg.img} scale={zoom} y={py} />
-      <svg width={1080} height={1920} style={{ position: "absolute", inset: 0 }}>
-        {cfg.nodes.map((n, i) => (
-          <NodePing key={i} at={n} frame={frame} start={cfg.start} />
-        ))}
-        {cfg.routes.map((r, i) => (
-          <g key={i}>
-            <MovingPulse points={r} t={pulseT} size={7} />
-            {dur > 40 && <MovingPulse points={r} t={pulseT2} size={6} />}
-          </g>
-        ))}
-      </svg>
+    <AbsoluteFill>
+      <AbsoluteFill style={{ opacity }}>
+        <ImagePlate src={cfg.img} scale={zoom} y={py} />
+        <svg width={1080} height={1920} style={{ position: "absolute", inset: 0 }}>
+          {cfg.nodes.map((n, i) => (
+            <NodePing key={i} at={n} frame={frame} start={cfg.start} />
+          ))}
+          {cfg.routes.map((r, i) => (
+            <g key={i}>
+              <MovingPulse points={r} t={pulseT} size={7} />
+              {dur > 40 && <MovingPulse points={r} t={pulseT2} size={6} />}
+            </g>
+          ))}
+        </svg>
+      </AbsoluteFill>
+      <SignalFlash frame={frame} start={cfg.start} />
     </AbsoluteFill>
   );
 };
