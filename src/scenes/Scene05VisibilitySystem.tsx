@@ -7,7 +7,7 @@ import { FactorCard, FactorRow } from "../components/FactorCard";
 import { SignalRoute, MovingPulse } from "../components/SignalRoute";
 import { BrandLockup } from "../components/BrandLockup";
 import { FONT_UI } from "../styles/fonts";
-import { clamp01, pulsePosition, revealProgress, routeDrawProgress, SCENES } from "../timeline/framePlan";
+import { clamp01, mapRange, pulsePosition, revealProgress, routeDrawProgress, SCENES } from "../timeline/framePlan";
 import { COLORS, LAYER } from "../styles/tokens";
 import { Pt } from "../utils/routeGeometry";
 
@@ -146,9 +146,13 @@ export const Scene05VisibilitySystem: React.FC = () => {
 
               <FactorCard {...pos(CARDS[3])} width={CARD_W} n={4} titleTop="CREDIBLE" titleBottom="REVIEWS" reveal={rev(CARDS[3])}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ fontFamily: FONT_UI, fontSize: 24, color: COLORS.white }}>4.8</span>
+                  <span style={{ fontFamily: FONT_UI, fontSize: 24, color: COLORS.white }}>
+                    {mapRange(frame, 566, 588, 0, 4.8).toFixed(1)}
+                  </span>
                   <span style={{ color: COLORS.gold, fontSize: 18 }}>★★★★★</span>
-                  <span style={{ fontFamily: FONT_UI, fontSize: 16, color: COLORS.grey }}>(256)</span>
+                  <span style={{ fontFamily: FONT_UI, fontSize: 16, color: COLORS.grey }}>
+                    ({Math.round(mapRange(frame, 568, 592, 0, 256))})
+                  </span>
                 </div>
                 <div style={{ fontFamily: FONT_UI, fontSize: 17, color: COLORS.grey, marginTop: 6, lineHeight: 1.3 }}>
                   “Amazing service and friendly staff. Highly recommended!”

@@ -138,6 +138,26 @@ export const Scene03PhysicalDigital: React.FC = () => {
             reveal={clamp01(revealProgress(frame, d.in, d.in + 9) * (1 - exitFade))}
           />
         ))}
+        {/* live "scan" sweep down the diagnostic panel */}
+        {(() => {
+          const scan = revealProgress(frame, 300, 360);
+          if (scan <= 0 || scan >= 1) return null;
+          const sy = 720 + scan * 740;
+          return (
+            <div
+              style={{
+                position: "absolute",
+                left: 512,
+                top: sy,
+                width: 316,
+                height: 3,
+                background: "linear-gradient(90deg, rgba(18,211,238,0) 0%, rgba(18,211,238,0.9) 50%, rgba(18,211,238,0) 100%)",
+                boxShadow: "0 0 16px rgba(18,211,238,0.7)",
+                opacity: 0.85,
+              }}
+            />
+          );
+        })()}
       </ParallaxLayer>
 
       {/* Labels */}

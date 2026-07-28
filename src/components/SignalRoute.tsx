@@ -68,10 +68,24 @@ export const MovingPulse: React.FC<{
 }> = ({ points, t, color = COLORS.cyan, size = 6, maxProgress = 1, opacity = 1 }) => {
   if (points.length < 2 || t > maxProgress) return null;
   const p = pointAtLength(points, t);
+  // comet trail — a few trailing motes with falloff behind the head (motion-blur feel)
+  const trail = 6;
+  const step = 0.018;
+  const dots = [];
+  for (let i = trail; i >= 1; i--) {
+    const tt = t - i * step;
+    if (tt < 0 || tt > maxProgress) continue;
+    const tp = pointAtLength(points, tt);
+    const f = 1 - i / (trail + 1);
+    dots.push(
+      <circle key={i} cx={tp.x} cy={tp.y} r={size * (0.28 + f * 0.6)} fill={color} opacity={(0.05 + f * 0.2) * opacity} />,
+    );
+  }
   return (
     <g opacity={opacity}>
-      <circle cx={p.x} cy={p.y} r={size * 2} fill={color} opacity={0.22} style={{ filter: "blur(4px)" }} />
-      <circle cx={p.x} cy={p.y} r={size} fill={COLORS.white} opacity={0.95} />
+      {dots}
+      <circle cx={p.x} cy={p.y} r={size * 2.1} fill={color} opacity={0.24} style={{ filter: "blur(4px)" }} />
+      <circle cx={p.x} cy={p.y} r={size} fill={COLORS.white} opacity={0.96} />
       <circle cx={p.x} cy={p.y} r={size * 0.55} fill={color} />
     </g>
   );
