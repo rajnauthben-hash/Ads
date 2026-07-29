@@ -13,6 +13,12 @@ Config.setVideoImageFormat("jpeg");
 Config.setOverwriteOutput(true);
 Config.overrideWebpackConfig(enableTailwind);
 
+// The sandbox routes outbound HTTPS through a proxy whose CA the bundled
+// Chromium does not trust. Google Fonts (loaded via @remotion/google-fonts)
+// would otherwise fail with ERR_CERT_AUTHORITY_INVALID, so allow the render
+// browser to proceed past the proxy certificate.
+Config.setChromiumIgnoreCertificateErrors(true);
+
 // Local font files (public/fonts/) are loaded once per browser tab via
 // @remotion/fonts. Under high render concurrency this can race past the
 // default delayRender() timeout, so concurrency is capped and the timeout

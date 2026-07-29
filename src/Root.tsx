@@ -5,10 +5,20 @@ import { OmniFlowPremiumAd } from "./omniflow/OmniFlowPremiumAd";
 import { HeroDesktop, TOTAL_FRAMES } from "./hero/HeroDesktop";
 import { TikTokPreview, PREVIEW_FRAMES } from "./tiktok/TikTokPreview";
 import { TikTokAd } from "./tiktok/TikTokAd";
+import { OmniFlowCloggedArteriesAd } from "./omniflow-ad/OmniFlowCloggedArteriesAd";
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition
+        id="OmniFlowCloggedArteries"
+        component={OmniFlowCloggedArteriesAd}
+        durationInFrames={900}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{ safeZones: false }}
+      />
       <Composition
         id="MyComp"
         component={MyComposition}
