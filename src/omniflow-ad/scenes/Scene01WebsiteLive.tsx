@@ -12,6 +12,7 @@ import { SearchInterface } from "../components/SearchInterface";
 import { MasterMapWorld } from "../components/MasterMapWorld";
 import { MapLabel } from "../components/MapLabel";
 import { CrownHardwareCard } from "../components/CrownHardwareCard";
+import { CrownHardwareStorefront } from "../components/CrownHardwareStorefront";
 import { SearchPulseRoute } from "../components/SearchPulseRoute";
 import { DiagnosticMetric } from "../components/ListItems";
 import {
@@ -218,7 +219,9 @@ export const Scene01WebsiteLive: React.FC = () => {
               const p = prog(f, s, s + 12, premiumEase);
               return (
                 <div key={i} style={{ opacity: p, transform: `translateY(${(1 - p) * 20}px)`, display: "flex", alignItems: "center", gap: 14, height: 78, marginBottom: 10, padding: 10, borderRadius: 12, background: COLORS.panelInset, border: `1px solid ${COLORS.darkBorder}` }}>
-                  <div style={{ width: 58, height: 58, borderRadius: 8, background: "linear-gradient(#241a10,#0d0a07)", flexShrink: 0, boxShadow: "inset 0 0 8px rgba(230,160,70,0.3)" }} />
+                  <div style={{ flexShrink: 0 }}>
+                    <CrownHardwareStorefront width={66} height={58} radius={8} signText={c.name.toUpperCase()} />
+                  </div>
                   <div style={{ flex: 1 }}>
                     <div style={{ fontFamily: FONTS.body, fontWeight: 600, fontSize: 25, color: COLORS.headline }}>{c.name}</div>
                     <div style={{ fontFamily: FONTS.ui, fontSize: 20, color: COLORS.bodyGray }}>{c.meta}</div>

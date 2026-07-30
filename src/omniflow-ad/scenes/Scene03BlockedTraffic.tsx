@@ -64,7 +64,7 @@ export const Scene03BlockedTraffic: React.FC = () => {
   const impact = interpolate(f, [88, 96, 103], [0, 1, 0.84], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const shake = f >= 88 && f <= 92 ? Math.sin(f * 8) * 2 : 0;
   const particleP = prog(f, 88, 103);
-  const barrierOp = ease(f, 0, 13, 0.2, 0.72, premiumEase);
+  const barrierOp = ease(f, 0, 13, 0.2, 0.85, premiumEase);
 
   const compCard = (s: number) => prog(f, s, s + 14, premiumEase);
   const rightP = prog(f, 78, 100, premiumEase);
@@ -195,11 +195,11 @@ export const Scene03BlockedTraffic: React.FC = () => {
 
       {/* bottom takeaway */}
       <PremiumPanel x={30} y={1664} width={1020} height={166} border="dark" opacity={takeP} drawProgress={takeP}>
-        <div style={{ display: "flex", alignItems: "center", height: "100%", gap: 26, paddingLeft: 10 }}>
-          <div style={{ width: 74, height: 74, borderRadius: "50%", border: `1.5px solid ${COLORS.goldBorder}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            <WarningIcon size={40} color={COLORS.amber} progress={prog(f, 112, 119)} />
+        <div style={{ display: "flex", alignItems: "center", height: "100%", gap: 22, padding: "0 40px" }}>
+          <div style={{ width: 62, height: 62, borderRadius: "50%", border: `1.5px solid ${COLORS.goldBorder}`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <WarningIcon size={34} color={COLORS.amber} progress={prog(f, 112, 119)} />
           </div>
-          <div style={{ fontFamily: FONTS.headline, fontWeight: 700, fontSize: 35, whiteSpace: "nowrap" }}>
+          <div style={{ fontFamily: FONTS.headline, fontWeight: 700, fontSize: 32, whiteSpace: "nowrap", letterSpacing: "-0.01em" }}>
             <span style={{ color: COLORS.headline }}>The business exists. </span>
             <span style={{ color: COLORS.gold }}>The pathway does not work properly.</span>
           </div>
