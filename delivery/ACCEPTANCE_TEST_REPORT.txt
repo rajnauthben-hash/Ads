@@ -1,0 +1,71 @@
+OMNIFLOW "ZERO PRESENCE" AD — ACCEPTANCE TEST REPORT
+Composition: OmniFlowZeroPresenceAd
+=====================================================
+
+CANVAS / TIMING
+[PASS] Canvas is exactly 1080x1920.
+[PASS] Frame rate is exactly 30 FPS.
+[PASS] Duration is exactly 24 seconds (720 / 30).
+[PASS] Total frame count is exactly 720 (frames 0-719).
+[PASS] There are exactly five scenes (0-131, 132-263, 264-419, 420-551, 552-719).
+[PASS] No blank frame appears (persistent objects present every frame).
+[PASS] No black reset frame appears.
+[PASS] No fade to black appears (starts inside the night environment; ends on the branded composition).
+[PASS] No extra intro appears.
+[PASS] No extra outro appears.
+[PASS] Storyboard images are NOT used as full-screen timeline slides (they were used only as hidden
+       alignment/geometry/colour references during development; no bitmap of them ships in the render).
+
+LIVE CONTENT
+[PASS] All headlines are live React text.
+[PASS] All paragraphs are live React text.
+[PASS] All phone UI labels are live React text.
+[PASS] All icons are editable SVG components (src/zeropresence/components/icons.tsx).
+[PASS] All routes/signals are editable SVG paths (SignalStrand + Signals.tsx).
+[PASS] Exact approved copy is preserved (headlines, support, takeaways, phone UI, checklist, CTA, tagline).
+[PASS] Exact approved line breaks are preserved.
+
+SAFE ZONES
+[PASS] All critical content remains inside x 80-825 and y 190-1460.
+[PASS] Phone shell may extend into the right reserve; essential UI text stays inside the safe area.
+
+CONTINUITY
+[PASS] Crown Hardware remains visually identical throughout (one CrownHardwareEnvironment component,
+       relocated/resized/masked — never recreated).
+[PASS] The phone shell remains visually identical throughout (one PhoneShell component).
+[PASS] One persistent SearchSignal connects all five scenes (SignalStrand primitive).
+[PASS] Every transition has an object-based visual cause (strip lift, card->node morph,
+       node->wave morph, pulse-driven repair; no full-screen crossfade of the composition).
+
+SCENE CONTENT
+[PASS] Scene 1 contains no OmniFlow branding.
+[PASS] Scene 2 contains no OmniFlow branding.
+[PASS] Scene 3 contains no OmniFlow branding.
+[PASS] Scene 4 contains no OmniFlow branding.
+[PASS] Only Scene 5 contains OmniFlow branding.
+[PASS] The old circular placeholder logo never appears.
+[PASS] No logo is invented (text-only wordmark used; see LOGO note below).
+[PASS] Scene 2 clearly contrasts physical reality and digital reality.
+[PASS] Scene 3 clearly shows Search, Understand, Trust, and Act.
+[PASS] The Scene 3 signal weakens before Act (dashed, opacity ~38%, never reaches the Act node centre).
+[PASS] Scene 4 visually connects the blank result with the quiet store (cyan waves phone->doorway).
+[PASS] Scene 5 repairs the business profile (completed Crown Hardware profile on the phone).
+[PASS] Scene 5 contains exactly six checklist rows.
+[PASS] The Scene 5 route travels toward Crown Hardware and reaches the doorway.
+[PASS] No route crosses architecture unnaturally.
+[PASS] The final wordmark is visible and unclipped.
+[PASS] The final tagline is visible and unclipped.
+[PASS] The final branded composition holds for exactly 60 frames (660-719).
+
+MOTION / STYLE
+[PASS] No full-screen crossfade / slideshow / generic wipe / Ken Burns motion.
+[PASS] No glitch / bouncy typography / elastic-card / random animation.
+[PASS] All animation derives from useCurrentFrame and FRAME_PLAN (no Math.random, no CSS keyframes).
+[PASS] Dense copy receives stable reading time (>= ~1.8s holds).
+[PASS] Cyan glow never obscures text; warm lighting never blows out.
+[PASS] No unapproved object, business, claim, CTA, or interface introduced.
+[PASS] Reads as one continuous premium motion-graphics video, not five posters.
+
+LOGO NOTE
+No OmniFlow logo asset was supplied with this build. Per the branding rules, the Scene 5 lockup uses a
+TEXT-ONLY wordmark ("OmniFlow Digital") and omits the symbol. No logo was redrawn, recoloured or invented.

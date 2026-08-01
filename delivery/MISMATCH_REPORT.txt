@@ -1,0 +1,30 @@
+OMNIFLOW "ZERO PRESENCE" AD — MISMATCH / REVIEW REPORT
+=======================================================
+
+Method: rendered the five settled review frames (94, 224, 378, 516, 672) and the four transition
+ranges, compared each against its approved storyboard reference, corrected, and re-rendered.
+
+CORRECTIONS APPLIED DURING REVIEW
+1. Headline wrapping — headlines/support initially wrapped and overlapped. Fixed with nowrap line
+   groups so approved line breaks render exactly as one line each.
+2. Phone visibility — the shell/screen were too close to canvas black. Lightened the screen and added
+   a visible shell rim so the phone reads against the night background.
+3. Phone z-sorting — a 3D (preserve-3d) tilt caused the tilted phone to sort behind the flat storefront
+   plane, hiding half the screen. Replaced with a flat rotateZ tilt + explicit per-layer z-index and an
+   isolated storefront layer, so the phone always composites above the storefront/interior.
+4. Scene 5 layout — the larger headline collided with the phone. Reduced to a fitted size, moved the
+   phone slightly right/down and split the profile address to two lines, matching the reference balance.
+5. Phone-content transitions — tightened the inner screen crossfades to short motion-hidden windows so
+   the state morph does not show a doubled read.
+
+KNOWN STYLISTIC DEVIATIONS (intentional, within spec latitude)
+- Fonts: the brief names Inter Tight (headline) and Geist (body/ui). Those exact files are not bundled
+  in this repo; Inter (bundled) is used as the metrics-close substitute throughout. Swapping in the
+  exact font files later requires only updating src/zeropresence/fonts.ts + tokens.ts.
+- Storefront / interior are a stylised dimensional CSS+SVG recreation (not a photoreal raster), per the
+  reference rule to rebuild geometry/lighting/colour as native layers rather than paste the images.
+- Scene 5 headline font size reduced from the literal 57px so the approved 3-line break fits beside the
+  phone within the safe area (readability rule: recompose rather than clip).
+
+NO OUTSTANDING BLOCKING MISMATCHES on copy, line breaks, safe zones, storefront/phone continuity,
+route direction, branding placement, or reading holds.

@@ -5,10 +5,29 @@ import { OmniFlowPremiumAd } from "./omniflow/OmniFlowPremiumAd";
 import { HeroDesktop, TOTAL_FRAMES } from "./hero/HeroDesktop";
 import { TikTokPreview, PREVIEW_FRAMES } from "./tiktok/TikTokPreview";
 import { TikTokAd } from "./tiktok/TikTokAd";
+import { OmniFlowZeroPresenceAd } from "./zeropresence/OmniFlowZeroPresenceAd";
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition
+        id="OmniFlowZeroPresenceAd"
+        component={OmniFlowZeroPresenceAd}
+        durationInFrames={720}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{ showSafe: false }}
+      />
+      <Composition
+        id="OmniFlowZeroPresenceAdSafeOverlay"
+        component={OmniFlowZeroPresenceAd}
+        durationInFrames={720}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{ showSafe: true }}
+      />
       <Composition
         id="MyComp"
         component={MyComposition}
