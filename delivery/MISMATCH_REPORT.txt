@@ -28,3 +28,19 @@ KNOWN STYLISTIC DEVIATIONS (intentional, within spec latitude)
 
 NO OUTSTANDING BLOCKING MISMATCHES on copy, line breaks, safe zones, storefront/phone continuity,
 route direction, branding placement, or reading holds.
+
+-------------------------------------------------------------------------------
+ROUTE-MOTION CORRECTION PASS (cyan signals only)
+Scope-locked to the signal/route animation; no copy, layout, phone, storefront,
+typography, colour, branding or timing changes.
+- Scene 1 (frames 48-78): rebuilt the opening line as a single C1-continuous
+  stroke that emerges cleanly from the phone/search and arcs toward the store
+  door, stopping short of the entrance. Removed the multi-inflection wobble.
+- Scene 4 (frames 470-500): reduced wave amplitude (~13px), evened the spacing,
+  lowered the strands so they clear the support copy, and kept a consistent
+  directional flow from phone toward the shop doorway.
+- Scene 5 (frames 608-650): rebuilt the final route as one confident, monotonic
+  curve that exits the Directions action and descends cleanly into the doorway;
+  removed the awkward back-and-forth bow. Pulse eased with smoothstep.
+- Global: unified stroke width (3px core), restrained 12px glow, removed the
+  opacity "breathing" that could read as glow flicker.
