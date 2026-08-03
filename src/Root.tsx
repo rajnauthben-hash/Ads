@@ -5,10 +5,20 @@ import { OmniFlowPremiumAd } from "./omniflow/OmniFlowPremiumAd";
 import { HeroDesktop, TOTAL_FRAMES } from "./hero/HeroDesktop";
 import { TikTokPreview, PREVIEW_FRAMES } from "./tiktok/TikTokPreview";
 import { TikTokAd } from "./tiktok/TikTokAd";
+import { OmniFlowOpenDoorsAd } from "./omniflow-open-doors/OmniFlowOpenDoorsAd";
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition
+        id="OmniFlowOpenDoorsAd"
+        component={OmniFlowOpenDoorsAd}
+        durationInFrames={720}
+        fps={30}
+        width={1080}
+        height={1920}
+        defaultProps={{ showReference: false, showSafeZone: false }}
+      />
       <Composition
         id="MyComp"
         component={MyComposition}
