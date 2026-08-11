@@ -6,11 +6,21 @@ import { HeroDesktop, TOTAL_FRAMES } from "./hero/HeroDesktop";
 import { TikTokPreview, PREVIEW_FRAMES } from "./tiktok/TikTokPreview";
 import { TikTokAd } from "./tiktok/TikTokAd";
 import { OmniFlowInvisibleShortlist } from "./compositions/OmniFlowInvisibleShortlist";
+import { LocalSearchExpressway } from "./expressway/LocalSearchExpressway";
+import { EXP } from "./expressway/theme";
 import { CANVAS } from "./styles/tokens";
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition
+        id="LocalSearchExpressway"
+        component={LocalSearchExpressway}
+        durationInFrames={EXP.frames}
+        fps={EXP.fps}
+        width={EXP.width}
+        height={EXP.height}
+      />
       <Composition
         id="OmniFlowInvisibleShortlist"
         component={OmniFlowInvisibleShortlist}
