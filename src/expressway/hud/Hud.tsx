@@ -148,15 +148,46 @@ const Journey: React.FC = () => {
   );
 };
 
-// --- Scene 4 incomplete-information card -------------------------------------
-const InfoRow: React.FC<{ label: string; value: string; delay: number }> = ({ label, value, delay }) => {
+// --- Scene 4 incomplete-information card (matches reference 04) ---------------
+const RowIcon: React.FC<{ kind: "hours" | "location" | "phone" }> = ({ kind }) => {
+  const c = T.cyan;
+  if (kind === "hours")
+    return (
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke={c} strokeWidth="2">
+        <circle cx="13" cy="13" r="9" />
+        <path d="M13 8 V13 L16 15" strokeLinecap="round" />
+      </svg>
+    );
+  if (kind === "location")
+    return (
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke={c} strokeWidth="2">
+        <path d="M13 3 C8 3 5 6.5 5 11 C5 17 13 23 13 23 C13 23 21 17 21 11 C21 6.5 18 3 13 3 Z" />
+        <circle cx="13" cy="11" r="3" />
+      </svg>
+    );
+  return (
+    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke={c} strokeWidth="2">
+      <path d="M6 5 C6 4 7 3 8 3 L10 3 L12 8 L9.5 10 C10.5 13 13 15.5 16 16.5 L18 14 L23 16 L23 18 C23 19 22 20 21 20 C12 20 6 14 6 5 Z" strokeLinejoin="round" />
+    </svg>
+  );
+};
+
+const InfoRow: React.FC<{ kind: "hours" | "location" | "phone"; label: string; value: string; delay: number }> = ({
+  kind,
+  label,
+  value,
+  delay,
+}) => {
   const frame = useCurrentFrame();
   const r = reveal(frame, delay, 14);
   return (
-    <div style={{ ...r, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "9px 0", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-      <span style={{ fontFamily: FONT, fontWeight: 500, fontSize: 22, color: T.support }}>{label}</span>
-      <span style={{ fontFamily: FONT, fontWeight: 600, fontSize: 22, color: T.warning, display: "flex", alignItems: "center", gap: 8 }}>
-        <span style={{ width: 8, height: 8, borderRadius: 8, background: T.warning, display: "inline-block" }} />
+    <div style={{ ...r, display: "flex", justifyContent: "space-between", alignItems: "center", padding: "13px 0", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+      <span style={{ display: "flex", alignItems: "center", gap: 12, fontFamily: FONT, fontWeight: 500, fontSize: 23, color: "#D6DDE2" }}>
+        <RowIcon kind={kind} />
+        {label}
+      </span>
+      <span style={{ fontFamily: FONT, fontWeight: 600, fontSize: 22, color: T.warning, display: "flex", alignItems: "center", gap: 9 }}>
+        <span style={{ width: 18, height: 18, borderRadius: 18, border: `2px solid ${T.warning}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800 }}>!</span>
         {value}
       </span>
     </div>
@@ -165,37 +196,115 @@ const InfoRow: React.FC<{ label: string; value: string; delay: number }> = ({ la
 
 const InfoCard: React.FC = () => {
   const frame = useCurrentFrame();
-  const op = envelope(frame, 414, 440, 486, 512);
-  const rise = win(frame, 414, 444, 20, 0);
+  const op = envelope(frame, 410, 438, 470, 486);
+  const rise = win(frame, 410, 442, 20, 0);
   return (
     <div
       style={{
         position: "absolute",
-        right: 90,
-        top: 1210,
-        width: 360,
+        right: 66,
+        top: 1350,
+        width: 400,
         opacity: op,
         transform: `translateY(${rise}px)`,
-        background: "rgba(9,15,20,0.94)",
-        border: `1.5px solid ${T.warning}`,
-        borderRadius: 14,
-        padding: "18px 20px",
-        boxShadow: "0 20px 50px rgba(0,0,0,0.5)",
+        background: "rgba(8,13,18,0.95)",
+        border: "1.5px solid rgba(230,120,90,0.5)",
+        borderRadius: 16,
+        padding: "20px 24px",
+        boxShadow: "0 24px 60px rgba(0,0,0,0.55)",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-        <span style={{ fontSize: 22 }}>⚠️</span>
-        <span style={{ fontFamily: FONT, fontWeight: 700, fontSize: 21, letterSpacing: 0.5, color: T.warning }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
+        <svg width="26" height="24" viewBox="0 0 26 24" fill={T.warning}>
+          <path d="M13 1 L25 22 L1 22 Z" />
+          <rect x="11.6" y="8" width="2.8" height="7" fill="#0A0D12" />
+          <rect x="11.6" y="17" width="2.8" height="2.6" fill="#0A0D12" />
+        </svg>
+        <span style={{ fontFamily: FONT, fontWeight: 700, fontSize: 22, letterSpacing: 0.5, color: T.warning }}>
           INCOMPLETE INFORMATION
         </span>
       </div>
-      <div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 24, color: T.headline, margin: "8px 0 4px" }}>
-        Crown Hardware
+      <InfoRow kind="hours" label="Hours" value="Missing" delay={426} />
+      <InfoRow kind="location" label="Location" value="Incomplete" delay={434} />
+      <InfoRow kind="phone" label="Phone" value="Missing" delay={442} />
+      <div style={{ ...reveal(frame, 440, 14), fontFamily: FONT, fontWeight: 400, fontSize: 19, color: T.support, marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+        Customers can't reach what they can't find.
       </div>
-      <InfoRow label="Hours" value="Not available" delay={430} />
-      <InfoRow label="Location" value="Incomplete" delay={438} />
-      <InfoRow label="Phone" value="Missing" delay={446} />
-      <InfoRow label="Website" value="Not added" delay={454} />
+    </div>
+  );
+};
+
+// Numbered step badge (1 cyan, 2 gold, 3 gray) with heading + sub-copy.
+const StepCallout: React.FC<{
+  n: number;
+  color: string;
+  title: string;
+  lines?: string[];
+  delay: number;
+  style?: React.CSSProperties;
+}> = ({ n, color, title, lines = [], delay, style }) => {
+  const frame = useCurrentFrame();
+  const r = reveal(frame, delay);
+  return (
+    <div style={{ position: "absolute", ...style, ...r }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <span
+          style={{
+            width: 34,
+            height: 34,
+            borderRadius: 34,
+            border: `2px solid ${color}`,
+            color,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontFamily: FONT,
+            fontWeight: 700,
+            fontSize: 19,
+            flex: "0 0 auto",
+          }}
+        >
+          {n}
+        </span>
+        <span style={{ fontFamily: FONT, fontWeight: 700, fontSize: 26, letterSpacing: 0.5, color: T.headline }}>{title}</span>
+      </div>
+      {lines.length ? (
+        <div style={{ fontFamily: FONT, fontWeight: 500, fontSize: 24, lineHeight: 1.25, color: T.support, marginTop: 8, marginLeft: 46 }}>
+          {lines.map((l, i) => (
+            <div key={i}>{l}</div>
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+};
+
+// Search box "hardware store near me".
+const SearchBox: React.FC<{ delay: number; style?: React.CSSProperties }> = ({ delay, style }) => {
+  const frame = useCurrentFrame();
+  const r = reveal(frame, delay);
+  return (
+    <div
+      style={{
+        position: "absolute",
+        ...style,
+        ...r,
+        display: "flex",
+        alignItems: "center",
+        gap: 14,
+        padding: "16px 20px",
+        width: 300,
+        background: "rgba(10,16,22,0.92)",
+        border: "1.5px solid rgba(120,140,155,0.35)",
+        borderRadius: 14,
+        boxShadow: "0 14px 34px rgba(0,0,0,0.45)",
+      }}
+    >
+      <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke={T.cyan} strokeWidth="2.4">
+        <circle cx="11" cy="11" r="7" />
+        <line x1="16" y1="16" x2="23" y2="23" strokeLinecap="round" />
+      </svg>
+      <span style={{ fontFamily: FONT, fontWeight: 500, fontSize: 23, color: "#DCE3E8", lineHeight: 1.15 }}>hardware store near me</span>
     </div>
   );
 };
@@ -251,14 +360,38 @@ export const Hud: React.FC = () => {
 
       {/* SCENE 4 */}
       <SceneText a={366} b={404} c={470} d={482}>
-        <div style={{ position: "absolute", left: LEFT, top: 180, maxWidth: 600 }}>
-          <Line delay={370}><div style={HEAD}>The traffic</div></Line>
-          <Line delay={378}><div style={HEAD}>didn't</div></Line>
-          <Line delay={386}><div style={HEAD}>disappear.</div></Line>
-          <Line delay={394}><div style={{ ...HEAD, ...g }}>It relocated.</div></Line>
-          <Line delay={408}><div style={{ ...SUP, marginTop: 30 }}>Your customers can<br />still be out there.</div></Line>
-          <Line delay={420}><div style={{ ...BODY, marginTop: 26 }}>But if the route they<br />now use doesn't<br />lead to you, another<br />business gets the<br />attention first.</div></Line>
+        {/* headline + supporting copy, upper-left */}
+        <div style={{ position: "absolute", left: LEFT, top: 130, maxWidth: 600 }}>
+          <Line delay={370}><div style={{ ...HEAD, fontSize: 80 }}>If your info</div></Line>
+          <Line delay={378}><div style={{ ...HEAD, fontSize: 80 }}>is <span style={g}>incomplete,</span></div></Line>
+          <Line delay={386}><div style={{ ...HEAD, fontSize: 80 }}>you get bypassed<span style={g}>.</span></div></Line>
+          <Line delay={400}><div style={{ ...SUP, fontSize: 32, marginTop: 28 }}>When customers search,<br />they follow the clearest path<br />to a business they can trust.</div></Line>
+          <Line delay={412}><div style={{ ...SUP, fontSize: 32, marginTop: 22 }}>If your information is missing<br />or outdated, they get sent<br />somewhere else.</div></Line>
+          <div style={{ width: 56, height: 3, background: T.gold, margin: "26px 0 16px", borderRadius: 2 }} />
+          <Line delay={426}><div style={{ fontFamily: FONT, fontWeight: 700, fontSize: 32, color: T.headline, lineHeight: 1.2 }}>Visibility starts with<br /><span style={g}>complete</span> information.</div></Line>
         </div>
+
+        {/* search box near the customer */}
+        <SearchBox delay={418} style={{ left: LEFT, top: 940 }} />
+
+        {/* numbered steps */}
+        <StepCallout n={1} color={T.cyan} title="CUSTOMER SEARCHES" delay={392} style={{ left: 96, top: 1330 }} />
+        <StepCallout
+          n={2}
+          color={T.gold}
+          title="YOUR COMPETITOR"
+          lines={["Gets the call.", "Gets the visit.", "Gets the customer."]}
+          delay={430}
+          style={{ left: 636, top: 96 }}
+        />
+        <StepCallout
+          n={3}
+          color={T.grayRoute}
+          title="CROWN HARDWARE"
+          lines={["Missing or incomplete", "information stops", "customers from finding you."]}
+          delay={438}
+          style={{ left: 686, top: 1172 }}
+        />
       </SceneText>
       <InfoCard />
 

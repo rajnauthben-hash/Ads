@@ -4,7 +4,9 @@ import { getCamera, WORLD_W, WORLD_H, LAND } from "../camera";
 import { win, envelope } from "../anim";
 import { City } from "./City";
 import { GlowRoute, FailedRoute, MAIN, COMP, CROWNFAIL, REPAIR } from "./routes";
+import { sampleRoute } from "./path";
 import { WorldItem, Storefront, LocationPin, ResultLabel, CustomerMarker } from "./props";
+import { T } from "../theme";
 
 const clamp01 = (v: number) => Math.max(0, Math.min(1, v));
 
@@ -26,13 +28,20 @@ export const WorldLayer: React.FC = () => {
   );
   // three travelling "traffic" pulses along the highway
   const trafficPulses = [0, 0.34, 0.68].map((ph) => ((frame * 0.006 + ph) % 1));
+  // flowing car light-streaks along the highway (brightest in Scene 3)
+  const streakOpacity = clamp01(0.4 + win(frame, 250, 292, 0, 0.55) - win(frame, 360, 420, 0, 0.5));
+  const streaks = [0.05, 0.23, 0.41, 0.6, 0.78, 0.9].map((ph, i) => {
+    const spd = 0.0085 + (i % 3) * 0.0022;
+    const t = (frame * spd + ph) % 1;
+    return { t, warm: i % 4 === 0 };
+  });
 
   // --- Gold pins + result labels ---
   const labelEnv = envelope(frame, 236, 258, 350, 372);
   const pinsOpacity = clamp01(1 - win(frame, 372, 412, 0, 0.9));
 
   // --- Scene 4: customer -> competitor active route + failed Crown route ---
-  const custEnv = clamp01(win(frame, 372, 394, 0, 1) - win(frame, 585, 600, 0, 1));
+  const custEnv = clamp01(win(frame, 372, 394, 0, 1) - win(frame, 484, 508, 0, 1));
   const compProg = win(frame, 385, 448, 0, 1);
   const compPulse = win(frame, 388, 470, -0.05, 1);
   const compOpacity = clamp01(win(frame, 378, 400, 0, 1) - win(frame, 488, 520, 0, 1));
@@ -88,6 +97,22 @@ export const WorldLayer: React.FC = () => {
               <GlowRoute key={i} segs={MAIN} progress={mainProg} pulseT={t} width={0.01} glow={0} />
             ) : null,
           )}
+          {/* flowing car light-streaks */}
+          <g opacity={streakOpacity}>
+            {streaks.map((s, i) => {
+              if (s.t > mainProg) return null;
+              const p = sampleRoute(MAIN, s.t);
+              const tail = sampleRoute(MAIN, Math.max(0, s.t - 0.02));
+              const col = s.warm ? "rgba(255,180,120," : "rgba(140,220,255,";
+              return (
+                <g key={i}>
+                  <line x1={tail.x} y1={tail.y} x2={p.x} y2={p.y} stroke={`${col}0.85)`} strokeWidth={4} strokeLinecap="round" />
+                  <circle cx={p.x} cy={p.y} r={4.5} fill={`${col}1)`} />
+                  <circle cx={p.x} cy={p.y} r={11} fill={`${col}0.3)`} />
+                </g>
+              );
+            })}
+          </g>
         </svg>
 
         {/* Scene 4 routes */}
@@ -159,7 +184,7 @@ export const WorldLayer: React.FC = () => {
                   <LocationPin size={40} />
                 </div>
               ) : null}
-              <Storefront name="YOUR COMPETITOR" w={300} warm={false} glow={compGlow} />
+              <Storefront name="YOUR COMPETITOR" w={300} warm glow={0.7 + compGlow * 0.5} />
             </div>
           </WorldItem>
         ) : null}
@@ -168,6 +193,19 @@ export const WorldLayer: React.FC = () => {
         <WorldItem x={LAND.crown.x} y={LAND.crown.y} anchor="bottom" z={30}>
           <Storefront name="CROWN HARDWARE" w={400} warm glow={crownGlow} />
         </WorldItem>
+
+        {/* Scene 4: muted gray "incomplete" pin above Crown */}
+        {(() => {
+          const env = clamp01(win(frame, 384, 406, 0, 1) - win(frame, 486, 512, 0, 1));
+          if (env <= 0.01) return null;
+          return (
+            <WorldItem x={LAND.crown.x} y={LAND.crown.y - 322} anchor="bottom" z={31}>
+              <div style={{ opacity: env }}>
+                <LocationPin size={46} color={T.grayRoute} />
+              </div>
+            </WorldItem>
+          );
+        })()}
       </div>
     </div>
   );

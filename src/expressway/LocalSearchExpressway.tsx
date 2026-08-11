@@ -3,6 +3,7 @@ import { AbsoluteFill, delayRender, continueRender } from "remotion";
 import { initFonts } from "./fonts";
 import { WorldLayer } from "./world/WorldLayer";
 import { Hud } from "./hud/Hud";
+import { ReferenceOverlay } from "./hud/ReferenceOverlay";
 import { T } from "./theme";
 
 // Cinematic atmosphere: vignette + top/bottom scrims so HUD text stays legible
@@ -44,6 +45,7 @@ export const LocalSearchExpressway: React.FC = () => {
       <WorldLayer />
       <Atmosphere />
       <Hud />
+      <ReferenceOverlay />
     </AbsoluteFill>
   );
 };
