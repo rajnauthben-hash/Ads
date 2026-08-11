@@ -6,7 +6,7 @@ import { C, W, H } from "./theme";
 // a warm corner glow, and the faint concentric arcs seen in the references.
 export const Background: React.FC = () => {
   const frame = useCurrentFrame();
-  const drift = interpolate(frame, [0, 600], [0, -24]);
+  const drift = interpolate(frame, [0, 811], [0, -24]);
   return (
     <AbsoluteFill style={{ background: C.bg }}>
       <AbsoluteFill

@@ -28,15 +28,18 @@ const SceneWrap: React.FC<{ len: number; last?: boolean; children: React.ReactNo
   );
 };
 
+// Lengths lengthened (was 95/95/100/100/100/110 = 600) to add hold time so each
+// scene breathes and reads without rushing. Reveal timings are unchanged, so
+// the punchy entrances stay; only the settled hold gets longer.
 const SCENES = [
-  { start: 0, len: 95, C: Scene1 },
-  { start: 95, len: 95, C: Scene2 },
-  { start: 190, len: 100, C: Scene3 },
-  { start: 290, len: 100, C: Scene4 },
-  { start: 390, len: 100, C: Scene5 },
-  { start: 490, len: 110, C: Scene6 },
+  { start: 0, len: 128, C: Scene1 },
+  { start: 128, len: 128, C: Scene2 },
+  { start: 256, len: 135, C: Scene3 },
+  { start: 391, len: 135, C: Scene4 },
+  { start: 526, len: 135, C: Scene5 },
+  { start: 661, len: 150, C: Scene6 },
 ];
-const OVERLAP = 18;
+const OVERLAP = 20;
 
 export const Concept1Ad: React.FC = () => {
   const handle = useRef<number | null>(null);

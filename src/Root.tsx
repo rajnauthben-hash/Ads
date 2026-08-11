@@ -71,7 +71,7 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="OmniFlowConcept1"
         component={Concept1Ad}
-        durationInFrames={600}
+        durationInFrames={811}
         fps={30}
         width={1080}
         height={1920}
