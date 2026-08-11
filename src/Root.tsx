@@ -7,6 +7,7 @@ import { TikTokPreview, PREVIEW_FRAMES } from "./tiktok/TikTokPreview";
 import { TikTokAd } from "./tiktok/TikTokAd";
 import { LocalSearchExpressway } from "./expressway/LocalSearchExpressway";
 import { TextLed } from "./expressway/TextLed";
+import { Concept1Ad } from "./concept1/Concept1Ad";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -62,6 +63,14 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="LocalSearchExpresswayVisual"
         component={LocalSearchExpressway}
+        durationInFrames={600}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="OmniFlowConcept1"
+        component={Concept1Ad}
         durationInFrames={600}
         fps={30}
         width={1080}
