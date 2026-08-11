@@ -6,6 +6,7 @@ import { HeroDesktop, TOTAL_FRAMES } from "./hero/HeroDesktop";
 import { TikTokPreview, PREVIEW_FRAMES } from "./tiktok/TikTokPreview";
 import { TikTokAd } from "./tiktok/TikTokAd";
 import { LocalSearchExpressway } from "./expressway/LocalSearchExpressway";
+import { TextLed } from "./expressway/TextLed";
 
 export const RemotionRoot: React.FC = () => {
   return (
@@ -52,6 +53,14 @@ export const RemotionRoot: React.FC = () => {
       />
       <Composition
         id="LocalSearchExpressway"
+        component={TextLed}
+        durationInFrames={600}
+        fps={30}
+        width={1080}
+        height={1920}
+      />
+      <Composition
+        id="LocalSearchExpresswayVisual"
         component={LocalSearchExpressway}
         durationInFrames={600}
         fps={30}
