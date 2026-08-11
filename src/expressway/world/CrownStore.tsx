@@ -13,41 +13,70 @@ const Ht = 300;
 
 export const CrownStore: React.FC<{ warm?: number }> = ({ warm = 0.85 }) => {
   const glow = Math.min(1, warm);
-  const win = (x: number, w: number, extra = 1) => (
-    <g>
-      <rect x={x} y={116} width={w} height={150} rx={2} fill="url(#crownWin)" opacity={glow * extra} />
-      {/* shelved goods silhouettes */}
-      {Array.from({ length: Math.floor(w / 26) }).map((_, i) => (
-        <rect
-          key={i}
-          x={x + 8 + i * 26}
-          y={150 + (i % 3) * 12}
-          width={16}
-          height={110 - (i % 3) * 12}
-          fill={i % 2 ? "#7A5222" : "#5E3E19"}
-          opacity={glow * 0.6}
-        />
-      ))}
-      <rect x={x} y={116} width={w} height={150} rx={2} fill="none" stroke="#1C130A" strokeWidth={6} />
-      <line x1={x + w / 2} y1={116} x2={x + w / 2} y2={266} stroke="#1C130A" strokeWidth={3} />
-    </g>
-  );
+  const win = (x: number, w: number, extra = 1) => {
+    const o = glow * extra;
+    return (
+      <g>
+        {/* Warm glowing interior */}
+        <rect x={x} y={116} width={w} height={150} rx={2} fill="url(#crownWin)" opacity={o} />
+        <rect x={x} y={116} width={w} height={150} rx={2} fill="url(#crownWinGlow)" opacity={o} />
+        {/* Shelf lines + soft goods silhouettes (backlit, low contrast) */}
+        {[150, 186, 222].map((sy) => (
+          <line key={sy} x1={x + 4} y1={sy} x2={x + w - 4} y2={sy} stroke="#9C6A2E" strokeWidth={2} opacity={o * 0.5} />
+        ))}
+        {Array.from({ length: Math.floor(w / 22) }).map((_, i) => (
+          <rect
+            key={i}
+            x={x + 8 + i * 22}
+            y={150 + (i % 3) * 24}
+            width={13}
+            height={30 + (i % 4) * 8}
+            rx={1}
+            fill={i % 2 ? "#8A5A26" : "#6E4620"}
+            opacity={o * 0.42}
+          />
+        ))}
+        {/* Bright warm bloom near the top of the glass */}
+        <rect x={x} y={116} width={w} height={64} rx={2} fill="url(#crownWinBloom)" opacity={o * 0.9} />
+        {/* Frame + mullions */}
+        <rect x={x} y={116} width={w} height={150} rx={2} fill="none" stroke="#180F08" strokeWidth={7} />
+        <line x1={x + w / 2} y1={116} x2={x + w / 2} y2={266} stroke="#180F08" strokeWidth={3} />
+        {/* Warm light spill onto the sill/ground */}
+        <rect x={x - 6} y={264} width={w + 12} height={26} fill="url(#crownSpill)" opacity={o} />
+      </g>
+    );
+  };
 
   return (
     <g>
       <defs>
         <linearGradient id="crownBrick" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#241A13" />
-          <stop offset="1" stopColor="#120C08" />
+          <stop offset="0" stopColor="#2E211734" stopOpacity="1" />
+          <stop offset="0" stopColor="#2C2016" />
+          <stop offset="1" stopColor="#140D08" />
         </linearGradient>
         <linearGradient id="crownWin" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor={C.warmLight} />
-          <stop offset="0.5" stopColor={C.warm} />
-          <stop offset="1" stopColor={C.warmDeep} />
+          <stop offset="0" stopColor="#FFD68A" />
+          <stop offset="0.45" stopColor={C.warm} />
+          <stop offset="1" stopColor="#8A5417" />
         </linearGradient>
-        <radialGradient id="crownAmbient" cx="0.5" cy="0.55" r="0.6">
-          <stop offset="0" stopColor="#EBA552" stopOpacity="0.3" />
-          <stop offset="1" stopColor="#EBA552" stopOpacity="0" />
+        <radialGradient id="crownWinGlow" cx="0.5" cy="0.32" r="0.75">
+          <stop offset="0" stopColor="#FFE8B8" stopOpacity="0.85" />
+          <stop offset="0.6" stopColor="#FFC877" stopOpacity="0.25" />
+          <stop offset="1" stopColor="#FFC877" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="crownWinBloom" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#FFF1D2" stopOpacity="0.7" />
+          <stop offset="1" stopColor="#FFF1D2" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id="crownSpill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#FFCB80" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#FFCB80" stopOpacity="0" />
+        </linearGradient>
+        <radialGradient id="crownAmbient" cx="0.5" cy="0.5" r="0.62">
+          <stop offset="0" stopColor="#F2A94E" stopOpacity="0.42" />
+          <stop offset="0.55" stopColor="#E88C34" stopOpacity="0.16" />
+          <stop offset="1" stopColor="#E88C34" stopOpacity="0" />
         </radialGradient>
         <radialGradient id="crownLamp" cx="0.5" cy="0" r="1">
           <stop offset="0" stopColor="#FFE1A8" stopOpacity="0.5" />
@@ -58,15 +87,17 @@ export const CrownStore: React.FC<{ warm?: number }> = ({ warm = 0.85 }) => {
         </filter>
       </defs>
 
-      {/* Warm pool + contact shadow */}
+      {/* Broad warm pool spilling into the surrounding city + contact shadow */}
       <ellipse cx={Wd / 2} cy={Ht + 12} rx={Wd / 2 + 30} ry={22} fill="#000" opacity={0.5} filter="url(#crownShadow)" />
-      <rect x={-50} y={40} width={Wd + 100} height={Ht + 60} fill="url(#crownAmbient)" opacity={glow} />
+      <rect x={-260} y={-180} width={Wd + 520} height={Ht + 420} fill="url(#crownAmbient)" opacity={glow} />
 
       {/* Facade */}
       <rect x={0} y={0} width={Wd} height={Ht} fill="url(#crownBrick)" stroke="#0A0705" strokeWidth={2} />
       {Array.from({ length: 5 }).map((_, i) => (
         <line key={i} x1={0} y1={20 + i * 20} x2={Wd} y2={20 + i * 20} stroke="#0A0705" strokeWidth={1} opacity={0.5} />
       ))}
+      {/* Warm wash down the brick from the sign lamps */}
+      <rect x={0} y={84} width={Wd} height={Ht - 84} fill="url(#crownWinBloom)" opacity={glow * 0.14} />
 
       {/* Sign band */}
       <rect x={20} y={26} width={Wd - 40} height={58} rx={3} fill="#0B0805" stroke="#3A2A16" strokeWidth={2} />

@@ -87,21 +87,21 @@ export const Highway: React.FC<{ opacity?: number }> = ({ opacity = 1 }) => {
         </filter>
       </defs>
 
-      {/* Roadbed */}
-      <path d={HW} fill="none" stroke="#0A141C" strokeWidth={74} strokeLinecap="round" opacity={0.9} />
-      <path d={HW} fill="none" stroke="#0E1E2A" strokeWidth={58} strokeLinecap="round" opacity={0.8} />
-      {/* Cyan bloom */}
-      <path d={HW} fill="none" stroke={C.cyanGlow} strokeWidth={48} strokeLinecap="round" filter="url(#hwGlow)" />
+      {/* Faint roadbed + wide cyan bloom (reads as light, not a solid tube) */}
+      <path d={HW} fill="none" stroke="#0B1620" strokeWidth={38} strokeLinecap="round" opacity={0.55} />
+      <path d={HW} fill="none" stroke={C.cyanGlow} strokeWidth={54} strokeLinecap="round" filter="url(#hwGlow)" />
+      <path d={HW} fill="none" stroke={C.cyanGlow} strokeWidth={26} strokeLinecap="round" filter="url(#hwGlow)" opacity={0.9} />
 
-      {/* Lane light-trails (long streaks) */}
-      <Trail phase={0.0} period={150} len={220} frame={frame} color={C.cyanDim} width={6} opacity={0.7} dir={1} />
-      <Trail phase={0.33} period={150} len={200} frame={frame} color={C.cyan} width={5} opacity={0.8} dir={1} />
-      <Trail phase={0.66} period={150} len={180} frame={frame} color={C.cyanBright} width={3.5} opacity={0.85} dir={1} />
-      <Trail phase={0.16} period={190} len={160} frame={frame} color={C.cyanDim} width={5} opacity={0.5} dir={-1} />
+      {/* Bundled lane light-trails (long streaks) */}
+      <Trail phase={0.0} period={150} len={240} frame={frame} color={C.cyanDim} width={9} opacity={0.5} dir={1} />
+      <Trail phase={0.42} period={150} len={210} frame={frame} color={C.cyan} width={5} opacity={0.75} dir={1} />
+      <Trail phase={0.2} period={168} len={230} frame={frame} color={C.cyanBright} width={3} opacity={0.8} dir={1} />
+      <Trail phase={0.66} period={150} len={200} frame={frame} color="#FFFFFF" width={2} opacity={0.9} dir={1} />
+      <Trail phase={0.16} period={196} len={180} frame={frame} color={C.cyanDim} width={4} opacity={0.4} dir={-1} />
 
       {/* Bright moving pulses */}
-      <Trail phase={0.1} period={82} len={22} frame={frame} color={C.cyanCore} width={5} opacity={0.95} dir={1} />
-      <Trail phase={0.55} period={82} len={20} frame={frame} color={C.cyanBright} width={4.5} opacity={0.85} dir={1} />
+      <Trail phase={0.1} period={82} len={24} frame={frame} color={C.cyanCore} width={5} opacity={0.95} dir={1} />
+      <Trail phase={0.55} period={82} len={20} frame={frame} color={C.cyanBright} width={4} opacity={0.85} dir={1} />
 
       {/* Scene-3 car traffic passing the business */}
       <g opacity={carsOn}>
