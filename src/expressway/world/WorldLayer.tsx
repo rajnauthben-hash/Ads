@@ -24,7 +24,7 @@ export const WorldLayer: React.FC = () => {
   // --- Main highway: hints in S1, fully draws in S2, persists after ---
   const mainProg = win(frame, 10, 60, 0, 0.34) + win(frame, 150, 235, 0, 0.66);
   const mainOpacity = clamp01(
-    win(frame, 0, 22, 0, 1) - win(frame, 380, 440, 0, 0.6) + win(frame, 485, 545, 0, 0.45),
+    win(frame, 0, 22, 0, 1) - win(frame, 378, 440, 0, 0.86) + win(frame, 490, 552, 0, 0.72),
   );
   // three travelling "traffic" pulses along the highway
   const trafficPulses = [0, 0.34, 0.68].map((ph) => ((frame * 0.006 + ph) % 1));
@@ -46,7 +46,9 @@ export const WorldLayer: React.FC = () => {
   const compPulse = win(frame, 388, 470, -0.05, 1);
   const compOpacity = clamp01(win(frame, 378, 400, 0, 1) - win(frame, 488, 520, 0, 1));
   const failReveal = win(frame, 388, 448, 0, 1);
-  const failRepair = win(frame, 468, 540, 0, 1);
+  const failRepair = win(frame, 470, 512, 0, 1);
+  // fade the (repairing) failed route out early in Scene 5 — REPAIR takes over
+  const failedRouteOpacity = clamp01(1 - win(frame, 496, 524, 0, 1));
 
   // competitor storefront presence + arrival brightening + S5 recede
   const compStoreOpacity = clamp01(win(frame, 360, 382, 0, 1) - win(frame, 505, 565, 0, 0.6));
@@ -128,7 +130,9 @@ export const WorldLayer: React.FC = () => {
             </g>
           ) : null}
           {failReveal > 0.01 ? (
-            <FailedRoute segs={CROWNFAIL} reveal={failReveal} repair={failRepair} breakAt={{ x: 707, y: 2762 }} />
+            <g opacity={failedRouteOpacity}>
+              <FailedRoute segs={CROWNFAIL} reveal={failReveal} repair={failRepair} breakAt={{ x: 800, y: 2712 }} />
+            </g>
           ) : null}
           {showRepair ? <GlowRoute segs={REPAIR} progress={repairProg} pulseT={repairPulse} width={6.5} /> : null}
         </svg>

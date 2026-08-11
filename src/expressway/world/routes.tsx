@@ -21,10 +21,13 @@ export const COMP: Seg[] = [
   [P(1110, 2010), P(1190, 1880), P(1215, 1700), P(1230, 1545)],
 ];
 
-// broken branch toward Crown (Scene 4 failed route) — note the gap between segs
+// dead route from the CUSTOMER toward Crown (Scene 4 failed route). Shares the
+// customer origin with the active cyan route, dips low-right along the streets,
+// then breaks with an X just short of Crown Hardware.
 export const CROWNFAIL: Seg[] = [
-  [P(470, 2872), P(560, 2822), P(620, 2802), P(690, 2772)],
-  [P(724, 2756), P(762, 2738), P(792, 2712), P(813, 2688)],
+  [P(258, 3052), P(370, 3096), P(470, 3062), P(548, 2988)],
+  [P(548, 2988), P(624, 2902), P(602, 2842), P(690, 2812)],
+  [P(690, 2812), P(740, 2792), P(772, 2752), P(790, 2726)],
 ];
 
 // repaired road down to Crown (Scene 5)
@@ -115,11 +118,11 @@ export const FailedRoute: React.FC<{
 }> = ({ segs, reveal, repair = 0, breakAt }) => {
   const d = toD(segs);
   const dash = 1000;
-  const off = dash * (1 - Math.max(0, Math.min(1, reveal)));
-  const grayOpacity = (1 - repair) * 0.75;
+  const fadeReveal = Math.max(0, Math.min(1, reveal * 1.6));
+  const grayOpacity = (1 - repair) * 0.78 * fadeReveal;
   return (
     <g>
-      {/* dead gray dashed line */}
+      {/* dead gray dashed line (static dots — the connection is dead) */}
       <path
         d={d}
         pathLength={dash}
@@ -129,7 +132,6 @@ export const FailedRoute: React.FC<{
         strokeLinecap="round"
         strokeDasharray={`10 16`}
         opacity={grayOpacity}
-        style={{ strokeDashoffset: off }}
       />
       {/* X marker over the break */}
       {breakAt && repair < 0.35 ? (
