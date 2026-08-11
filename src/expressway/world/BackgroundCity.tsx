@@ -62,8 +62,8 @@ function build() {
     const rows = Math.max(3, Math.floor(h / 16));
     for (let c = 0; c < cols; c++) {
       for (let r = 0; r < rows; r++) {
-        if (rnd() < 0.5) continue;
-        const warm = rnd() < 0.82;
+        if (rnd() < 0.32) continue;
+        const warm = rnd() < 0.78;
         windows.push({
           x: tx + 5 + c * ((w - 8) / cols),
           y: y + 8 + r * ((h - 10) / rows),
@@ -109,8 +109,8 @@ function build() {
       const sideR = `rgb(${Math.round(base - 8)}, ${Math.round(base - 3)}, ${Math.round(base + 1)})`;
 
       const lights: { x: number; y: number; c: string; r: number }[] = [];
-      if (tMid < 0.7) {
-        const n = Math.floor(rnd() * 3);
+      if (tMid < 0.78) {
+        const n = 1 + Math.floor(rnd() * 3);
         for (let i = 0; i < n; i++) {
           lights.push({
             x: lerp(tD[0], tC[0], 0.2 + rnd() * 0.6),
@@ -149,9 +149,14 @@ export const BackgroundCity: React.FC = () => {
           <stop offset="1" stopColor="#0B1826" />
         </linearGradient>
         <radialGradient id="exHorizonGlow" cx="0.62" cy="0.34" r="0.5">
-          <stop offset="0" stopColor="#123049" stopOpacity="0.6" />
-          <stop offset="1" stopColor="#123049" stopOpacity="0" />
+          <stop offset="0" stopColor="#163A57" stopOpacity="0.7" />
+          <stop offset="1" stopColor="#163A57" stopOpacity="0" />
         </radialGradient>
+        <linearGradient id="exHaze" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#0E2436" stopOpacity="0" />
+          <stop offset="0.6" stopColor="#12314A" stopOpacity="0.55" />
+          <stop offset="1" stopColor="#0C1E2E" stopOpacity="0.1" />
+        </linearGradient>
         <linearGradient id="exGroundFade" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor={C.bg} stopOpacity="0.9" />
           <stop offset="0.35" stopColor={C.bg} stopOpacity="0" />
@@ -171,6 +176,8 @@ export const BackgroundCity: React.FC = () => {
           ))}
         </g>
       ))}
+      {/* Atmospheric haze layer sitting over the skyline base */}
+      <rect x={-60} y={HORIZON - 230} width={1200} height={300} fill="url(#exHaze)" />
       {/* Horizon fade so grid meets skyline softly */}
       <rect x={-60} y={HORIZON - 40} width={1200} height={120} fill="url(#exGroundFade)" />
 
