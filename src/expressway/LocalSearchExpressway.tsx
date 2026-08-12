@@ -18,18 +18,18 @@ import {
   kf,
   clamp,
 } from "./primitives";
-import { Pt } from "../utils/routeGeometry";
+import { Pt, smoothPath } from "../utils/routeGeometry";
 
 // ===========================================================================
 // Persistent-element state — ONE Crown Hardware + ONE map camera as continuous
 // functions of frame. They hold during reads and move during transitions.
 // ===========================================================================
 const CF = [0, 56, 104, 139, 218, 259, 338, 379, 458, 505, 570, 599];
-const c1 = { x: 828, y: 1858, s: 1.12, act: 0.85, tools: 1 };
-const c2 = { x: 885, y: 1835, s: 0.6, act: 0.5, tools: 0 };
-const c3 = { x: 185, y: 1745, s: 0.58, act: 0.12, tools: 0 };
-const c4 = { x: 650, y: 1235, s: 0.5, act: 0.12, tools: 0 };
-const c5 = { x: 775, y: 1770, s: 1.16, act: 1, tools: 0 };
+const c1 = { x: 712, y: 1892, s: 1.5, act: 0.9, tools: 1 };
+const c2 = { x: 858, y: 1852, s: 0.7, act: 0.5, tools: 0 };
+const c3 = { x: 182, y: 1762, s: 0.62, act: 0.12, tools: 0 };
+const c4 = { x: 645, y: 1246, s: 0.52, act: 0.12, tools: 0 };
+const c5 = { x: 736, y: 1792, s: 1.32, act: 1, tools: 0 };
 const dupe = (a: number, b: number, c: number, d: number, e: number) => [a, a, a, b, b, c, c, d, d, e, e, e];
 const CX = dupe(c1.x, c2.x, c3.x, c4.x, c5.x);
 const CY = [c1.y + 28, c1.y, c1.y, c2.y, c2.y, c3.y, c3.y, c4.y, c4.y, c5.y, c5.y, c5.y];
@@ -219,12 +219,26 @@ const Scene3: React.FC<{ f: number }> = ({ f }) => {
   return (
     <AbsoluteFill>
       <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, opacity: W.fade }}>
-        {/* bright wide highway */}
-        <Route points={route3} draw={draw} core={16} glow={44} radius={40} />
-        <path d={`M ${route3.map((pt) => `${pt.x} ${pt.y}`).join(" L ")}`} fill="none" stroke={C.white} strokeWidth={2.4} strokeDasharray="10 20" pathLength={1} strokeDashoffset={0} opacity={0.5 * clamp(draw * 1.4)} style={{ strokeDasharray: `${0.006} ${0.014}` }} />
+        {/* bright wide highway ribbon */}
+        <Route points={route3} draw={draw} core={26} glow={64} radius={46} />
+        <path d={smoothPath(route3, 46)} fill="none" stroke={C.white} strokeWidth={3} strokeLinecap="round" pathLength={1} strokeDasharray={`${0.01} ${0.018}`} opacity={0.6 * clamp(draw * 1.4)} />
         {[0.15, 0.4, 0.65, 0.9].map((b, i) => (
-          <RouteArrow key={i} points={route3} t={((f - s) / 55 + b) % 1} size={16} opacity={clamp(draw) * 0.9} />
+          <RouteArrow key={i} points={route3} t={((f - s) / 55 + b) % 1} size={18} opacity={clamp(draw) * 0.95} />
         ))}
+        {/* big destination arrowhead at the top of the highway */}
+        <g opacity={clamp((draw - 0.85) * 6)}>
+          <path d={`M ${route3[route3.length - 1].x - 26} ${route3[route3.length - 1].y + 34} L ${route3[route3.length - 1].x} ${route3[route3.length - 1].y - 8} L ${route3[route3.length - 1].x + 26} ${route3[route3.length - 1].y + 34}`} fill="none" stroke={C.cyanHi} strokeWidth={7} strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+        {/* gold pins + dashed connectors to each result card */}
+        {cards3.map((c, i) => {
+          const rv = ip(f, s + 30 + (1 - c.anchor) * 40, s + 46 + (1 - c.anchor) * 40, 0, 1);
+          return (
+            <g key={i}>
+              <line x1={834} y1={c.y} x2={868} y2={c.y} stroke={C.gold} strokeWidth={1.6} strokeDasharray="3 5" opacity={rv * 0.8} />
+              <Pin x={860} y={c.y - 6} size={26} color={C.gold} reveal={rv} />
+            </g>
+          );
+        })}
         {/* gray failed branch to dead crown bottom-left */}
         <Route points={[{ x: 470, y: 1560 }, { x: 360, y: 1650 }, { x: 250, y: 1680 }]} draw={W.draw(60, 78)} dead />
         <BrokenX x={470} y={1560} r={20} reveal={W.draw(64, 80)} />
@@ -348,10 +362,6 @@ const Scene4: React.FC<{ f: number }> = ({ f }) => {
           {t}
         </div>
       ))}
-      {/* crown label + explanation */}
-      <div style={{ position: "absolute", left: 540, top: 1058, opacity: ip(f, s + 44, s + 62, 0, 1) * W.fade }}>
-        <div style={{ border: `1px solid ${C.grayDark}`, background: "rgba(7,18,30,0.7)", padding: "3px 10px", fontFamily: F.ui, fontSize: 16, letterSpacing: 1.5, color: C.gray }}>CROWN HARDWARE</div>
-      </div>
       <Copy x={540} y={1300} size={24} color={C.muted} p={W.draw(52, 70)} lines={["Missing or incomplete", "information stops", "customers from", "finding you."]} />
       {/* headline + body */}
       <Headline
@@ -427,8 +437,10 @@ const InfoCard: React.FC<{ reveal: number; fade: number; f: number; s: number }>
 // ===========================================================================
 const route5: Pt[] = [
   { x: 560, y: 200 }, { x: 650, y: 360 }, { x: 585, y: 540 }, { x: 700, y: 690 },
-  { x: 610, y: 900 }, { x: 700, y: 1120 }, { x: 640, y: 1330 }, { x: 775, y: 1560 },
+  { x: 610, y: 900 }, { x: 690, y: 1120 }, { x: 700, y: 1190 },
 ];
+const prongL: Pt[] = [{ x: 700, y: 1190 }, { x: 588, y: 1252 }, { x: 622, y: 1332 }, { x: 718, y: 1330 }];
+const prongR: Pt[] = [{ x: 700, y: 1190 }, { x: 812, y: 1252 }, { x: 786, y: 1332 }, { x: 718, y: 1330 }];
 const labels5: { t: string; y: number; anchor: number }[] = [
   { t: "SEARCHING", y: 250, anchor: 0.9 },
   { t: "COMPARING", y: 620, anchor: 0.58 },
@@ -444,11 +456,16 @@ const Scene5: React.FC<{ f: number }> = ({ f }) => {
   return (
     <AbsoluteFill>
       <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, opacity: W.fade }}>
-        <Route points={route5} draw={draw} core={9} glow={28} radius={34} />
+        <Route points={route5} draw={draw} core={11} glow={32} radius={34} />
+        <Route points={prongL} draw={W.draw(46, 84)} core={10} glow={28} radius={30} />
+        <Route points={prongR} draw={W.draw(46, 84)} core={10} glow={28} radius={30} />
         <Packet points={route5} t={((f - s) / 66) % 1} size={10} maxDraw={draw} />
-        <Packet points={route5} t={((f - s) / 66 + 0.5) % 1} size={8} maxDraw={draw} opacity={0.8} />
-        {/* final down-arrow into crown */}
-        <RouteArrow points={route5} t={clamp(draw) * 0.98} size={16} opacity={clamp((draw - 0.8) * 5)} />
+        <Packet points={prongL} t={((f - s) / 60) % 1} size={8} maxDraw={W.draw(46, 84)} opacity={0.85} />
+        <Packet points={prongR} t={((f - s) / 60 + 0.3) % 1} size={8} maxDraw={W.draw(46, 84)} opacity={0.85} />
+        {/* final down-arrow into the crown storefront */}
+        <g opacity={clamp((W.draw(46, 84) - 0.7) * 4)}>
+          <path d="M696 1318 L718 1352 L740 1318" fill="none" stroke={C.cyanHi} strokeWidth={6} strokeLinecap="round" strokeLinejoin="round" />
+        </g>
         {/* gray decision branches */}
         {labels5.map((l, i) => {
           const rv = ip(f, s + 30 + (1 - l.anchor) * 40, s + 46 + (1 - l.anchor) * 40, 0, 1);

@@ -100,9 +100,11 @@ export const Route: React.FC<{
   return (
     <g opacity={opacity} style={{ mixBlendMode: "screen" }}>
       <path {...common} stroke={color} strokeWidth={glow} opacity={0.16} style={{ filter: `blur(${glow * 0.4}px)` }} />
-      <path {...common} stroke={color} strokeWidth={glow * 0.5} opacity={0.28} style={{ filter: `blur(${glow * 0.18}px)` }} />
+      <path {...common} stroke={color} strokeWidth={glow * 0.5} opacity={0.26} style={{ filter: `blur(${glow * 0.18}px)` }} />
+      {/* translucent road body so the route reads as a lit road surface */}
+      <path {...common} stroke={color} strokeWidth={core * 2.3} opacity={0.22} />
       <path {...common} stroke={color} strokeWidth={core} opacity={0.95} />
-      <path {...common} stroke={C.cyanHi} strokeWidth={core * 0.42} opacity={0.9} />
+      <path {...common} stroke={C.cyanHi} strokeWidth={core * 0.42} opacity={0.92} />
     </g>
   );
 };
