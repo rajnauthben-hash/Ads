@@ -29,7 +29,7 @@ const c1 = { x: 712, y: 1892, s: 1.5, act: 0.9, tools: 1 };
 const c2 = { x: 858, y: 1852, s: 0.7, act: 0.5, tools: 0 };
 const c3 = { x: 182, y: 1762, s: 0.62, act: 0.12, tools: 0 };
 const c4 = { x: 645, y: 1246, s: 0.52, act: 0.12, tools: 0 };
-const c5 = { x: 736, y: 1792, s: 1.32, act: 1, tools: 0 };
+const c5 = { x: 736, y: 1668, s: 1.16, act: 1, tools: 0 };
 const dupe = (a: number, b: number, c: number, d: number, e: number) => [a, a, a, b, b, c, c, d, d, e, e, e];
 const CX = dupe(c1.x, c2.x, c3.x, c4.x, c5.x);
 const CY = [c1.y + 28, c1.y, c1.y, c2.y, c2.y, c3.y, c3.y, c4.y, c4.y, c5.y, c5.y, c5.y];
@@ -80,13 +80,14 @@ const Scene1: React.FC<{ f: number }> = ({ f }) => {
   const p = W.p(), ex = W.ex();
   return (
     <AbsoluteFill>
-      {/* interchange upper-right */}
+      {/* interchange upper-right, flowing all the way down into the store */}
       <svg width={1080} height={1920} style={{ position: "absolute", inset: 0, opacity: W.fade }}>
-        <Interchange draw={W.draw(14, 54)} />
-        {[0.2, 0.55, 0.9].map((base, i) => {
-          const t = ((f - s) / 70 + base) % 1;
-          return <RouteArrow key={i} points={[{ x: 700, y: 470 }, { x: 760, y: 300 }, { x: 900, y: 200 }, { x: 980, y: 120 }]} t={t} size={12} opacity={0.7} />;
-        })}
+        <Interchange draw={W.draw(14, 50)} />
+        <Route points={route1} draw={W.draw(40, 100)} core={8} glow={26} radius={30} />
+        <Packet points={route1} t={((f - s) / 64) % 1} size={9} maxDraw={W.draw(40, 100)} />
+        {[0.3, 0.72].map((b, i) => (
+          <RouteArrow key={i} points={route1} t={((f - s) / 52 + b) % 1} size={13} opacity={clamp(W.draw(40, 100)) * 0.9} />
+        ))}
       </svg>
       <Headline
         x={58}
@@ -130,6 +131,13 @@ const Scene1: React.FC<{ f: number }> = ({ f }) => {
     </AbsoluteFill>
   );
 };
+
+// Scene 1 — highway flows out of the interchange down the right side into the
+// Crown Hardware storefront (bottom-right).
+const route1: Pt[] = [
+  { x: 866, y: 548 }, { x: 912, y: 700 }, { x: 842, y: 884 }, { x: 916, y: 1064 },
+  { x: 832, y: 1236 }, { x: 760, y: 1352 }, { x: 714, y: 1400 },
+];
 
 // ===========================================================================
 // SCENE 2 — A new highway got built.  (editorial serif)
@@ -234,8 +242,8 @@ const Scene3: React.FC<{ f: number }> = ({ f }) => {
           const rv = ip(f, s + 30 + (1 - c.anchor) * 40, s + 46 + (1 - c.anchor) * 40, 0, 1);
           return (
             <g key={i}>
-              <line x1={834} y1={c.y} x2={868} y2={c.y} stroke={C.gold} strokeWidth={1.6} strokeDasharray="3 5" opacity={rv * 0.8} />
-              <Pin x={860} y={c.y - 6} size={26} color={C.gold} reveal={rv} />
+              <line x1={812} y1={c.y} x2={846} y2={c.y} stroke={C.gold} strokeWidth={1.6} strokeDasharray="3 5" opacity={rv * 0.8} />
+              <Pin x={838} y={c.y - 6} size={26} color={C.gold} reveal={rv} />
             </g>
           );
         })}
@@ -247,7 +255,7 @@ const Scene3: React.FC<{ f: number }> = ({ f }) => {
       {cards3.map((c, i) => {
         const rv = ip(f, s + 30 + (1 - c.anchor) * 40, s + 46 + (1 - c.anchor) * 40, 0, 1);
         return (
-          <div key={i} style={{ position: "absolute", left: 878, top: c.y - 34, opacity: clamp(rv * 1.2) * W.fade, transform: `translateX(${(1 - rv) * 18}px)` }}>
+          <div key={i} style={{ position: "absolute", left: 856, top: c.y - 34, opacity: clamp(rv * 1.2) * W.fade, transform: `translateX(${(1 - rv) * 18}px)` }}>
             <div style={{ border: `2px solid ${C.gold}`, borderRadius: 8, padding: "8px 14px", background: "rgba(7,18,30,0.85)" }}>
               <div style={{ fontFamily: F.ui, fontWeight: 600, fontSize: 20, letterSpacing: 1.5, color: C.gold }}>{c.label}</div>
               <div style={{ color: C.gold, fontSize: 15, letterSpacing: 2 }}>★★★★★</div>
@@ -362,7 +370,7 @@ const Scene4: React.FC<{ f: number }> = ({ f }) => {
           {t}
         </div>
       ))}
-      <Copy x={540} y={1300} size={24} color={C.muted} p={W.draw(52, 70)} lines={["Missing or incomplete", "information stops", "customers from", "finding you."]} />
+      <Copy x={540} y={1258} size={24} color={C.muted} p={W.draw(52, 70)} lines={["Missing or incomplete", "information stops", "customers from", "finding you."]} />
       {/* headline + body */}
       <Headline
         x={58}
@@ -395,7 +403,7 @@ const InfoCard: React.FC<{ reveal: number; fade: number; f: number; s: number }>
   const rows: [string, string][] = [["Hours", "Missing"], ["Location", "Incomplete"], ["Phone", "Missing"]];
   const icons: ("clock" | "pin" | "phone")[] = ["clock", "pin", "phone"];
   return (
-    <div style={{ position: "absolute", left: 556, top: 1420, width: 462, opacity: clamp(reveal * 1.2) * fade, transform: `translateY(${ty}px)` }}>
+    <div style={{ position: "absolute", left: 556, top: 1398, width: 462, opacity: clamp(reveal * 1.2) * fade, transform: `translateY(${ty}px)` }}>
       <div style={{ border: `1.5px solid ${C.grayDark}`, borderRadius: 12, background: "rgba(5,12,21,0.9)", padding: "20px 22px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
           <svg width={34} height={34} viewBox="-16 -16 32 32">
@@ -437,10 +445,10 @@ const InfoCard: React.FC<{ reveal: number; fade: number; f: number; s: number }>
 // ===========================================================================
 const route5: Pt[] = [
   { x: 560, y: 200 }, { x: 650, y: 360 }, { x: 585, y: 540 }, { x: 700, y: 690 },
-  { x: 610, y: 900 }, { x: 690, y: 1120 }, { x: 700, y: 1190 },
+  { x: 610, y: 900 }, { x: 690, y: 1110 }, { x: 700, y: 1150 },
 ];
-const prongL: Pt[] = [{ x: 700, y: 1190 }, { x: 588, y: 1252 }, { x: 622, y: 1332 }, { x: 718, y: 1330 }];
-const prongR: Pt[] = [{ x: 700, y: 1190 }, { x: 812, y: 1252 }, { x: 786, y: 1332 }, { x: 718, y: 1330 }];
+const prongL: Pt[] = [{ x: 700, y: 1150 }, { x: 590, y: 1208 }, { x: 624, y: 1286 }, { x: 718, y: 1282 }];
+const prongR: Pt[] = [{ x: 700, y: 1150 }, { x: 810, y: 1208 }, { x: 784, y: 1286 }, { x: 718, y: 1282 }];
 const labels5: { t: string; y: number; anchor: number }[] = [
   { t: "SEARCHING", y: 250, anchor: 0.9 },
   { t: "COMPARING", y: 620, anchor: 0.58 },
@@ -464,7 +472,7 @@ const Scene5: React.FC<{ f: number }> = ({ f }) => {
         <Packet points={prongR} t={((f - s) / 60 + 0.3) % 1} size={8} maxDraw={W.draw(46, 84)} opacity={0.85} />
         {/* final down-arrow into the crown storefront */}
         <g opacity={clamp((W.draw(46, 84) - 0.7) * 4)}>
-          <path d="M696 1318 L718 1352 L740 1318" fill="none" stroke={C.cyanHi} strokeWidth={6} strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M696 1272 L718 1306 L740 1272" fill="none" stroke={C.cyanHi} strokeWidth={6} strokeLinecap="round" strokeLinejoin="round" />
         </g>
         {/* gray decision branches */}
         {labels5.map((l, i) => {
@@ -472,14 +480,15 @@ const Scene5: React.FC<{ f: number }> = ({ f }) => {
           const anchorPt = { x: [640, 690, 700][i], y: [360, 690, 1120][i] };
           return (
             <g key={i} opacity={rv}>
-              <path d={`M${anchorPt.x} ${anchorPt.y} L ${910} ${l.y}`} stroke={C.grayDark} strokeWidth={2} strokeDasharray="3 8" fill="none" />
+              <path d={`M${anchorPt.x} ${anchorPt.y} L ${866} ${l.y}`} stroke={C.grayDark} strokeWidth={2} strokeDasharray="3 8" fill="none" />
               <circle cx={anchorPt.x} cy={anchorPt.y} r={5} fill={C.gray} />
+              <circle cx={866} cy={l.y} r={4} fill="none" stroke={C.gray} strokeWidth={1.6} />
             </g>
           );
         })}
       </svg>
       {labels5.map((l, i) => (
-        <div key={i} style={{ position: "absolute", left: 920, top: l.y - 14, fontFamily: F.ui, fontWeight: 500, fontSize: 22, letterSpacing: 2, color: C.gray, opacity: ip(f, s + 34 + (1 - l.anchor) * 40, s + 50 + (1 - l.anchor) * 40, 0, 1) * W.fade }}>
+        <div key={i} style={{ position: "absolute", left: 880, top: l.y - 13, fontFamily: F.ui, fontWeight: 500, fontSize: 20, letterSpacing: 2, color: C.gray, opacity: ip(f, s + 34 + (1 - l.anchor) * 40, s + 50 + (1 - l.anchor) * 40, 0, 1) * W.fade }}>
           {l.t}
         </div>
       ))}
@@ -506,18 +515,18 @@ const Scene5: React.FC<{ f: number }> = ({ f }) => {
         <Copy x={142} y={764} size={30} p={W.draw(34, 52)} lines={[[{ t: "You don’t need", color: C.white }], [{ t: "more traffic", color: C.white }, { t: " to exist." }]]} />
         <Copy x={142} y={912} size={30} p={W.draw(46, 64)} lines={[[{ t: "You need the", color: C.white }], [{ t: "existing traffic", color: C.white }, { t: " to" }], [{ t: "find you.", color: C.gold }]]} />
         <Copy x={142} y={1094} size={28} width={430} p={W.draw(58, 78)} lines={[[{ t: "OmniFlow Digital", color: C.white }], "helps your business", "show up where local", "customers are already", "searching, comparing", "and deciding."]} />
-        {/* tagline row */}
-        <Divider x={58} y={1802} w={964} reveal={W.draw(54, 70)} thick={2} />
+        {/* tagline row — kept inside the safe zone so it never clips off */}
+        <Divider x={58} y={1686} w={964} reveal={W.draw(54, 70)} thick={2} />
         <svg width={1080} height={1920} style={{ position: "absolute", inset: 0 }}>
           {tagline.map(([, kind], i) => (
-            <CircleIcon key={i} x={86 + i * 338} y={1858} kind={kind} r={21} color={C.gold} reveal={ip(f, s + 58 + i * 6, s + 74 + i * 6, 0, 1)} />
+            <CircleIcon key={i} x={86 + i * 338} y={1718} kind={kind} r={18} color={C.gold} reveal={ip(f, s + 58 + i * 6, s + 74 + i * 6, 0, 1)} />
           ))}
           {[1, 2].map((i) => (
-            <line key={i} x1={58 + i * 338 - 20} y1={1838} x2={58 + i * 338 - 20} y2={1878} stroke={C.grayDark} strokeWidth={1.5} opacity={ip(f, s + 60, s + 76, 0, 0.8)} />
+            <line key={i} x1={58 + i * 338 - 20} y1={1702} x2={58 + i * 338 - 20} y2={1734} stroke={C.grayDark} strokeWidth={1.5} opacity={ip(f, s + 60, s + 76, 0, 0.8)} />
           ))}
         </svg>
         {tagline.map(([t], i) => (
-          <div key={i} style={{ position: "absolute", left: 118 + i * 338, top: 1842, fontFamily: F.sans, fontWeight: 700, fontSize: 26, color: C.white, opacity: ip(f, s + 60 + i * 6, s + 76 + i * 6, 0, 1) * W.fade }}>
+          <div key={i} style={{ position: "absolute", left: 116 + i * 338, top: 1705, fontFamily: F.sans, fontWeight: 700, fontSize: 24, color: C.white, opacity: ip(f, s + 60 + i * 6, s + 76 + i * 6, 0, 1) * W.fade }}>
             {t}
           </div>
         ))}
