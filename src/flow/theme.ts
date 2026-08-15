@@ -6,7 +6,7 @@ import { Easing } from "remotion";
  * no maps, icons, storefronts or decoration — only live text, ghost echoes and
  * motion smear. Five approved states that physically transform into each other.
  */
-export const FLOW = { width: 1080, height: 1920, fps: 30, frames: 600 } as const;
+export const FLOW = { width: 1080, height: 1920, fps: 30, frames: 800 } as const;
 
 export const K = {
   bg: "#03070C",
@@ -32,10 +32,12 @@ export const KE = {
 
 export const KSAFE = { left: 64, right: 1016, top: 100, bottom: 1720 } as const;
 
+// 160-frame scenes: same entrance timing (~s+100), then a ~1.6s read hold
+// before the transition, so viewers can read every line.
 export const KSC = {
-  s1: { start: 0, end: 119, match: 90 },
-  s2: { start: 120, end: 239, match: 210 },
-  s3: { start: 240, end: 359, match: 330 },
-  s4: { start: 360, end: 479, match: 450 },
-  s5: { start: 480, end: 599, match: 570 },
+  s1: { start: 0, end: 159, match: 130 },
+  s2: { start: 160, end: 319, match: 290 },
+  s3: { start: 320, end: 479, match: 450 },
+  s4: { start: 480, end: 639, match: 610 },
+  s5: { start: 640, end: 799, match: 770 },
 } as const;
