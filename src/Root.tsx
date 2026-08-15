@@ -8,11 +8,21 @@ import { TikTokAd } from "./tiktok/TikTokAd";
 import { OmniFlowInvisibleShortlist } from "./compositions/OmniFlowInvisibleShortlist";
 import { LocalSearchExpressway } from "./expressway/LocalSearchExpressway";
 import { EXP } from "./expressway/theme";
+import { RestoringTheFlow } from "./flow/RestoringTheFlow";
+import { FLOW } from "./flow/theme";
 import { CANVAS } from "./styles/tokens";
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition
+        id="RestoringTheFlow"
+        component={RestoringTheFlow}
+        durationInFrames={FLOW.frames}
+        fps={FLOW.fps}
+        width={FLOW.width}
+        height={FLOW.height}
+      />
       <Composition
         id="LocalSearchExpressway"
         component={LocalSearchExpressway}
