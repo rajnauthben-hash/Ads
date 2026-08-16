@@ -2,7 +2,7 @@ import React from "react";
 import { AbsoluteFill, useCurrentFrame, delayRender, continueRender } from "remotion";
 import { initFonts } from "../styles/fonts";
 import { K, KSC } from "./theme";
-import { Cap, Body, Ghost, Brand, ip, clamp } from "./kinetic";
+import { Cap, Body, Brand, ip, clamp } from "./kinetic";
 
 // Boundary-crossing entrance/exit so scenes transform into each other rather
 // than cutting: incoming begins before its start, outgoing lingers past its end.
@@ -31,7 +31,6 @@ const S1: React.FC<{ f: number }> = ({ f }) => {
   const ex = W.ex();
   return (
     <AbsoluteFill>
-      <Ghost x={40} y={360} size={430} text="FINE" opacity={0.05} drift={Math.sin(f * 0.02) * 3} />
       <Brand y={54} reveal={W.at(8, 26)} />
       <Cap x={64} y={150} size={62} parts={[{ t: "Your business" }]} p={W.at(14, 40)} dir={{ x: 0, y: 18 }} ex={ex} exDir={{ x: -20, y: -60 }} />
       <Cap x={64} y={214} size={62} parts={[{ t: "can" }]} p={W.at(18, 44)} dir={{ x: 0, y: 18 }} ex={ex} exDir={{ x: -20, y: -70 }} />
@@ -58,8 +57,6 @@ const S2: React.FC<{ f: number }> = ({ f }) => {
   const ex = W.ex();
   return (
     <AbsoluteFill>
-      <Ghost x={120} y={280} size={300} text="UPSTREAM" opacity={0.045} drift={Math.sin(f * 0.02) * 3} />
-      <Ghost x={-20} y={1000} size={300} text="TRUST" opacity={0.04} />
       <Brand y={54} reveal={W.at(2, 22)} />
       <Cap x={64} y={168} size={118} weight={900} parts={[{ t: "The" }]} p={W.at(-10, 16)} dir={{ x: 0, y: 22 }} ex={ex} exDir={{ x: -30, y: -70 }} />
       <Cap x={64} y={286} size={118} weight={900} parts={[{ t: "Problem" }]} p={W.at(-6, 20)} dir={{ x: 0, y: 22 }} ex={ex} exDir={{ x: -30, y: -80 }} />
@@ -87,7 +84,6 @@ const S3: React.FC<{ f: number }> = ({ f }) => {
   const comp = ip(f, s + 40, s + 90, 10, 0);
   return (
     <AbsoluteFill>
-      <Ghost x={20} y={520} size={340} text="BROKEN" opacity={0.05} drift={Math.sin(f * 0.02) * 3} />
       <Brand y={54} reveal={W.at(2, 22)} />
       <Cap x={64} y={196} size={92} weight={900} parts={[{ t: "That doesn’t" }]} p={W.at(-10, 16)} dir={{ x: 0, y: 20 }} ex={ex} exDir={{ x: -20, y: -60 }} />
       <Cap x={64} y={288} size={92} weight={900} parts={[{ t: "Mean your" }]} p={W.at(-6, 20)} dir={{ x: 0, y: 20 }} ex={ex} exDir={{ x: -20, y: -70 }} />
@@ -115,8 +111,6 @@ const S4: React.FC<{ f: number }> = ({ f }) => {
   const ex = W.ex();
   return (
     <AbsoluteFill>
-      <Ghost x={40} y={260} size={330} text="SURGERY" opacity={0.045} />
-      <Ghost x={-10} y={1120} size={330} text="CLEARED" opacity={0.045} drift={Math.sin(f * 0.02) * 3} />
       <Brand y={54} reveal={W.at(2, 22)} />
       <Cap x={64} y={196} size={72} parts={[{ t: "You don’t need" }]} p={W.at(-10, 16)} dir={{ x: 0, y: 20 }} ex={ex} exDir={{ x: -20, y: -60 }} />
       <Cap x={60} y={272} size={186} weight={900} color={K.silver} parts={[{ t: "Surgery." }]} p={W.at(-6, 26)} scaleFrom={1.1} ex={ex} exDir={{ x: 0, y: -110 }} />
@@ -141,10 +135,6 @@ const S5: React.FC<{ f: number }> = ({ f }) => {
   const beat = 1 + Math.sin(f * 0.12) * 0.01;
   return (
     <AbsoluteFill>
-      {/* ghost echoes behind PULSE */}
-      {[1, 2, 3, 4].map((i) => (
-        <Ghost key={i} x={60 + i * 8} y={286} size={210} text="PULSE" opacity={clamp(pulseP) * (0.12 - i * 0.02)} condense={0.9} />
-      ))}
       <Brand y={54} reveal={W.at(2, 22)} />
       <Cap x={64} y={188} size={92} weight={900} color={K.silver} parts={[{ t: "Then the" }]} p={W.at(-10, 16)} dir={{ x: 0, y: 20 }} />
       <div style={{ transform: `scale(${beat})`, transformOrigin: "64px 400px" }}>
