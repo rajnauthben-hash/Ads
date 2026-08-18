@@ -10,11 +10,21 @@ import { LocalSearchExpressway } from "./expressway/LocalSearchExpressway";
 import { EXP } from "./expressway/theme";
 import { RestoringTheFlow } from "./flow/RestoringTheFlow";
 import { FLOW } from "./flow/theme";
+import { RouteTheTraffic } from "./route/RouteTheTraffic";
+import { RT } from "./route/theme";
 import { CANVAS } from "./styles/tokens";
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition
+        id="RouteTheTraffic"
+        component={RouteTheTraffic}
+        durationInFrames={RT.frames}
+        fps={RT.fps}
+        width={RT.width}
+        height={RT.height}
+      />
       <Composition
         id="RestoringTheFlow"
         component={RestoringTheFlow}
