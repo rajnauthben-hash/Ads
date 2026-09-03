@@ -14,11 +14,21 @@ import { RouteTheTraffic } from "./route/RouteTheTraffic";
 import { RT } from "./route/theme";
 import { OmniFlowAd16 } from "./ad16/OmniFlowAd16";
 import { AD } from "./ad16/theme";
+import { Ad62LockedOutsideApex } from "./ad62/Ad62LockedOutsideApex";
+import { AD as AD62 } from "./ad62/theme";
 import { CANVAS } from "./styles/tokens";
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <Composition
+        id="OmniflowAd62LockedOutsideApex"
+        component={Ad62LockedOutsideApex}
+        durationInFrames={AD62.frames}
+        fps={AD62.fps}
+        width={AD62.width}
+        height={AD62.height}
+      />
       <Composition
         id="OmniFlowAd16"
         component={OmniFlowAd16}
