@@ -15,8 +15,9 @@ export const C = {
   raised: "#151A20",
   raised2: "#1B222A",
   white: "#F4F3EF",
-  muted: "#A8ADB3",
-  dim: "#6A7079",
+  muted: "#C6CCD2",
+  dim: "#7C838B",
+  muted2: "#C6CCD2",
   gold: "#D99B25",
   goldLight: "#F1BA4B",
   cyan: "#00D7E6",
@@ -40,12 +41,12 @@ export const EASE = {
 
 export const SAFE = { left: 70, right: 1010, top: 120, bottom: 1760 } as const;
 
-// Scene ranges (spec §"Scene timing").
+// Scene ranges — Ad 2.6 refinement timeline.
 export const SCN = {
-  s1: { start: 0, end: 104, match: 48 },
-  s2: { start: 105, end: 204, match: 154 },
-  s3: { start: 205, end: 309, match: 259 },
-  s4: { start: 310, end: 409, match: 359 },
-  s5: { start: 410, end: 509, match: 459 },
-  s6: { start: 510, end: 599, match: 570 },
+  s1: { start: 0, end: 89, match: 60 },
+  s2: { start: 90, end: 189, match: 150 },
+  s3: { start: 190, end: 294, match: 250 },
+  s4: { start: 295, end: 394, match: 355 },
+  s5: { start: 395, end: 494, match: 455 },
+  s6: { start: 495, end: 599, match: 560 },
 } as const;

@@ -28,7 +28,7 @@ export const IsoCity: React.FC<{ ox?: number; oy?: number; opacity?: number }> =
   for (let gx = -5; gx <= 8; gx++)
     for (let gy = -5; gy <= 9; gy++) {
       const r = rnd(gx * 13.3 + gy * 7.7);
-      if (r < 0.5) continue;
+      if (r < 0.66) continue;
       // leave a clear corridor for the route / hero objects
       if (Math.abs(gx - gy) < 1.4 && gy > -2) continue;
       boxes.push({ gx, gy, h: 1 + Math.floor(rnd(gx * 3.1 + gy * 5.9) * 5) });
@@ -209,7 +209,7 @@ export const TriangleSlots: React.FC<{ cx: number; cy: number; f: number; reveal
       </svg>
       {storefront && (
         <>
-          <div style={{ position: "absolute", left: cx, top: cy - 40, transform: "translate(-50%,-50%)", textAlign: "center", fontFamily: FONT.head, fontWeight: 800, fontSize: 26, letterSpacing: 1, color: C.goldLight, lineHeight: 1.05 }}>YOUR<br />BUSINESS</div>
+          <div style={{ position: "absolute", left: cx, top: cy + 150, transform: "translate(-50%,-50%)", textAlign: "center", fontFamily: FONT.head, fontWeight: 800, fontSize: 24, letterSpacing: 1.5, color: C.goldLight, lineHeight: 1.05 }}>YOUR BUSINESS</div>
           <Storefront x={cx} y={cy + 120} scale={0.95} lit={1} />
         </>
       )}

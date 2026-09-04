@@ -32,8 +32,8 @@ const S1: React.FC<{ f: number }> = ({ f }) => {
           <RoutePath points={routeMap} draw={draw} />
           <RoutePulse points={routeMap} t={(f / 42) % 1} maxDraw={draw} />
         </svg>
-        <Storefront x={600} y={1500} scale={0.82} lit={0.15} reveal={W.at(18, 38)} />
-        <PhoneWithResults x={840} y={1020} scale={0.6} reveal={W.at(12, 34)} cards={[{ n: 1, lit: 1 }, { n: 2, lit: 1 }, { n: 3, lit: 1 }]} />
+        <Storefront x={560} y={1560} scale={0.78} lit={0.15} reveal={W.at(18, 38)} />
+        <PhoneWithResults x={806} y={930} scale={0.68} reveal={W.at(12, 34)} cards={[{ n: 1, lit: 1 }, { n: 2, lit: 1 }, { n: 3, lit: 1 }]} />
       </div>
       <Headline x={64} y={150} size={70} p={W.p()} ex={ex} lines={[[{ t: "Three slots on a phone" }], [{ t: "worth more than any frontage" }], [{ t: "in Port of Spain.", c: C.gold }]]} />
       <Label x={84} y={520} text="THE DECISION STARTS HERE." p={W.at(10, 26)} />
@@ -83,8 +83,8 @@ const S3: React.FC<{ f: number }> = ({ f }) => {
           <RoutePath points={routeMap} draw={W.at(6, 44)} />
           <RoutePulse points={routeMap} t={(f / 42) % 1} maxDraw={W.at(6, 44)} />
         </svg>
-        <Storefront x={600} y={1560} scale={0.8} lit={0.15} reveal={W.at(14, 34)} />
-        <PhoneWithResults x={840} y={980} scale={0.6} reveal={W.at(12, 32)} query="service near me" queryChars={qc}
+        <Storefront x={560} y={1600} scale={0.72} lit={0.15} reveal={W.at(14, 34)} />
+        <PhoneWithResults x={806} y={920} scale={0.68} reveal={W.at(12, 32)} query="service near me" queryChars={qc}
           cards={[{ n: 1, lit: W.at(24, 34) }, { n: 2, lit: W.at(30, 40) }, { n: 3, lit: W.at(36, 46) }]} />
       </div>
       <Headline x={64} y={150} size={68} p={W.p()} ex={ex} lines={[[{ t: "One local" }], [{ t: "search creates" }], [{ t: "three immediate", c: C.gold }], [{ t: "choices.", c: C.gold }]]} />
@@ -106,7 +106,11 @@ const S4: React.FC<{ f: number }> = ({ f }) => {
   return (
     <AbsoluteFill>
       <div style={{ opacity: W.fade }}>
-        <PhoneWithResults x={840} y={880} scale={0.6} reveal={W.at(8, 28)}
+        <svg width={1080} height={1920} style={{ position: "absolute", inset: 0 }}>
+          <RoutePath points={[{ x: 120, y: 1500 }, { x: 320, y: 1420 }, { x: 520, y: 1440 }, { x: 700, y: 1360 }, { x: 806, y: 1240 }]} draw={W.at(10, 40)} />
+          <RoutePulse points={[{ x: 120, y: 1500 }, { x: 320, y: 1420 }, { x: 520, y: 1440 }, { x: 700, y: 1360 }, { x: 806, y: 1240 }]} t={(f / 42) % 1} maxDraw={W.at(10, 40)} />
+        </svg>
+        <PhoneWithResults x={806} y={830} scale={0.66} reveal={W.at(8, 28)}
           cards={[{ n: 1, lit: 1 }, { n: 2, lit: 1 }, { n: 3, lit: 1 }]} you={W.at(28, 44)} />
       </div>
       <Headline x={64} y={140} size={82} p={W.p()} ex={ex} lines={[[{ t: "Those" }], [{ t: "three are" }], [{ t: "seen ", c: C.white }, { t: "first.", c: C.gold }]]} />
@@ -151,6 +155,7 @@ const S6: React.FC<{ f: number }> = ({ f }) => {
     <AbsoluteFill>
       <TriangleSlots cx={720} cy={900} f={f} reveal={W.at(6, 40)} storefront />
       <Headline x={64} y={110} size={120} weight={800} p={W.p()} lines={[[{ t: "Claim ", c: C.white }, { t: "one.", c: C.gold }]]} />
+      <div style={{ position: "absolute", left: 68, top: 268, width: 360 * clamp(W.at(10, 30)), height: 4, background: C.cyan, boxShadow: "0 0 12px rgba(0,215,230,0.6)" }} />
       <Copy x={70} y={340} size={30} color={C.muted} p={W.at(14, 32)} lines={["OmniFlow Digital strengthens the signals", "that help your business compete", "for local visibility."]} />
       <NumberedSignal x={70} y={560} n={1} head="PROFILE CLARITY" body={["Accurate information, categories", "and hours customers can trust."]} p={W.at(16, 34)} />
       <NumberedSignal x={70} y={720} n={2} head="TRUST SIGNALS" body={["Clear services, stronger photos", "and a review-ready presence."]} p={W.at(22, 40)} />
